@@ -2,5 +2,8 @@
   "name": "@repo/types",
   "version": "0.0.0",
   "main": "./global.ts",
-  "types": "./global.ts"
+  "types": "./global.ts",
+  "exports":{
+  "./config":"./global.ts"
+  }
 }
