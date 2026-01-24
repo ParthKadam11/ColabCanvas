@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "main": "./global.ts",
   "types": "./global.ts",
-  "exports":{
-  "./config":"./global.ts"
+  "exports": {
+    ".": "./global.ts",
+    "./config": "./global.ts"
   }
 }
