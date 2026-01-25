@@ -1,8 +1,8 @@
-import z from "zod";
+import {z} from "zod";
 
 export const CreateUserSchema = z.object({
     name:z.string().max(20),
-    email:z.email(),
+    email:z.string(),
     password:z.string().min(8),
     photo:z.string().optional(),
 })

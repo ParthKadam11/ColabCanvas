@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -b",
     "start": "tsc -b && node dist/index.js",
-    "dev": "npm run build && npm run start"
+    "dev": "tsx --env-file=../../.env src/index.ts"
   },
   "dependencies": {
     "@repo/typescript-config": "workspace:*",
@@ -20,5 +20,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "module",
+  "devDependencies": {
+    "tsx": "^4.19.0"
+  }
 }
