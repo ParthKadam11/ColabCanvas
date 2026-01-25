@@ -5,6 +5,8 @@ import jwt from 'jsonwebtoken';
 const JWT_SECRET = process.env.JWT_SECRET
 const wss = new WebSocketServer({ port: 8080 });
 
+console.log("WebSocket server running on port 8080");
+
 wss.on('connection', function connection(ws, request) {
 
   const url =request.url;

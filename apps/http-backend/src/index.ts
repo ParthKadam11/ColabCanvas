@@ -10,8 +10,8 @@ const JWT_SECRET =process.env.JWT_SECRET
 const app=express()
 app.use(express.json())
 
-app.listen(3001, () => {
-    console.log("HTTP backend running on port 3001")}) 
+app.listen(3000, () => {
+    console.log("HTTP backend running on port 3000")}) 
 
 app.post("/signup",async (req,res)=>{
     const result = CreateUserSchema.safeParse(req.body);
@@ -37,7 +37,8 @@ app.post("/signup",async (req,res)=>{
         });
     }catch(e){
         res.json({
-            e
+            message:"User Already Exists",
+            e:`${e}`
         })
     }
     
