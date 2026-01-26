@@ -19,13 +19,9 @@ function checkUser(token:string):string |null{
   try{
   const decoded = jwt.verify(token,JWT_SECRET as string)
 
-  if(typeof decoded == "string"){
-    return null
-  }
-
-  if( !decoded || !decoded.userId){
-    return null
-  }
+  if(typeof decoded == "string") return null
+  if( !decoded || !decoded.userId) return null
+  
   return decoded.userId
   }catch(e){
     return null 
@@ -34,9 +30,7 @@ function checkUser(token:string):string |null{
 
 wss.on("connection", function connection(ws, request) {
   const url = request.url;
-  if (!url) {
-    return;
-  }
+  if (!url) return
   const queryParams = new URLSearchParams(url.split("?")[1]);
   const token = queryParams.get("token") ?? "";
   const userId = checkUser(token);
@@ -87,7 +81,7 @@ wss.on("connection", function connection(ws, request) {
           );
         }
       });
-      
+
       try {
         await prismaClient.chat.create({
           data: {
