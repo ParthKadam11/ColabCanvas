@@ -7,7 +7,10 @@ if (!databaseUrl) {
   throw new Error("DATABASE_URL environment variable is not set");
 }
 
-const pool = new pg.Pool({ connectionString: databaseUrl });
+const pool = new pg.Pool({ 
+  connectionString: databaseUrl,
+  ssl: { rejectUnauthorized: false }
+});
 const adapter = new PrismaPg(pool);
 
 export const prismaClient = new PrismaClient({

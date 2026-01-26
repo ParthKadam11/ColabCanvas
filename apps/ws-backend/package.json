@@ -10,6 +10,7 @@
     "dev": "tsx --env-file=../../.env src/index.ts"
   },
   "dependencies": {
+    "@repo/db":"workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@repo/types": "workspace:*",
     "@types/jsonwebtoken": "^9.0.10",

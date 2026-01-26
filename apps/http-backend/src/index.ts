@@ -10,12 +10,8 @@ const JWT_SECRET =process.env.JWT_SECRET
 const app=express()
 app.use(express.json())
 
-app.listen(3000, () => {
-    console.log("HTTP backend running on port 3000")}) 
-
 app.post("/signup",async (req,res)=>{
     const result = CreateUserSchema.safeParse(req.body);
-    
     if (!result.success) {
         res.status(400).json({ error: "Invalid input", details: result.error });
         return;
@@ -53,7 +49,6 @@ app.post("/signin",async (req,res)=>{
     return    
 }    
     const {email,password} = result.data
-    //TODO : compare hashed passwords
     const user = await prismaClient.user.findFirst({
         where:{
             email:email,
@@ -66,7 +61,7 @@ app.post("/signin",async (req,res)=>{
         })
         return 
     }
-    const token=jwt.sign({email:email},JWT_SECRET as string)
+    const token=jwt.sign({userId: user.id},JWT_SECRET as string)
     res.json({
         token
     })
@@ -81,14 +76,25 @@ app.post("/room", middleware ,async (req,res)=>{
         return
     }
     const userId= req.userId
-    await prismaClient.room.create({
+    try{
+        const room = await prismaClient.room.create({
         data:{
-         slug:result.data.roomname,
-         adminId: userId as string 
+            slug:result.data.roomname,
+            adminId: userId as string 
         }
-    })
-    res.json({
-        RoomId:"123"
-    })
+        })
+        res.json({
+            roomId:room.id
+        })
+    }catch(e){
+        res.status(411).json({
+            message:"Room Already Exists",
+            e
+        })
+    }
+})
+
+app.listen(3002, () => {
+    console.log("HTTP backend running on port 3002")
 })
 
