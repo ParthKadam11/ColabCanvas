@@ -47,11 +47,6 @@ export default function Home() {
           <p className="text-zinc-700 dark:text-zinc-200 text-center">Share boards with a link, export as images, or embed in docs. Collaboration made simple.</p>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="w-full text-center py-8 bg-white/40 dark:bg-zinc-900/40 border-t border-white/20 dark:border-zinc-700/30 mt-16">
-        <p className="text-zinc-700 dark:text-zinc-200">&copy; {new Date().getFullYear()} Excelidraw. All rights reserved.</p>
-      </footer>
     </div>
   );
 }
