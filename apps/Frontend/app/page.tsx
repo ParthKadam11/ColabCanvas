@@ -14,7 +14,6 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero Section */}
       <div className="flex flex-col items-center justify-center min-h-screen pt-32 pb-16 px-4">
         <div className="relative z-10 flex flex-col items-center justify-center p-8 rounded-2xl shadow-xl bg-white/60 dark:bg-zinc-900/60 backdrop-blur-lg border border-white/30 dark:border-zinc-700/40 max-w-2xl w-full mx-4">
           <h1 className="text-5xl md:text-6xl font-bold text-zinc-900 dark:text-white mb-4 drop-shadow-sm text-center">Excelidraw</h1>
@@ -24,12 +23,11 @@ export default function Home() {
           <a
             href="/signup"
             className="px-8 py-4 rounded-xl bg-zinc-900/80 dark:bg-white/20 text-white dark:text-zinc-100 font-semibold shadow-md hover:bg-zinc-900 hover:dark:bg-white/30 transition-colors backdrop-blur-md border border-white/20 dark:border-zinc-700/30 text-lg">
-            Get Started Free
+            Get Started
           </a>
         </div>
       </div>
 
-      {/* Features Section */}
       <section className="relative z-10 max-w-5xl mx-auto px-4 py-16 grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="bg-white/70 dark:bg-zinc-900/70 rounded-xl shadow-lg p-6 border border-white/20 dark:border-zinc-700/30 flex flex-col items-center">
           <svg width="48" height="48" fill="none" viewBox="0 0 24 24" className="mb-4 text-zinc-900 dark:text-white"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" /><path d="M8 12h8M12 8v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
