@@ -45,25 +45,21 @@ wss.on("connection", function connection(ws, request) {
   });
 
   ws.on("message", async function message(data) {
-    let parsedData;    
-    if(typeof data != "string"){
-      parsedData = JSON.parse(data.toString())
-    }else{
-      parsedData=JSON.parse(data)
-    }
-
+  const str = typeof data === 'string' ? data : data.toString();
+  const parsedData = JSON.parse(str);
+  const user = users.find((x) => x.ws === ws);
+  
+  if (!user) return;
     if (parsedData.type === "join_room") {
-      const user = users.find((x) =>x.ws == ws);
       user?.rooms.push(parsedData.roomId);
     }
 
     if (parsedData.type === "leave_room") {
-      const user = users.find((x) => x.ws == ws);
-      if (!user) {
-        return;
-      }
       user.rooms = user?.rooms.filter((x) => x == parsedData.room);
     }
+
+    console.log("Message Received")
+    console.log(data)
 
     if (parsedData.type === "chat") {
       const roomId = parsedData.roomId;
@@ -82,6 +78,7 @@ wss.on("connection", function connection(ws, request) {
       });
 
       try {
+        console.log("[chat] saving to db - roomId:", roomId, "message length:", message?.length)
         await prismaClient.chat.create({
           data: {
             roomId:Number(roomId),
@@ -89,8 +86,9 @@ wss.on("connection", function connection(ws, request) {
             userId,
           },
         });
+        console.log("[chat] saved to db successfully")
       } catch (e) {
-        e;
+        console.error("[chat] error saving to db:", e)
       }
     }
   });

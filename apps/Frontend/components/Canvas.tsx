@@ -15,17 +15,15 @@ const canvasRef =useRef<HTMLCanvasElement>(null)
 useEffect(()=>{
     let cleanup: void | (() => void)
     let cancelled = false
-    const controller = new AbortController()
 
-    if(canvasRef.current){
-        initDraw(canvasRef.current,roomId,socket, { signal: controller.signal }).then((fn) => {
+    if(canvasRef.current && socket){
+        initDraw(canvasRef.current,roomId,socket).then((fn) => {
             if (!cancelled) cleanup = fn
         })
     }
 
     return () => {
         cancelled = true
-        controller.abort()
         if (cleanup) cleanup()
     }
 },[roomId, socket])
