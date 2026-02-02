@@ -22,54 +22,37 @@ export async function initDraw(
     const ctx =canvas.getContext("2d")
     
     const existingShapes: Shape[] = await getExistingShapes(roomId)
-    console.log("[initDraw] loaded existing shapes:", existingShapes)
+    console.log(existingShapes)
 
     if(!ctx){
         return 
     }
 
-    const handleMessage = (event: MessageEvent) => {
+    socket.onmessage = (event) => {
         const message = JSON.parse(event.data)
 
         if (message.type == "chat") {
             const parsedShape = JSON.parse(message.message)
-            if (parsedShape?.shape) {
-                existingShapes.push(parsedShape.shape)
-            } else {
-                existingShapes.push(parsedShape)
-            }
+            existingShapes.push(parsedShape)
             clearCanvas(existingShapes,ctx,canvas)
         }
     }
-    
-    socket.removeEventListener("message", handleMessage)
-    socket.addEventListener("message", handleMessage)
 
     clearCanvas(existingShapes,ctx,canvas)
     let clicked=false
-    let startX=0 
+    let startX=0
     let startY=0
-
-    const getRelativePos = (e: MouseEvent) => {
-        const rect = canvas.getBoundingClientRect()
-        return {
-            x: e.clientX - rect.left,
-            y: e.clientY - rect.top,
-        }
-    }
 
     const handleMouseDown = (e: MouseEvent) => {
         clicked =true
-        const pos = getRelativePos(e)
-        startX=pos.x
-        startY=pos.y
+        startX=e.clientX
+        startY=e.clientY
     }
 
     const handleMouseUp = (e: MouseEvent) => {
         clicked = false
-        const pos = getRelativePos(e)
-        const width= pos.x-startX
-        const height= pos.y-startY
+        const width= e.clientX-startX
+        const height= e.clientY-startY
         const shape:Shape={
             type:"rect",
             x:startX,
@@ -90,9 +73,8 @@ export async function initDraw(
     
     const handleMouseMove = (e: MouseEvent) => {
         if(clicked){
-            const pos = getRelativePos(e)
-            const width= pos.x-startX
-            const height= pos.y-startY
+            const width= e.clientX-startX
+            const height= e.clientY-startY
             clearCanvas(existingShapes,ctx,canvas)
             ctx.strokeStyle="rgba(255, 255, 255)"
             ctx.strokeRect(startX,startY,width,height)
@@ -108,7 +90,6 @@ export async function initDraw(
         canvas.removeEventListener("mousedown", handleMouseDown)
         canvas.removeEventListener("mouseup", handleMouseUp)
         canvas.removeEventListener("mousemove", handleMouseMove)
-        socket.removeEventListener("message", handleMessage)
     }
     
 
@@ -133,18 +114,21 @@ function clearCanvas(existingShapes:Shape[],ctx:CanvasRenderingContext2D,canvas:
 
 async function getExistingShapes(roomId: string) {
     try {
-        const numericRoomId = Number(roomId)
-        const res = await axios.get(`${HTTP_BACKEND}/chats/${numericRoomId}`)
-        const messages = res.data.messages;
+        const res = await axios.get(`${HTTP_BACKEND}/chats/${roomId}`)
+        const message = res.data.message;
 
-        const shapes = messages.map((x: { message: string }) => {
+        if (!message || !Array.isArray(message)) {
+            return []  // empty array instead of undefined
+        }
+
+        const shapes = message.map((x: { message: string }) => {
             const messageData = JSON.parse(x.message)
             return messageData.shape
         })
 
         return shapes
     } catch (error) {
-        console.error("[getExistingShapes] Error fetching shapes:", error)
+        console.error("Error fetching shapes:", error)
         return [] 
     }
 }
