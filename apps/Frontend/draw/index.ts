@@ -22,21 +22,33 @@ export async function initDraw(
     const ctx =canvas.getContext("2d")
     
     const existingShapes: Shape[] = await getExistingShapes(roomId)
-    console.log(existingShapes)
+    console.log("[initDraw] Loaded existing shapes:", existingShapes)
 
     if(!ctx){
         return 
     }
 
-    socket.onmessage = (event) => {
+    const getRelativePos = (e: MouseEvent) => {
+        const rect = canvas.getBoundingClientRect()
+        return {
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top
+        }
+    }
+
+    const handleMessage = (event: MessageEvent) => {
         const message = JSON.parse(event.data)
 
         if (message.type == "chat") {
-            const parsedShape = JSON.parse(message.message)
-            existingShapes.push(parsedShape)
+            const parsedMessage = JSON.parse(message.message)
+            const shape = parsedMessage.shape || parsedMessage
+            existingShapes.push(shape)
             clearCanvas(existingShapes,ctx,canvas)
         }
     }
+
+    socket.removeEventListener("message", handleMessage)
+    socket.addEventListener("message", handleMessage)
 
     clearCanvas(existingShapes,ctx,canvas)
     let clicked=false
@@ -45,14 +57,16 @@ export async function initDraw(
 
     const handleMouseDown = (e: MouseEvent) => {
         clicked =true
-        startX=e.clientX
-        startY=e.clientY
+        const pos = getRelativePos(e)
+        startX=pos.x
+        startY=pos.y
     }
 
     const handleMouseUp = (e: MouseEvent) => {
         clicked = false
-        const width= e.clientX-startX
-        const height= e.clientY-startY
+        const pos = getRelativePos(e)
+        const width= pos.x-startX
+        const height= pos.y-startY
         const shape:Shape={
             type:"rect",
             x:startX,
@@ -60,25 +74,25 @@ export async function initDraw(
             width:width,
             height:height
         }
-        existingShapes.push(shape)                
 
+        existingShapes.push(shape)
         socket.send(JSON.stringify({
             type:"chat",
-            message:JSON.stringify({
-                shape
-            }),
+            message:JSON.stringify(shape),
             roomId
         }))
+        
+        clearCanvas(existingShapes,ctx,canvas)
     }
     
     const handleMouseMove = (e: MouseEvent) => {
         if(clicked){
-            const width= e.clientX-startX
-            const height= e.clientY-startY
+            const pos = getRelativePos(e)
+            const width= pos.x-startX
+            const height= pos.y-startY
             clearCanvas(existingShapes,ctx,canvas)
             ctx.strokeStyle="rgba(255, 255, 255)"
             ctx.strokeRect(startX,startY,width,height)
-
         }
     }
 
@@ -90,6 +104,7 @@ export async function initDraw(
         canvas.removeEventListener("mousedown", handleMouseDown)
         canvas.removeEventListener("mouseup", handleMouseUp)
         canvas.removeEventListener("mousemove", handleMouseMove)
+        socket.removeEventListener("message", handleMessage)
     }
     
 
@@ -115,20 +130,22 @@ function clearCanvas(existingShapes:Shape[],ctx:CanvasRenderingContext2D,canvas:
 async function getExistingShapes(roomId: string) {
     try {
         const res = await axios.get(`${HTTP_BACKEND}/chats/${roomId}`)
-        const message = res.data.message;
+        
+        const messages = res.data.messages || res.data.message || []
 
-        if (!message || !Array.isArray(message)) {
-            return []  // empty array instead of undefined
+        if (!messages || !Array.isArray(messages)) {
+            return []  
         }
 
-        const shapes = message.map((x: { message: string }) => {
+        const shapes = messages.map((x: { message: string }) => {
             const messageData = JSON.parse(x.message)
-            return messageData.shape
-        })
+            // Handle both {shape} wrapper and direct shape formats
+            return messageData.shape || messageData
+        }).filter(Boolean)
 
         return shapes
     } catch (error) {
-        console.error("Error fetching shapes:", error)
+        console.error("[API] Error fetching shapes:", error)
         return [] 
     }
 }

@@ -112,7 +112,22 @@ app.get("/chats/:roomId",async (req,res )=>{
 
 })
 
-app.listen(3002, () => {
+const server = app.listen(3002, () => {
     console.log("HTTP backend running on port 3002")
+})
+
+// Graceful shutdown handler
+process.on("SIGINT", () => {
+  console.log("\n[HTTP] Shutting down Express server...");
+  server.close(() => {
+    console.log("[HTTP] Express server closed");
+    process.exit(0);
+  });
+
+  // Force exit after 10 seconds
+  setTimeout(() => {
+    console.error("[HTTP] Forced shutdown after timeout");
+    process.exit(1);
+  }, 10000);
 })
 
