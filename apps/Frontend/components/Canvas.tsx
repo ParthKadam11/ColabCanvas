@@ -18,7 +18,7 @@ useEffect(()=>{
     const controller = new AbortController()
 
     if(canvasRef.current){
-        initDraw(canvasRef.current,roomId,socket, { signal: controller.signal }).then((fn) => {
+        initDraw(canvasRef.current,roomId,socket).then((fn) => {
             if (!cancelled) cleanup = fn
         })
     }
