@@ -10,11 +10,13 @@
     "dev": "tsx watch --env-file=../../.env src/index.ts"
   },
   "dependencies": {
-    "@repo/typescript-config": "workspace:*",
-    "@repo/db":"workspace:*",
+    "@repo/common": "workspace:*",
+    "@repo/db": "workspace:*",
     "@repo/types": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
-    "@repo/common":"workspace:*",
+    "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3"

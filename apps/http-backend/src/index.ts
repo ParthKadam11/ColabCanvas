@@ -4,10 +4,12 @@ import jwt from "jsonwebtoken"
 import { middleware } from "./middleware.js";
 import { CreateRoomSchema, CreateUserSchema, SigninSchema } from "@repo/common/types.ts";
 import {prismaClient} from "@repo/db/clients"
+import cors from "cors"
 
 const JWT_SECRET =process.env.JWT_SECRET
 
 const app=express()
+app.use(cors())
 app.use(express.json())
 
 app.post("/signup",async (req,res)=>{
