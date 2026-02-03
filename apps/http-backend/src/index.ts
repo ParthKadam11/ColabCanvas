@@ -112,8 +112,8 @@ app.get("/chats/:roomId",async (req,res )=>{
 
 })
 
-const server = app.listen(3002, () => {
-    console.log("HTTP backend running on port 3002")
+const server = app.listen(3001, () => {
+    console.log("HTTP backend running on port 3001")
 })
 
 // Graceful shutdown handler
