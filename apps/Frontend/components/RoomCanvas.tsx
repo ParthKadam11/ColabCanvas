@@ -6,7 +6,7 @@ import { Canvas } from "./Canvas"
 export function RoomCanvas({roomId}:{roomId:string}){
     const [socket,setSocket] =useState<WebSocket|null>(null)
     const wsRef = useRef<WebSocket | null>(null)
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIzMTY1ZDM5ZS04Y2NiLTQzYjEtYWRlMS1iNzVhM2IzZjAxZmUiLCJpYXQiOjE3NzAwNTcxNzF9.3PQTob51rWnMa-VchVi8sKlv2TUBMO0Ikb81q5iIWWo"
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ZTcxN2VkOS0wYmY5LTQ2NjMtYmVhYi0zY2U0MDRlOTE2YzQiLCJpYXQiOjE3NzAxMzI1MjF9.-SPJI1Z1BBLBac5fy0qu-zA93x8IBic7xSEJx76satw"
     useEffect(()=>{
         const data=JSON.stringify({
             type:"join_room",
