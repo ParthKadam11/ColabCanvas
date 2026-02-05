@@ -12,7 +12,7 @@ type Shape={
     centerY:number
     radius:number
 } |{
-    type:"pencil",
+    type:"Penline",
     startX:number,
     startY:number,
     endX:number,
@@ -32,6 +32,9 @@ export class Draw{
     private socket:WebSocket
     private startX:number
     private startY:number
+    private handleMouseDown: ((e: MouseEvent) => void) | null = null
+    private handleMouseUp: ((e: MouseEvent) => void) | null = null
+    private handleMouseMove: ((e: MouseEvent) => void) | null = null
 
 
     constructor(canvas:HTMLCanvasElement,roomId:string,socket:WebSocket,handleMessage?:(event:MessageEvent)=>void){
@@ -40,19 +43,34 @@ export class Draw{
         this.existingShapes= []
         this.roomId=roomId
         this.socket=socket
-        this.init()
-        if(handleMessage) this.handleMessage=handleMessage
-        this.initHandlers()
         this.clicked=false
         this.selectedTool="rect"
         this.startX=0
         this.startY=0
-    
-    
+        this.clearCanvas()
+        this.init()
+        if(handleMessage) this.handleMessage=handleMessage
+        this.initHandlers()
     }
 
     async init(){
         this.existingShapes = await getExistingShapes(this.roomId)
+        this.clearCanvas()
+    }
+
+    destroy(){
+if(this.handleMouseDown) {
+            this.canvas.removeEventListener("mousedown", this.handleMouseDown)
+        }
+        if(this.handleMouseUp) {
+            this.canvas.removeEventListener("mouseup", this.handleMouseUp)
+        }
+        if(this.handleMouseMove) {
+            this.canvas.removeEventListener("mousemove", this.handleMouseMove)
+        }
+        if(this.handleMessage) {
+            this.socket.removeEventListener("message", this.handleMessage)
+        }
     }
 
     initHandlers(){
@@ -65,6 +83,8 @@ export class Draw{
             this.existingShapes.push(shape)
             this.clearCanvas()
         }}
+        
+        this.socket.addEventListener("message", this.handleMessage)
     }
 
     clearCanvas(){
@@ -79,11 +99,22 @@ export class Draw{
         this.existingShapes.map((shape)=>{
             if(shape.type=="rect"){
                 this.ctx.strokeStyle="rgba(255, 255, 255)"
+                this.ctx.lineWidth = 2;
                 this.ctx.strokeRect(shape.x,shape.y,shape.width,shape.height)  
             }else if(shape.type==="circle"){
                 this.ctx.beginPath()
                 this.ctx.arc(shape.centerX,shape.centerY,shape.radius,0,Math.PI*2)
                 this.ctx.stroke()
+                this.ctx.strokeStyle="rgba(255, 255, 255)"
+                this.ctx.lineWidth = 2;
+                this.ctx.closePath()
+            }else if(shape.type==="Penline"){
+                this.ctx.beginPath()
+                this.ctx.moveTo(shape.startX, shape.startY)
+                this.ctx.lineTo(shape.endX, shape.endY)
+                this.ctx.stroke()
+                this.ctx.strokeStyle="rgba(255, 255, 255)"
+                this.ctx.lineWidth = 2;
                 this.ctx.closePath()
             }
         })
@@ -98,14 +129,14 @@ export class Draw{
             }
         }
 
-        const handleMouseDown = (e: MouseEvent) => {
+        this.handleMouseDown = (e: MouseEvent) => {
             this.clicked = true
             const pos = getRelativePos(e)
             this.startX = pos.x
             this.startY = pos.y
         }
 
-        const handleMouseUp = (e: MouseEvent) => {
+        this.handleMouseUp = (e: MouseEvent) => {
             if (!this.clicked) return
             this.clicked = false
             const pos = getRelativePos(e)
@@ -129,9 +160,9 @@ export class Draw{
                     centerY: this.startY + height / 2,
                     radius: Math.max(Math.abs(width), Math.abs(height)) / 2
                 }
-            } else if (this.selectedTool === "pencil") {
+            } else if (this.selectedTool === "Penline") {
                 shape = {
-                    type: "pencil",
+                    type: "Penline",
                     startX: this.startX,
                     startY: this.startY,
                     endX: pos.x,
@@ -151,7 +182,7 @@ export class Draw{
             this.clearCanvas()
         }
 
-        const handleMouseMove = (e: MouseEvent) => {
+        this.handleMouseMove = (e: MouseEvent) => {
             if (!this.clicked) return
             const pos = getRelativePos(e)
             const width = pos.x - this.startX
@@ -170,7 +201,7 @@ export class Draw{
                 this.ctx.arc(centerX, centerY, radius, 0, Math.PI * 2)
                 this.ctx.stroke()
                 this.ctx.closePath()
-            } else if (this.selectedTool === "pencil") {
+            } else if (this.selectedTool === "Penline") {
                 this.ctx.beginPath()
                 this.ctx.moveTo(this.startX, this.startY)
                 this.ctx.lineTo(pos.x, pos.y)
@@ -179,15 +210,9 @@ export class Draw{
             }
         }
 
-        this.canvas.addEventListener("mousedown", handleMouseDown)
-        this.canvas.addEventListener("mouseup", handleMouseUp)
-        this.canvas.addEventListener("mousemove", handleMouseMove)
-
-        return () => {
-            this.canvas.removeEventListener("mousedown", handleMouseDown)
-            this.canvas.removeEventListener("mouseup", handleMouseUp)
-            this.canvas.removeEventListener("mousemove", handleMouseMove)
-        }
+        this.canvas.addEventListener("mousedown", this.handleMouseDown)
+        this.canvas.addEventListener("mouseup", this.handleMouseUp)
+        this.canvas.addEventListener("mousemove", this.handleMouseMove)
     }    
 
     setSelectedTool(tool:Shape["type"]){
