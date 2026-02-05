@@ -31,8 +31,11 @@ useEffect(()=>{
     }
 },[roomId, socket])
 
-return <div>
-    <canvas ref={canvasRef} width={1536} height={735}></canvas>
+return <div className="overflow:hidden">
+    <div className="text-white flex justify-center items-start">
+        Hello
+    </div>
+    <canvas ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>
 </div>
 
 }

@@ -22,7 +22,6 @@ export async function initDraw(
     const ctx =canvas.getContext("2d")
     
     const existingShapes: Shape[] = await getExistingShapes(roomId)
-    console.log("[initDraw] Loaded existing shapes:", existingShapes)
 
     if(!ctx){
         return 
@@ -139,7 +138,6 @@ async function getExistingShapes(roomId: string) {
 
         const shapes = messages.map((x: { message: string }) => {
             const messageData = JSON.parse(x.message)
-            // Handle both {shape} wrapper and direct shape formats
             return messageData.shape || messageData
         }).filter(Boolean)
 
@@ -149,3 +147,4 @@ async function getExistingShapes(roomId: string) {
         return [] 
     }
 }
+

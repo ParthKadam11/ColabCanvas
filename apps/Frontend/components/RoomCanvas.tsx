@@ -40,11 +40,7 @@ export function RoomCanvas({roomId}:{roomId:string}){
         </div>
     }
 
-return <div className="w-screen h-screen">
+return <div className="w-screen h-screen overflow:hidden">
         <Canvas roomId={roomId} socket={socket}/>
-        <div className=" fixed bg-white text-black gap-2 bottom-0 right-0">
-            <button>Rect</button>
-            <button>Circle</button>
-        </div>
     </div>
 }
