@@ -1,6 +1,10 @@
 "use client"
-import { initDraw } from "@/draw"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
+import { IconButton } from "./IconButton"
+import { Circle, Pencil, RectangleHorizontal } from "lucide-react"
+import { Draw } from "@/draw/draw"
+
+type Shape ="circle"| "rect"| "pencil"
 
 export function Canvas({
     roomId,
@@ -11,31 +15,41 @@ export function Canvas({
 }){
 
 const canvasRef =useRef<HTMLCanvasElement>(null)
-
+const [selectedTool, setSelectedTool]=useState<Shape>("rect")
+const [draw,setDraw] =useState<Draw>()
 
 useEffect(()=>{
-    let cleanup: void | (() => void)
-    let cancelled = false
-    const controller = new AbortController()
+    draw?.setSelectedTool(selectedTool)
+},[selectedTool,draw])
 
+useEffect(()=>{
     if(canvasRef.current){
-        initDraw(canvasRef.current,roomId,socket).then((fn) => {
-            if (!cancelled) cleanup = fn
-        })
+        const drawing = new Draw(canvasRef.current,roomId,socket)
+        drawing.initMouseHandler()
+        setDraw(drawing)
     }
-
-    return () => {
-        cancelled = true
-        controller.abort()
-        if (cleanup) cleanup()
-    }
-},[roomId, socket])
+},[roomId, socket, canvasRef])
 
 return <div className="overflow:hidden">
-    <div className="text-white flex justify-center items-start">
-        Hello
-    </div>
     <canvas ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>
+    <Topbar selectedTool={selectedTool} setSelectedTool={setSelectedTool}/>
 </div>
 
+}
+
+function Topbar({selectedTool,setSelectedTool}:{
+    selectedTool:Shape,
+    setSelectedTool:(s:Shape)=>void
+}){
+return <div className="fixed top-2 left-1/2 -translate-x-1/2 flex gap-2 p-2 text-white pointer-events-none">
+    <div className="pointer-events-auto">
+        <IconButton activated={selectedTool==="pencil"} icon={<Pencil/>} onClick={()=>{setSelectedTool("pencil")}}/>
+    </div>
+    <div className="pointer-events-auto">
+        <IconButton activated={selectedTool==="rect"} icon={<RectangleHorizontal/>} onClick={()=>{setSelectedTool("rect")}}/>
+    </div>
+    <div className="pointer-events-auto">
+        <IconButton activated={selectedTool==="circle"} icon={<Circle/>} onClick={()=>{setSelectedTool("circle")}}/>
+    </div>
+</div>
 }
