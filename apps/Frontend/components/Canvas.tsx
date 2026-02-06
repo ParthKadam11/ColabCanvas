@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { IconButton } from "./IconButton";
-import { Circle, PenLineIcon, RectangleHorizontal } from "lucide-react";
+import { Circle, Pencil,RectangleHorizontal, Ruler } from "lucide-react";
 import { Draw } from "@/draw/draw";
 
-type Shape = "circle" | "rect" | "Penline";
+type Shape = "circle" | "rect" | "penline" | "pencil";
 
 export function Canvas({
   roomId,
@@ -50,13 +50,16 @@ function Topbar({
   return (
     <div className="fixed top-2 left-1/2 -translate-x-1/2 flex gap-2 p-2 text-white pointer-events-none">
       <div className="pointer-events-auto">
-        <IconButton activated={selectedTool === "Penline"} icon={<PenLineIcon />} onClick={()=>{setSelectedTool("Penline")}}/>
+        <IconButton activated={selectedTool === "penline"} icon={<Ruler />} onClick={()=>{setSelectedTool("penline")}}/>
       </div>
       <div className="pointer-events-auto">
         <IconButton activated={selectedTool === "rect"} icon={<RectangleHorizontal/>} onClick={()=>{setSelectedTool("rect")}}/>
       </div>
       <div className="pointer-events-auto">
         <IconButton activated={selectedTool === "circle"} icon={<Circle />} onClick={()=>{setSelectedTool("circle")}}/>
+      </div>
+      <div className="pointer-events-auto">
+        <IconButton activated={selectedTool === "pencil"} icon={<Pencil />} onClick={()=>{setSelectedTool("pencil")}}/>
       </div>
     </div>
   );

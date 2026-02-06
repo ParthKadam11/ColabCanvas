@@ -12,16 +12,18 @@ type Shape={
     centerY:number
     radius:number
 } |{
-    type:"Penline",
+    type:"penline",
     startX:number,
     startY:number,
     endX:number,
     endY:number
+} |{
+    type:"pencil",
+    points:{x:number;y:number}[]
 }
 
 
 export class Draw{
-    
     private roomId:string
     private canvas:HTMLCanvasElement;
     private ctx:CanvasRenderingContext2D
@@ -35,6 +37,7 @@ export class Draw{
     private handleMouseDown: ((e: MouseEvent) => void) | null = null
     private handleMouseUp: ((e: MouseEvent) => void) | null = null
     private handleMouseMove: ((e: MouseEvent) => void) | null = null
+    private currentPencilPoints:{x:number;y:number}[] | null = null
 
 
     constructor(canvas:HTMLCanvasElement,roomId:string,socket:WebSocket,handleMessage?:(event:MessageEvent)=>void){
@@ -108,13 +111,24 @@ if(this.handleMouseDown) {
                 this.ctx.strokeStyle="rgba(255, 255, 255)"
                 this.ctx.lineWidth = 2;
                 this.ctx.closePath()
-            }else if(shape.type==="Penline"){
+            }else if(shape.type==="penline"){
                 this.ctx.beginPath()
                 this.ctx.moveTo(shape.startX, shape.startY)
                 this.ctx.lineTo(shape.endX, shape.endY)
                 this.ctx.stroke()
                 this.ctx.strokeStyle="rgba(255, 255, 255)"
                 this.ctx.lineWidth = 2;
+                this.ctx.closePath()
+            }else if(shape.type==="pencil"){
+                if (!Array.isArray(shape.points) || shape.points.length < 2) return
+                this.ctx.beginPath()
+                this.ctx.strokeStyle="rgba(255, 255, 255)"
+                this.ctx.lineWidth = 2;
+                this.ctx.moveTo(shape.points[0].x, shape.points[0].y)
+                for (let i = 1; i < shape.points.length; i++) {
+                    this.ctx.lineTo(shape.points[i].x, shape.points[i].y)
+                    this.ctx.stroke()
+                }
                 this.ctx.closePath()
             }
         })
@@ -123,10 +137,10 @@ if(this.handleMouseDown) {
     initMouseHandler(){
         const getRelativePos = (e: MouseEvent) => {
             const rect = this.canvas.getBoundingClientRect()
-            return {
-                x: e.clientX - rect.left,
-                y: e.clientY - rect.top
-            }
+            const x= e.clientX - rect.left
+            const y= e.clientY - rect.top
+
+            return {x,y}
         }
 
         this.handleMouseDown = (e: MouseEvent) => {
@@ -134,6 +148,9 @@ if(this.handleMouseDown) {
             const pos = getRelativePos(e)
             this.startX = pos.x
             this.startY = pos.y
+            if (this.selectedTool === "pencil") {
+                this.currentPencilPoints = [{ x: pos.x, y: pos.y }]
+            }
         }
 
         this.handleMouseUp = (e: MouseEvent) => {
@@ -160,14 +177,22 @@ if(this.handleMouseDown) {
                     centerY: this.startY + height / 2,
                     radius: Math.max(Math.abs(width), Math.abs(height)) / 2
                 }
-            } else if (this.selectedTool === "Penline") {
+            } else if (this.selectedTool === "penline") {
                 shape = {
-                    type: "Penline",
+                    type: "penline",
                     startX: this.startX,
                     startY: this.startY,
                     endX: pos.x,
                     endY: pos.y
                 }
+            } else if (this.selectedTool==="pencil"){
+                if (this.currentPencilPoints && this.currentPencilPoints.length >= 2) {
+                    shape = {
+                        type:"pencil",
+                        points:this.currentPencilPoints
+                    }
+                }
+                this.currentPencilPoints = null
             }
 
             if (!shape) return
@@ -188,6 +213,25 @@ if(this.handleMouseDown) {
             const width = pos.x - this.startX
             const height = pos.y - this.startY
 
+            if (this.selectedTool === "pencil") {
+                if (!this.currentPencilPoints) {
+                    this.currentPencilPoints = [{ x: pos.x, y: pos.y }]
+                    return
+                }
+                const lastPoint = this.currentPencilPoints[this.currentPencilPoints.length - 1]
+                this.currentPencilPoints.push({ x: pos.x, y: pos.y })
+                this.ctx.beginPath()
+                this.ctx.strokeStyle="rgba(255, 255, 255)"
+                this.ctx.lineWidth = 2;
+                this.ctx.lineCap = "round"
+                this.ctx.lineJoin = "round"
+                this.ctx.moveTo(lastPoint.x, lastPoint.y)
+                this.ctx.lineTo(pos.x, pos.y)
+                this.ctx.stroke()
+                this.ctx.closePath()
+                return
+            }
+
             this.clearCanvas()
             this.ctx.strokeStyle="rgba(255, 255, 255)"
 
@@ -201,7 +245,7 @@ if(this.handleMouseDown) {
                 this.ctx.arc(centerX, centerY, radius, 0, Math.PI * 2)
                 this.ctx.stroke()
                 this.ctx.closePath()
-            } else if (this.selectedTool === "Penline") {
+            } else if (this.selectedTool === "penline") {
                 this.ctx.beginPath()
                 this.ctx.moveTo(this.startX, this.startY)
                 this.ctx.lineTo(pos.x, pos.y)
