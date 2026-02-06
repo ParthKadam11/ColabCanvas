@@ -15,3 +15,7 @@ export const SigninSchema= z.object({
 export const CreateRoomSchema= z.object({
     roomname:z.string().min(3).max(20)
 })
+
+export const JoinRoomSchema = z.object({
+    roomname: z.string().min(3).max(20)
+})

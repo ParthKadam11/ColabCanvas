@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 
 export default function Home() {
@@ -10,7 +9,7 @@ export default function Home() {
         <div className="flex gap-6">
           <a href="/features" className="text-zinc-700 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white font-medium transition-colors flex items-center">Features</a>
           <a href="/pricing" className="text-zinc-700 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white font-medium transition-colors flex items-center">Pricing</a>
-          <a href="/signup" className="px-4 py-2 rounded-xl bg-zinc-900/80 dark:bg-white/20 text-white dark:text-zinc-100 font-semibold shadow-md hover:bg-zinc-900 hover:dark:bg-white/30 transition-colors border border-white/20 dark:border-zinc-700/30">Login</a>
+          <a href="/signin" className="px-4 py-2 rounded-xl bg-zinc-900/80 dark:bg-white/20 text-white dark:text-zinc-100 font-semibold shadow-md hover:bg-zinc-900 hover:dark:bg-white/30 transition-colors border border-white/20 dark:border-zinc-700/30">Login</a>
         </div>
       </nav>
 
