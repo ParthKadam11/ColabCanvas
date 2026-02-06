@@ -5,6 +5,7 @@ import { middleware } from "./middleware.js";
 import { CreateRoomSchema, CreateUserSchema, SigninSchema } from "@repo/common/types.ts";
 import {prismaClient} from "@repo/db/clients"
 import cors from "cors"
+import bcrypt from "bcrypt"
 
 const JWT_SECRET =process.env.JWT_SECRET
 
@@ -19,12 +20,12 @@ app.post("/signup",async (req,res)=>{
         return;
     }
     const { email, password, name, photo } = result.data;
-    //TODO: hasing password
+    const hashedPassword = await bcrypt.hash(password,5)
     try {
         const user = await prismaClient.user.create({
             data: { 
                 email, 
-                password, 
+                password:hashedPassword, 
                 name,
                 ...(photo && { photo })
             }
@@ -51,18 +52,22 @@ app.post("/signin",async (req,res)=>{
     return    
 }    
     const {email,password} = result.data
-    const user = await prismaClient.user.findFirst({
-        where:{
-            email:email,
-            password:password
-        }
-    })
+    
+    const user = await prismaClient.user.findFirst({where:{email}})
     if(!user){
         res.json({
             message:"Not Authorized"
         })
         return 
     }
+    
+    const isValid = await bcrypt.compare(password,user.password)
+    if(!isValid){
+        res.json({
+            message:"Not Authorized"
+        })
+    }
+
     const token=jwt.sign({userId: user.id},JWT_SECRET as string)
     res.json({
         token
@@ -116,7 +121,6 @@ const server = app.listen(3001, () => {
     console.log("HTTP backend running on port 3001")
 })
 
-// Graceful shutdown handler
 process.on("SIGINT", () => {
   console.log("\n[HTTP] Shutting down Express server...");
   server.close(() => {
