@@ -6,15 +6,44 @@ import { CreateRoomSchema, CreateUserSchema, JoinRoomSchema, SigninSchema } from
 import {prismaClient} from "@repo/db/clients"
 import cors from "cors"
 import bcrypt from "bcrypt"
+import multer, { FileFilterCallback } from "multer"
+import path from "path"
+import { fileURLToPath } from "url"
 
 const JWT_SECRET =process.env.JWT_SECRET
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const UPLOADS_DIR = path.join(__dirname, "..", "uploads")
 
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: (_req, _file, cb) => cb(null, UPLOADS_DIR),
+    filename: (_req, file, cb) => {
+      const ext = path.extname(file.originalname || "");
+      const uniqueName = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
+      cb(null, uniqueName);
+    },
+  }),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: (
+    _req,
+    file,
+    cb: (error: Error | null, acceptFile?: boolean) => void
+  ) => {
+    const isImage = file.mimetype.startsWith("image/");
+    cb(isImage ? null : new Error("Only image uploads are allowed."), isImage);
+  }
+});
 const app=express()
 app.use(cors())
 app.use(express.json())
 
-app.post("/signup",async (req,res)=>{
-    const result = CreateUserSchema.safeParse(req.body);
+app.post("/signup", upload.single("photo"), async (req,res)=>{
+    const photoFilename = req.file ? req.file.filename : undefined
+    const result = CreateUserSchema.safeParse({
+        ...req.body,
+        ...(photoFilename && { photo: photoFilename })
+    });
     if (!result.success) {
         res.status(400).json({ error: "Invalid input", details: result.error });
         return;
@@ -191,6 +220,48 @@ app.get("/room/:roomId",async (req,res )=>{
         messages
     })
 
+})
+
+app.get("/users/:userId/photo", middleware, async (req, res) => {
+    const userIdParam = req.params.userId
+    const userId = Array.isArray(userIdParam) ? userIdParam[0] : userIdParam
+    if (!userId) {
+        res.status(400).json({ message: "Invalid user" })
+        return
+    }
+
+    const user = await prismaClient.user.findUnique({
+        where: { id: userId },
+        select: { photo: true }
+    })
+
+    if (!user?.photo) {
+        res.status(404).json({ message: "Photo not found" })
+        return
+    }
+
+    let filename = user.photo
+    if (user.photo.startsWith("http://") || user.photo.startsWith("https://")) {
+        try {
+            const parsedUrl = new URL(user.photo)
+            filename = path.basename(parsedUrl.pathname)
+        } catch {
+            res.status(400).json({ message: "Invalid photo URL" })
+            return
+        }
+    }
+
+    const filePath = path.join(UPLOADS_DIR, filename)
+    res.sendFile(filePath)
+})
+
+app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    if (err instanceof multer.MulterError || err instanceof Error) {
+        res.status(400).json({ error: err.message })
+        return
+    }
+
+    res.status(500).json({ error: "Unexpected server error" })
 })
 
 const server = app.listen(3001, () => {
