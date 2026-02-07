@@ -38,6 +38,7 @@ const upload = multer({
 const app=express()
 app.use(cors())
 app.use(express.json())
+app.use("/uploads", express.static(UPLOADS_DIR))
 
 app.post("/signup", upload.single("photo"), async (req,res)=>{
     const photoFilename = req.file ? req.file.filename : undefined

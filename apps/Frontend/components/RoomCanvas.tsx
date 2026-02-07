@@ -47,6 +47,6 @@ export function RoomCanvas({roomId}:{roomId:string}){
     }
 
 return <div className="w-screen h-screen overflow:hidden">
-        <Canvas roomId={roomId} socket={socket}/>
+        <Canvas roomId={roomId} socket={socket} token={token ?? ""} />
     </div>
 }

@@ -2,10 +2,13 @@ import "@repo/types"
 import { WebSocketServer,WebSocket } from 'ws';
 import jwt from 'jsonwebtoken';
 import {prismaClient} from "@repo/db/clients"
+import express from "express"
+import cors from "cors"
 
 const JWT_SECRET = process.env.JWT_SECRET
 const wss = new WebSocketServer({ port: 8080 });
 console.log("WebSocket server running on port 8080");
+const PRESENCE_PORT = Number(process.env.PRESENCE_PORT ?? 8081)
 
 interface User{
   ws:WebSocket,
@@ -93,7 +96,6 @@ wss.on("connection", function connection(ws, request) {
             userId,
           },
         });
-        console.log(`[DB] Chat saved successfully with ID: ${savedChat.id}`);
       } catch (e) {
         console.error(`[DB] ERROR saving chat:`, e);
       }
@@ -109,7 +111,6 @@ wss.on("connection", function connection(ws, request) {
   });
 });
 
-// Graceful shutdown handler
 process.on("SIGINT", () => {
   console.log("\n[WS] Shutting down WebSocket server...");
   wss.close(() => {
@@ -117,9 +118,47 @@ process.on("SIGINT", () => {
     process.exit(0);
   });
 
-  // Force exit after 10 seconds
   setTimeout(() => {
     console.error("[WS] Forced shutdown after timeout");
     process.exit(1);
   }, 10000);
 });
+
+const presenceApp = express()
+presenceApp.use(cors())
+
+presenceApp.get("/rooms/:roomId/active-users", async (req:express.Request, res:express.Response) => {
+  const authHeader = req.headers["authorization"]
+  const token = Array.isArray(authHeader) ? authHeader[0] : authHeader ?? ""
+  const userId = checkUser(token)
+  if (!userId) {
+    res.status(403).json({ message: "Unauthorized" })
+    return
+  }
+
+  const roomIdParam = req.params.roomId
+  const roomId = Array.isArray(roomIdParam) ? roomIdParam[0] : roomIdParam
+  if (!roomId) {
+    res.status(400).json({ message: "Invalid room" })
+    return
+  }
+  const activeUserIds = Array.from(
+    new Set(users.filter((u) => u.rooms.includes(roomId)).map((u) => u.userId))
+  )
+
+  if (activeUserIds.length === 0) {
+    res.json({ users: [] })
+    return
+  }
+
+  const activeUsers = await prismaClient.user.findMany({
+    where: { id: { in: activeUserIds } },
+    select: { id: true, name: true, photo: true }
+  })
+
+  res.json({ users: activeUsers })
+})
+
+presenceApp.listen(PRESENCE_PORT, () => {
+  console.log(`[HTTP] Presence server running on port ${PRESENCE_PORT}`)
+})
