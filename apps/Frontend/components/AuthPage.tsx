@@ -67,9 +67,9 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
   };
 
   return (
-    <div className="w-screen h-screen flex justify-center items-center bg-gradient-to-br from-zinc-100 via-zinc-200 to-zinc-300 dark:from-black dark:via-zinc-900 dark:to-zinc-800 font-sans">
+    <div className="min-h-screen w-screen flex justify-center items-center px-4 py-6 bg-gradient-to-br from-zinc-100 via-zinc-200 to-zinc-300 dark:from-black dark:via-zinc-900 dark:to-zinc-800 font-sans">
       <form
-        className="p-10 m-2 rounded-2xl text-black bg-white"
+        className="w-full max-w-md sm:max-w-lg p-6 sm:p-10 m-2 rounded-2xl text-black bg-white"
         onSubmit={handleSubmit}
         >
         <div className="flex justify-center p-2">
@@ -78,20 +78,20 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
               htmlFor="profileImage"
               className="flex flex-col items-center gap-2 cursor-pointer"
             >
-              <div className="flex bg-slate-300 w-25 h-25 border-2 border-stone-300 rounded-4xl overflow-hidden items-center justify-center">
+              <div className="flex bg-slate-300 w-24 h-24 sm:w-28 sm:h-28 border-2 border-stone-300 rounded-4xl overflow-hidden items-center justify-center">
                 {profilePreviewUrl ? (
                   <Image
                     src={profilePreviewUrl}
                     alt="Selected profile"
-                    width={160}
-                    height={160}
+                    width={112}
+                    height={112}
                     className="h-full w-full object-cover"
                     unoptimized
                   />
                 ) : (
-                  <span className="flex h-25 w-25 flex-col items-center justify-start pt-4">
-                    <span className="h-12 w-11 rounded-full bg-slate-100 border border-slate-300" />
-                    <span className=" h-11 w-20 rounded-t-full bg-slate-100 border border-slate-300" />
+                  <span className="flex h-24 w-24 sm:h-28 sm:w-28 flex-col items-center justify-start pt-3 sm:pt-4">
+                    <span className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-slate-100 border border-slate-300" />
+                    <span className="h-10 w-16 sm:h-11 sm:w-20 rounded-t-full bg-slate-100 border border-slate-300" />
                   </span>
                 )}
               </div>

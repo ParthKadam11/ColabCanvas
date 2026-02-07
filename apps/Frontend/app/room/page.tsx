@@ -111,7 +111,7 @@ export default function RoomDashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-100 via-zinc-200 to-zinc-300 dark:from-black dark:via-zinc-900 dark:to-zinc-800">
-      <div className="mx-auto max-w-4xl px-6 py-10">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 py-8 sm:py-10">
         <div className="mb-6">
           <h1 className="text-2xl font-semibold text-white">Rooms</h1>
           <p className="text-sm text-white">
@@ -122,7 +122,7 @@ export default function RoomDashboard() {
         <div className="grid gap-6 md:grid-cols-2 text-black">
           <div className="rounded-xl bg-white p-5 shadow-sm">
             <h2 className="mb-3 text-lg font-medium">Create room</h2>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Input
                 className="focus:outline-none border-0"
                 id="create-room"
@@ -132,7 +132,7 @@ export default function RoomDashboard() {
                 onChange={(e) => setCreateName(e.target.value)}
               />
               <button
-                className="rounded-lg bg-black px-4 py-2 text-white"
+                className="rounded-lg bg-black px-4 py-2 text-white w-full sm:w-auto"
                 onClick={handleCreate}
               >
                 Create
@@ -142,7 +142,7 @@ export default function RoomDashboard() {
 
           <div className="rounded-xl bg-white p-5 shadow-sm">
             <h2 className="mb-3 text-lg font-medium">Join room</h2>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Input
                 className="focus:outline-none border-0"
                 id="join-room"
@@ -152,7 +152,7 @@ export default function RoomDashboard() {
                 onChange={(e) => setJoinName(e.target.value)}
               />
               <button
-                className="rounded-lg bg-black px-4 py-2 text-white"
+                className="rounded-lg bg-black px-4 py-2 text-white w-full sm:w-auto"
                 onClick={handleJoin}
               >
                 Join
@@ -179,7 +179,7 @@ export default function RoomDashboard() {
             {rooms.map((room) => (
               <div
                 key={room.id}
-                className="flex items-center justify-between rounded-lg border border-zinc-200 px-4 py-3"
+                className="flex items-center justify-between shadow-sm rounded-lg border border-zinc-200 px-4 py-3"
               >
                 <div>
                   <div className="font-medium">{room.slug}</div>
