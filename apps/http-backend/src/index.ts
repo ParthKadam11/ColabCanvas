@@ -6,7 +6,7 @@ import { CreateRoomSchema, CreateUserSchema, JoinRoomSchema, SigninSchema } from
 import {prismaClient} from "@repo/db/clients"
 import cors from "cors"
 import bcrypt from "bcrypt"
-import multer, { FileFilterCallback } from "multer"
+import multer from "multer"
 import path from "path"
 import { fileURLToPath } from "url"
 
@@ -33,7 +33,8 @@ const upload = multer({
     const isImage = file.mimetype.startsWith("image/");
     cb(isImage ? null : new Error("Only image uploads are allowed."), isImage);
   }
-});
+})
+
 const app=express()
 app.use(cors())
 app.use(express.json())
@@ -275,7 +276,7 @@ process.on("SIGINT", () => {
     process.exit(0);
   });
 
-  // Force exit after 10 seconds
+
   setTimeout(() => {
     console.error("[HTTP] Forced shutdown after timeout");
     process.exit(1);
