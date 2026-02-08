@@ -89,7 +89,7 @@ wss.on("connection", function connection(ws, request) {
       });
 
       try {
-        const savedChat = await prismaClient.chat.create({
+         await prismaClient.chat.create({
           data: {
             roomId: Number(roomId),
             message,
@@ -112,7 +112,6 @@ wss.on("connection", function connection(ws, request) {
 });
 
 process.on("SIGINT", () => {
-  console.log("\n[WS] Shutting down WebSocket server...");
   wss.close(() => {
     console.log("[WS] WebSocket server closed");
     process.exit(0);
