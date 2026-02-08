@@ -7,7 +7,6 @@ import { useSearchParams } from "next/navigation"
 export function RoomCanvas({roomId}:{roomId:string}){
     const [socket,setSocket] =useState<WebSocket|null>(null)
     const wsRef = useRef<WebSocket | null>(null)
-    //const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ZTcxN2VkOS0wYmY5LTQ2NjMtYmVhYi0zY2U0MDRlOTE2YzQiLCJpYXQiOjE3NzAxMzI1MjF9.-SPJI1Z1BBLBac5fy0qu-zA93x8IBic7xSEJx76satw"
 
     const url =useSearchParams()
     const token = url.get("token")
@@ -41,7 +40,7 @@ export function RoomCanvas({roomId}:{roomId:string}){
 
 
     if(!socket){
-        return <div>
+        return <div className="flex justify-center items-center">
             Connecting to the Server..
         </div>
     }

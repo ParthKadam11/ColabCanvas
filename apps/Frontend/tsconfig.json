@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "draw/index.ts"  ],
+, "draw/index.ts", "../../packages/ui/src/IconButton.tsx"  ],
   "exclude": ["node_modules"]
 }

@@ -1,6 +1,6 @@
 import { Circle, Pencil, RectangleHorizontal, Ruler } from "lucide-react";
 import type { Shape } from "./Canvas";
-import { IconButton } from "./IconButton";
+import { IconButton } from "../../../../packages/ui/src/IconButton";
 
 export function Toolbar({
   selectedTool,
