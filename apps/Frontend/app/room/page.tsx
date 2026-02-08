@@ -4,16 +4,23 @@ import { JoinRoom } from "@/components/roomComponents/JoinRoom";
 import { ProfileInfo } from "@/components/roomComponents/UserProfile";
 import { YourRoom } from "@/components/roomComponents/YourRoom";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 export default function RoomDashboard() {
-  const [token] = useState<string | null>(() => {
-    if (typeof window === "undefined") return null;
-    return localStorage.getItem("token");
-  });
+  const [token, setToken] = useState<string | null>(null);
+  const [isClient, setIsClient] = useState(false);
   const [roomsRefreshKey, setRoomsRefreshKey] = useState(0);
   const router = useRouter();
+
+  useEffect(() => {
+    setIsClient(true);
+    setToken(localStorage.getItem("token"));
+  }, []);
+
+  if (!isClient) {
+    return null;
+  }
 
   if (!token) {
     return (
@@ -40,7 +47,7 @@ export default function RoomDashboard() {
               Create, join, or manage your rooms.
             </p>
           </div>
-          <ProfileInfo />
+          <ProfileInfo token={token} />
         </div>
         <div className="grid gap-6 md:grid-cols-2 text-black">
           <CreateRoom

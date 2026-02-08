@@ -106,6 +106,28 @@ app.post("/signin",async (req,res)=>{
     })
 })
 
+app.get("/profile", middleware, async (req, res) => {
+    const userId = req.userId as string | undefined
+    if (!userId) {
+        res.status(403).json({ message: "Unauthorized" })
+        return
+    }
+
+    const user = await prismaClient.user.findUnique({
+        where: { id: userId },
+        select: { id: true, name: true, email: true, photo: true }
+    })
+
+    if (!user) {
+        res.status(404).json({ message: "User not found" })
+        return
+    }
+
+    res.json({
+        user
+    })
+})
+
 app.post("/room", middleware ,async (req,res)=>{
     const result = CreateRoomSchema.safeParse(req.body)
     if(!result.success){

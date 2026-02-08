@@ -1,16 +1,20 @@
+"use client";
 import { HTTP_BACKEND } from "@/config";
 import axios from "axios";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 
 type UserProfile = {
+  id?: string;
   name?: string;
   email?: string;
-  avatarUrl?: string;
+  photo?: string;
 };
 
-export function ProfileInfo() {
-  const [token, setToken] = useState<string | null>(null);
+type ProfileInfoProps = {
+  token: string | null;
+};
+
+export function ProfileInfo({ token }: ProfileInfoProps) {
 
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [profileLoading, setProfileLoading] = useState(false);
@@ -24,9 +28,10 @@ export function ProfileInfo() {
       });
       const data = response.data?.user ?? response.data;
       setProfile({
+        id: data?.id,
         name: data?.name,
         email: data?.email,
-        avatarUrl: data?.avatarUrl ?? data?.avatar,
+        photo: data?.photo,
       });
       setProfileError(null);
     } catch (e) {
@@ -38,14 +43,13 @@ export function ProfileInfo() {
   };
 
   useEffect(() => {
-    const stored = localStorage.getItem("token");
-    setToken(stored);
-  }, []);
-
-  useEffect(() => {
     if (!token) return;
     userProfile(token);
   }, [token]);
+
+  const photoUrl = profile?.id && profile?.photo
+    ? `${HTTP_BACKEND}/users/${profile.id}/photo`
+    : null;
 
   return (
     <div className="w-40 h-auto bg-white m-2 rounded p-3">
@@ -57,11 +61,11 @@ export function ProfileInfo() {
       )}
       {!profileLoading && !profileError && (
         <div className="flex items-center gap-2">
-          {profile?.avatarUrl ? (
-            <Image
+          {photoUrl ? (
+            <img
               alt="Profile"
               className="h-8 w-8 rounded-full object-cover"
-              src={profile.avatarUrl}
+              src={photoUrl}
             />
           ) : (
             <div className="h-8 w-8 rounded-full bg-zinc-200" />
