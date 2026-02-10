@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import { HTTP_BACKEND } from "@/config";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -20,35 +20,44 @@ export function ProfileInfo({ token }: ProfileInfoProps) {
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
 
-  const userProfile = async (authToken: string) => {
-    try {
-      setProfileLoading(true);
-      const response = await axios.get(`${HTTP_BACKEND}/profile`, {
-        headers: { authorization: authToken },
-      });
-      const data = response.data?.user ?? response.data;
-      setProfile({
-        id: data?.id,
-        name: data?.name,
-        email: data?.email,
-        photo: data?.photo,
-      });
-      setProfileError(null);
-    } catch (e) {
-      setProfileError("Failed to load profile");
-      console.log(e);
-    } finally {
-      setProfileLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (!token) return;
-    userProfile(token);
+    let cancelled = false;
+
+    const loadProfile = async () => {
+      try {
+        setProfileLoading(true);
+        const response = await axios.get(`${HTTP_BACKEND}/profile`, {
+          headers: { authorization: token },
+        });
+        if (cancelled) return;
+        const data = response.data?.user ?? response.data;
+        setProfile({
+          id: data?.id,
+          name: data?.name,
+          email: data?.email,
+          photo: data?.photo,
+        });
+        setProfileError(null);
+      } catch (e) {
+        if (cancelled) return;
+        setProfileError("Failed to load profile");
+        console.log(e);
+      } finally {
+        if (!cancelled) {
+          setProfileLoading(false);
+        }
+      }
+    };
+
+    loadProfile();
+    return () => {
+      cancelled = true;
+    };
   }, [token]);
 
-  const photoUrl = profile?.id && profile?.photo
-    ? `${HTTP_BACKEND}/users/${profile.id}/photo`
+  const photoUrl = profile?.photo
+    ? `${HTTP_BACKEND}/uploads/${profile.photo}`
     : null;
 
   return (
@@ -62,11 +71,7 @@ export function ProfileInfo({ token }: ProfileInfoProps) {
       {!profileLoading && !profileError && (
         <div className="flex items-center gap-2">
           {photoUrl ? (
-            <img
-              alt="Profile"
-              className="h-8 w-8 rounded-full object-cover"
-              src={photoUrl}
-            />
+            <img alt="Profile" className="h-8 w-8 rounded-full object-cover" src={photoUrl}/>
           ) : (
             <div className="h-8 w-8 rounded-full bg-zinc-200" />
           )}
