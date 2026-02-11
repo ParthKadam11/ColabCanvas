@@ -1,5 +1,6 @@
 "use client"
 import { HTTP_BACKEND } from "@/config";
+import Image from "next/image";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -61,7 +62,7 @@ export function ProfileInfo({ token }: ProfileInfoProps) {
     : null;
 
   return (
-    <div className="w-40 h-auto bg-white m-2 rounded p-3">
+    <div className="w-45 h-auto bg-white m-2 rounded p-3">
       {profileLoading && (
         <div className="text-xs text-zinc-600">Loading...</div>
       )}
@@ -71,7 +72,14 @@ export function ProfileInfo({ token }: ProfileInfoProps) {
       {!profileLoading && !profileError && (
         <div className="flex items-center gap-2">
           {photoUrl ? (
-            <img alt="Profile" className="h-8 w-8 rounded-full object-cover" src={photoUrl}/>
+            <Image
+              alt="Profile"
+              className="h-8 w-8 rounded-full object-cover"
+              height={32}
+              width={32}
+              src={photoUrl}
+              unoptimized
+            />
           ) : (
             <div className="h-8 w-8 rounded-full bg-zinc-200" />
           )}

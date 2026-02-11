@@ -71,10 +71,7 @@ export function YourRoom({ token, refreshKey }: YourRoomProps) {
 
       <div className="space-y-3">
         {rooms.map((room) => (
-          <div
-            key={room.id}
-            className="flex items-center justify-between shadow-sm rounded-lg border border-zinc-200 px-4 py-3"
-          >
+          <div key={room.id} className="flex items-center justify-between shadow-sm rounded-lg border border-zinc-200 px-4 py-3">
             <div>
               <div className="font-medium">{room.slug}</div>
               <div className="text-xs text-zinc-500">
@@ -83,20 +80,10 @@ export function YourRoom({ token, refreshKey }: YourRoomProps) {
               </div>
             </div>
             <div className="flex gap-2">
-              <button
-                className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm"
-                onClick={() =>
+              <button className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm" onClick={() =>
                   router.push(`/canvas/${room.id}?token=${token}`)
-                }
-              >
-                Open
-              </button>
-              <button
-                className="rounded-lg border border-red-200 px-3 py-1.5 text-sm text-red-600"
-                onClick={() => handleDelete(room.id)}
-              >
-                Delete
-              </button>
+                }>Open </button>
+              <button className="rounded-lg border border-red-200 px-3 py-1.5 text-sm text-red-600" onClick={() => handleDelete(room.id)}> Delete </button>
             </div>
           </div>
         ))}

@@ -4,23 +4,15 @@ import { JoinRoom } from "@/components/roomComponents/JoinRoom";
 import { ProfileInfo } from "@/components/roomComponents/UserProfile";
 import { YourRoom } from "@/components/roomComponents/YourRoom";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 
 export default function RoomDashboard() {
-  const [token, setToken] = useState<string | null>(null);
-  const [isClient, setIsClient] = useState(false);
+  const [token , setToken] = useState<string | null>(() =>
+    typeof window !== "undefined" ? localStorage.getItem("token") : null
+  );
   const [roomsRefreshKey, setRoomsRefreshKey] = useState(0);
   const router = useRouter();
-
-  useEffect(() => {
-    setIsClient(true);
-    setToken(localStorage.getItem("token"));
-  }, []);
-
-  if (!isClient) {
-    return null;
-  }
 
   if (!token) {
     return (
@@ -40,7 +32,7 @@ export default function RoomDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-zinc-100 via-zinc-200 to-zinc-300 dark:from-black dark:via-zinc-900 dark:to-zinc-800">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 py-8 sm:py-10">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between pb-4">
           <div className="m-2">
             <h1 className="text-2xl font-semibold text-white">Rooms</h1>
             <p className="text-sm text-white">
