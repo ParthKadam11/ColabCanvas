@@ -1,26 +1,5 @@
 import { getExistingShapes } from "./http"
-
-type Shape={
-    type:"rect"
-    x:number
-    y:number
-    width:number
-    height:number
-} | {
-    type:"circle"
-    centerX:number
-    centerY:number
-    radius:number
-} |{
-    type:"penline",
-    startX:number,
-    startY:number,
-    endX:number,
-    endY:number
-} |{
-    type:"pencil",
-    points:{x:number;y:number}[]
-}
+import { eraseShapes, type Shape } from "./eraser"
 
 
 export class Draw{
@@ -38,6 +17,7 @@ export class Draw{
     private handleMouseUp: ((e: MouseEvent) => void) | null = null
     private handleMouseMove: ((e: MouseEvent) => void) | null = null
     private currentPencilPoints:{x:number;y:number}[] | null = null
+    private eraserSize:number = 18
 
 
     constructor(canvas:HTMLCanvasElement,roomId:string,socket:WebSocket,handleMessage?:(event:MessageEvent)=>void){
@@ -83,7 +63,11 @@ if(this.handleMouseDown) {
         if (message.type == "chat") {
             const parsedMessage = JSON.parse(message.message)
             const shape = parsedMessage.shape || parsedMessage
-            this.existingShapes.push(shape)
+            if (shape?.type === "eraser") {
+                this.existingShapes = eraseShapes(this.existingShapes, shape.x, shape.y, shape.size)
+            } else if (shape?.type) {
+                this.existingShapes.push(shape)
+            }
             this.clearCanvas()
         }}
         
@@ -103,19 +87,19 @@ if(this.handleMouseDown) {
                 this.ctx.lineWidth = 2;
                 this.ctx.strokeRect(shape.x,shape.y,shape.width,shape.height)  
             }else if(shape.type==="circle"){
+                this.ctx.strokeStyle="rgba(255, 255, 255)"
+                this.ctx.lineWidth = 2;
                 this.ctx.beginPath()
                 this.ctx.arc(shape.centerX,shape.centerY,shape.radius,0,Math.PI*2)
                 this.ctx.stroke()
-                this.ctx.strokeStyle="rgba(255, 255, 255)"
-                this.ctx.lineWidth = 2;
                 this.ctx.closePath()
             }else if(shape.type==="penline"){
+                this.ctx.strokeStyle="rgba(255, 255, 255)"
+                this.ctx.lineWidth = 2;
                 this.ctx.beginPath()
                 this.ctx.moveTo(shape.startX, shape.startY)
                 this.ctx.lineTo(shape.endX, shape.endY)
                 this.ctx.stroke()
-                this.ctx.strokeStyle="rgba(255, 255, 255)"
-                this.ctx.lineWidth = 2;
                 this.ctx.closePath()
             }else if(shape.type==="pencil"){
                 if (!Array.isArray(shape.points) || shape.points.length < 2) return
@@ -130,6 +114,25 @@ if(this.handleMouseDown) {
                 this.ctx.closePath()
             }
         })
+    }
+
+    eraseAtPoint(x:number, y:number){
+        const updatedShapes = eraseShapes(this.existingShapes, x, y, this.eraserSize)
+
+        if (updatedShapes.length !== this.existingShapes.length) {
+            this.existingShapes = updatedShapes
+            this.socket.send(JSON.stringify({
+                type:"chat",
+                message:JSON.stringify({
+                    type:"eraser",
+                    x,
+                    y,
+                    size:this.eraserSize
+                }),
+                roomId:this.roomId
+            }))
+            this.clearCanvas()
+        }
     }
 
     initMouseHandler(){
@@ -148,6 +151,9 @@ if(this.handleMouseDown) {
             this.startY = pos.y
             if (this.selectedTool === "pencil") {
                 this.currentPencilPoints = [{ x: pos.x, y: pos.y }]
+            }
+            if (this.selectedTool === "eraser") {
+                this.eraseAtPoint(pos.x, pos.y)
             }
         }
 
@@ -227,6 +233,11 @@ if(this.handleMouseDown) {
                 this.ctx.lineTo(pos.x, pos.y)
                 this.ctx.stroke()
                 this.ctx.closePath()
+                return
+            }
+
+            if (this.selectedTool === "eraser") {
+                this.eraseAtPoint(pos.x, pos.y)
                 return
             }
 

@@ -8,9 +8,7 @@ import { useState } from "react";
 
 
 export default function RoomDashboard() {
-  const [token , setToken] = useState<string | null>(() =>
-    typeof window !== "undefined" ? localStorage.getItem("token") : null
-  );
+  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null
   const [roomsRefreshKey, setRoomsRefreshKey] = useState(0);
   const router = useRouter();
 

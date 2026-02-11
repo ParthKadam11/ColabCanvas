@@ -1,4 +1,4 @@
-import { Circle, Pencil, RectangleHorizontal, Ruler } from "lucide-react";
+import { Circle, Eraser, Pencil, RectangleHorizontal, Ruler } from "lucide-react";
 import type { Shape } from "./Canvas";
 import { IconButton } from "../../../../packages/ui/src/IconButton";
 
@@ -22,6 +22,9 @@ export function Toolbar({
       </div>
       <div className="pointer-events-auto">
         <IconButton activated={selectedTool === "pencil"} icon={<Pencil />} onClick={()=>{setSelectedTool("pencil")}}/>
+      </div>
+      <div className="pointer-events-auto">
+        <IconButton activated={selectedTool === "eraser"} icon={<Eraser />} onClick={()=>{setSelectedTool("eraser")}}/>
       </div>
     </div>
   );
