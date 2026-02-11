@@ -37,10 +37,15 @@ export function Canvas({
     }
   }, [roomId, socket, canvasRef]);
 
+  const [canvasSize, setCanvasSize] = useState(() => ({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  }));
+
   return (
     <div className="absolute inset-0 overflow-hidden bg-[#1e1e1e] bg-[linear-gradient(to_right,#8080801a_1px,transparent_1px),linear-gradient(to_bottom,#8080801a_1px,transparent_1px)] bg-[length:14px_24px]">
       <BackIcon/>
-      <canvas ref={canvasRef} width={window.innerWidth} height={window.innerHeight}/>
+      <canvas ref={canvasRef} width={canvasSize.width} height={canvasSize.height}/>
       <ActiveUser roomId={roomId} token={token} />
       <Toolbar selectedTool={selectedTool} setSelectedTool={setSelectedTool} />
     </div>

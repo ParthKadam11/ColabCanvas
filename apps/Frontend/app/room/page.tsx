@@ -5,12 +5,21 @@ import { ProfileInfo } from "@/components/roomComponents/UserProfile";
 import { YourRoom } from "@/components/roomComponents/YourRoom";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useToken } from "@/app/useToken";
 
 
 export default function RoomDashboard() {
-  const token = typeof window !== "undefined" ? localStorage.getItem("token") : null
+  const token = useToken();
   const [roomsRefreshKey, setRoomsRefreshKey] = useState(0);
   const router = useRouter();
+
+  if (token === null) {
+    return (
+      <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-zinc-100 via-zinc-200 to-zinc-300 dark:from-black dark:via-zinc-900 dark:to-zinc-800">
+        <div className="text-center text-black bg-white rounded-2xl p-6 shadow-md">Loading...</div>
+      </div>
+    );
+  }
 
   if (!token) {
     return (
@@ -40,10 +49,7 @@ export default function RoomDashboard() {
           <ProfileInfo token={token} />
         </div>
         <div className="grid gap-6 md:grid-cols-2 text-black">
-          <CreateRoom
-            token={token}
-            onCreated={() => setRoomsRefreshKey((prev) => prev + 1)}
-          />
+          <CreateRoom token={token} onCreated={() => setRoomsRefreshKey((prev) => prev + 1)}/>
           <JoinRoom token={token} />
         </div>
 

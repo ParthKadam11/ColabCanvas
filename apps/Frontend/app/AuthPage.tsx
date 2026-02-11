@@ -44,7 +44,9 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
         });
         const token = response.data?.token;
         if (token) {
-          localStorage.setItem("token", token);
+          if (typeof window !== "undefined") {
+            localStorage.setItem("token", token);
+          }
         }
         router.push("/room");
       } else {
