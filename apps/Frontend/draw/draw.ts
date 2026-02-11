@@ -1,8 +1,11 @@
+    
 import { getExistingShapes } from "./http"
 import { eraseShapes} from "./eraser"
 import { Shape } from "./utis";
 
 export class Draw{
+    public zoom: number = 1;
+    public pan: { x: number; y: number } = { x: 0, y: 0 };
     private roomId:string
     private canvas:HTMLCanvasElement;
     private ctx:CanvasRenderingContext2D
@@ -41,8 +44,13 @@ export class Draw{
         this.clearCanvas()
     }
 
+    setZoomAndPan(zoom: number, pan: { x: number; y: number }) {
+        this.zoom = zoom;
+        this.pan = pan;
+    }
+
     destroy(){
-if(this.handleMouseDown) {
+    if(this.handleMouseDown) {
             this.canvas.removeEventListener("mousedown", this.handleMouseDown)
         }
         if(this.handleMouseUp) {
@@ -75,9 +83,14 @@ if(this.handleMouseDown) {
     }
 
     clearCanvas(){
+        this.ctx.setTransform(1, 0, 0, 1, 0, 0); 
         this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height)
+        this.ctx.save();
+        this.ctx.translate(this.pan.x, this.pan.y);
+        this.ctx.scale(this.zoom, this.zoom);
 
         if (!this.existingShapes || !Array.isArray(this.existingShapes)) {
+            this.ctx.restore();
             return
         }
 
@@ -114,6 +127,7 @@ if(this.handleMouseDown) {
                 this.ctx.closePath()
             }
         })
+        this.ctx.restore();
     }
 
     eraseAtPoint(x:number, y:number){
@@ -137,12 +151,11 @@ if(this.handleMouseDown) {
 
     initMouseHandler(){
         const getRelativePos = (e: MouseEvent) => {
-            const rect = this.canvas.getBoundingClientRect()
-            const x= e.clientX - rect.left
-            const y= e.clientY - rect.top
-
-            return {x,y}
-        }
+            const rect = this.canvas.getBoundingClientRect();
+            const x = (e.clientX - rect.left - this.pan.x) / this.zoom;
+            const y = (e.clientY - rect.top - this.pan.y) / this.zoom;
+            return { x, y };
+        };
 
         this.handleMouseDown = (e: MouseEvent) => {
             this.clicked = true
@@ -212,55 +225,100 @@ if(this.handleMouseDown) {
         }
 
         this.handleMouseMove = (e: MouseEvent) => {
-            if (!this.clicked) return
-            const pos = getRelativePos(e)
-            const width = pos.x - this.startX
-            const height = pos.y - this.startY
+            if (!this.clicked) return;
+            const pos = getRelativePos(e);
+            const width = pos.x - this.startX;
+            const height = pos.y - this.startY;
+
 
             if (this.selectedTool === "pencil") {
                 if (!this.currentPencilPoints) {
-                    this.currentPencilPoints = [{ x: pos.x, y: pos.y }]
-                    return
+                    this.currentPencilPoints = [{ x: pos.x, y: pos.y }];
+                } else {
+                    this.currentPencilPoints.push({ x: pos.x, y: pos.y });
                 }
-                const lastPoint = this.currentPencilPoints[this.currentPencilPoints.length - 1]
-                this.currentPencilPoints.push({ x: pos.x, y: pos.y })
-                this.ctx.beginPath()
-                this.ctx.strokeStyle="rgba(255, 255, 255)"
-                this.ctx.lineWidth = 2;
-                this.ctx.lineCap = "round"
-                this.ctx.lineJoin = "round"
-                this.ctx.moveTo(lastPoint.x, lastPoint.y)
-                this.ctx.lineTo(pos.x, pos.y)
-                this.ctx.stroke()
-                this.ctx.closePath()
-                return
             }
 
-            if (this.selectedTool === "eraser") {
-                this.eraseAtPoint(pos.x, pos.y)
-                return
+            this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.save();
+            this.ctx.translate(this.pan.x, this.pan.y);
+            this.ctx.scale(this.zoom, this.zoom);
+
+            if (this.existingShapes && Array.isArray(this.existingShapes)) {
+                this.existingShapes.forEach((shape) => {
+                    if (shape.type == "rect") {
+                        this.ctx.strokeStyle = "rgba(255, 255, 255)";
+                        this.ctx.lineWidth = 2;
+                        this.ctx.strokeRect(shape.x, shape.y, shape.width, shape.height);
+                    } else if (shape.type === "circle") {
+                        this.ctx.strokeStyle = "rgba(255, 255, 255)";
+                        this.ctx.lineWidth = 2;
+                        this.ctx.beginPath();
+                        this.ctx.arc(shape.centerX, shape.centerY, shape.radius, 0, Math.PI * 2);
+                        this.ctx.stroke();
+                        this.ctx.closePath();
+                    } else if (shape.type === "penline") {
+                        this.ctx.strokeStyle = "rgba(255, 255, 255)";
+                        this.ctx.lineWidth = 2;
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(shape.startX, shape.startY);
+                        this.ctx.lineTo(shape.endX, shape.endY);
+                        this.ctx.stroke();
+                        this.ctx.closePath();
+                    } else if (shape.type === "pencil") {
+                        if (!Array.isArray(shape.points) || shape.points.length < 2) return;
+                        this.ctx.beginPath();
+                        this.ctx.strokeStyle = "rgba(255, 255, 255)";
+                        this.ctx.lineWidth = 2;
+                        this.ctx.moveTo(shape.points[0].x, shape.points[0].y);
+                        for (let i = 1; i < shape.points.length; i++) {
+                            this.ctx.lineTo(shape.points[i].x, shape.points[i].y);
+                        }
+                        this.ctx.stroke();
+                        this.ctx.closePath();
+                    }
+                });
             }
 
-            this.clearCanvas()
-            this.ctx.strokeStyle="rgba(255, 255, 255)"
-
+            this.ctx.strokeStyle = "rgba(255, 255, 255)";
+            this.ctx.lineWidth = 2;
             if (this.selectedTool === "rect") {
-                this.ctx.strokeRect(this.startX, this.startY, width, height)
+                this.ctx.strokeRect(this.startX, this.startY, width, height);
             } else if (this.selectedTool === "circle") {
-                const centerX = this.startX + width / 2
-                const centerY = this.startY + height / 2
-                const radius = Math.max(Math.abs(width), Math.abs(height)) / 2
-                this.ctx.beginPath()
-                this.ctx.arc(centerX, centerY, radius, 0, Math.PI * 2)
-                this.ctx.stroke()
-                this.ctx.closePath()
+                const centerX = this.startX + width / 2;
+                const centerY = this.startY + height / 2;
+                const radius = Math.max(Math.abs(width), Math.abs(height)) / 2;
+                this.ctx.beginPath();
+                this.ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                this.ctx.stroke();
+                this.ctx.closePath();
             } else if (this.selectedTool === "penline") {
-                this.ctx.beginPath()
-                this.ctx.moveTo(this.startX, this.startY)
-                this.ctx.lineTo(pos.x, pos.y)
-                this.ctx.stroke()
-                this.ctx.closePath()
+                this.ctx.beginPath();
+                this.ctx.moveTo(this.startX, this.startY);
+                this.ctx.lineTo(pos.x, pos.y);
+                this.ctx.stroke();
+                this.ctx.closePath();
+            } else if (this.selectedTool === "pencil") {
+                if (this.currentPencilPoints && this.currentPencilPoints.length >= 2) {
+                    this.ctx.beginPath();
+                    this.ctx.strokeStyle = "rgba(255, 255, 255)";
+                    this.ctx.lineWidth = 2;
+                    this.ctx.lineCap = "round";
+                    this.ctx.lineJoin = "round";
+                    this.ctx.moveTo(this.currentPencilPoints[0].x, this.currentPencilPoints[0].y);
+                    for (let i = 1; i < this.currentPencilPoints.length; i++) {
+                        this.ctx.lineTo(this.currentPencilPoints[i].x, this.currentPencilPoints[i].y);
+                    }
+                    this.ctx.stroke();
+                    this.ctx.closePath();
+                }
+            } else if (this.selectedTool === "eraser") {
+                this.eraseAtPoint(pos.x, pos.y);
+                this.ctx.restore();
+                return;
             }
+            this.ctx.restore();
         }
 
         this.canvas.addEventListener("mousedown", this.handleMouseDown)
