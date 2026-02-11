@@ -1,6 +1,6 @@
 import { getExistingShapes } from "./http"
-import { eraseShapes, type Shape } from "./eraser"
-
+import { eraseShapes} from "./eraser"
+import { Shape } from "./utis";
 
 export class Draw{
     private roomId:string

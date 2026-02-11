@@ -5,8 +5,7 @@ import { ProfileInfo } from "@/components/roomComponents/UserProfile";
 import { YourRoom } from "@/components/roomComponents/YourRoom";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useToken } from "@/app/useToken";
-
+import { useToken } from "../utils";
 
 export default function RoomDashboard() {
   const token = useToken();
