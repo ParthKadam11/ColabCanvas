@@ -62,7 +62,7 @@ export function ProfileInfo({ token }: ProfileInfoProps) {
     : null;
 
   return (
-    <div className="w-45 h-auto bg-white m-2 rounded-xl p-3">
+    <div className="w-full max-w-xs sm:max-w-sm h-auto bg-white m-2 sm:m-3 rounded-xl p-3 sm:p-4 flex flex-col justify-center">
       {profileLoading && (
         <div className="text-xs text-zinc-600">Loading...</div>
       )}
@@ -70,24 +70,24 @@ export function ProfileInfo({ token }: ProfileInfoProps) {
         <div className="text-xs text-red-600">{profileError}</div>
       )}
       {!profileLoading && !profileError && (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 sm:gap-3">
           {photoUrl ? (
             <Image
               alt="Profile"
-              className="h-8 w-8 rounded-xl object-cover"
-              height={32}
-              width={32}
+              className="h-8 w-8 sm:h-10 sm:w-10 rounded-xl object-cover"
+              height={40}
+              width={40}
               src={photoUrl}
               unoptimized
             />
           ) : (
-            <div className="h-8 w-8 rounded-xl bg-zinc-200" />
+            <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-xl bg-zinc-200" />
           )}
           <div className="min-w-0">
-            <div className="text-xs font-semibold text-zinc-900 truncate">
+            <div className="text-xs sm:text-sm font-semibold text-zinc-900 truncate">
               {profile?.name ?? "User"}
             </div>
-            <div className="text-[10px] text-zinc-600 truncate">
+            <div className="text-[10px] sm:text-xs text-zinc-600 truncate">
               {profile?.email ?? ""}
             </div>
           </div>

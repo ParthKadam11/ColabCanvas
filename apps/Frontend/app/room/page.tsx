@@ -54,9 +54,7 @@ export default function RoomDashboard() {
 
             <JoinRoom token={token} />
         </div>
-        <div className="w-full mt-12">
           <YourRoom token={token} refreshKey={roomsRefreshKey} />
-        </div>
       </div>
     </div>
   );

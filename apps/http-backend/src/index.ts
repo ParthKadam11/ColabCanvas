@@ -226,8 +226,9 @@ app.delete("/room/:roomId", middleware, async (req, res) => {
         return
     }
 
-    await prismaClient.room.delete({ where: { id: roomId } })
-    res.json({ message: "Room deleted" })
+    await prismaClient.chat.deleteMany({ where: { roomId } });
+    await prismaClient.room.delete({ where: { id: roomId } });
+    res.json({ message: "Room deleted" });
 })
 
 app.get("/room/:roomId",async (req,res )=>{
