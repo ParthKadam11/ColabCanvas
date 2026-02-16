@@ -20,7 +20,6 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
       setProfilePreviewUrl("");
       return;
     }
-
     const reader = new FileReader();
     reader.onload = () => {
       const result = typeof reader.result === "string" ? reader.result : "";
@@ -57,7 +56,6 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
         if (photoFile) {
           formData.append("photo", photoFile);
         }
-
         await axios.post(`${HTTP_BACKEND}/signup`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
@@ -69,17 +67,19 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
   };
 
   return (
-    <div className="min-h-screen w-screen flex justify-center items-center px-4 py-6 bg-gradient-to-br from-zinc-100 via-zinc-200 to-zinc-300 dark:from-black dark:via-zinc-900 dark:to-zinc-800 font-sans">
-      <form
-        className="w-full max-w-md sm:max-w-lg p-6 sm:p-10 m-2 rounded-2xl text-black bg-white"
-        onSubmit={handleSubmit}
+    <div className="relative min-h-screen bg-gradient-to-br from-zinc-100 via-zinc-200 to-zinc-300 dark:from-black dark:via-zinc-900 dark:to-zinc-800 font-sans flex items-center justify-center">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 flex flex-col items-center">
+        <form
+          className="w-full min-w-md rounded-2xl text-black bg-white shadow-md p-6 flex flex-col gap-4"
+          onSubmit={handleSubmit}
         >
-        <div className="flex justify-center p-2">
+          <div className="w-full text-center mb-2">
+            <h2 className="text-2xl font-bold text-black dark:text-black">
+              {isSignin ? "Login To Account" : "Create Account"}
+            </h2>
+          </div>
           {!isSignin && (
-            <label
-              htmlFor="profileImage"
-              className="flex flex-col items-center gap-2 cursor-pointer"
-            >
+            <label htmlFor="profileImage" className="flex flex-col items-center gap-2 cursor-pointer">
               <div className="flex bg-slate-300 w-24 h-24 sm:w-28 sm:h-28 border-2 border-stone-300 rounded-4xl overflow-hidden items-center justify-center">
                 {profilePreviewUrl ? (
                   <Image
@@ -92,12 +92,12 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
                   />
                 ) : (
                   <span className="flex h-24 w-24 sm:h-28 sm:w-28 flex-col items-center justify-start pt-3 sm:pt-4">
-                    <span className="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-slate-100 border border-slate-300" />
-                    <span className="h-10 w-16 sm:h-11 sm:w-20 rounded-t-full bg-slate-100 border border-slate-300" />
+                    <span className="h-10 w-10 sm:h-13 sm:w-12 rounded-full bg-slate-100 border border-slate-300" />
+                    <span className="h-10 w-16 sm:h-13 sm:w-20 rounded-t-full bg-slate-100 border border-slate-300" />
                   </span>
                 )}
               </div>
-              <div className="flex justify-center">{"Profile Picture"}</div>
+              <div className="flex justify-center text-xs text-zinc-500 pb-2">Select Profile Picture</div>
               <input
                 id="profileImage"
                 name="photo"
@@ -109,58 +109,67 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
               />
             </label>
           )}
-        </div>
 
-        {!isSignin && (
-          <div className="p-2">
-            <div>Name:</div>
+          {!isSignin && (
+            <div className="mb-3 pl-2">
+              <div className="text-sm font-semibold">Name:</div>
+              <Input
+                id="name"
+                name="name"
+                type="text"
+                autoComplete="name"
+                placeholder="john doe"
+                className="focus:outline-none border-0"
+                ref={nameRef}
+              />
+            </div>
+          )}
+
+          <div className="mb-3 pl-2">
+            <div className="text-sm font-semibold">Email:</div>
             <Input
-              id="name"
-              name="name"
-              type="text"
-              autoComplete="name"
-              placeholder="john doe"
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder="name@example.com"
               className="focus:outline-none border-0"
-              ref={nameRef}
+              ref={emailRef}
             />
           </div>
-        )}
 
-        <div className="p-2">
-          <div>Email:</div>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            placeholder="name@example.com"
-            className="focus:outline-none border-0"
-            ref={emailRef}
-          />
-        </div>
+          <div className="mb-3 pl-2">
+            <div className="text-sm font-semibold mb-1">Password:</div>
+            <Input
+              className="focus:outline-none border-0"
+              id="password"
+              name="password"
+              type="password"
+              autoComplete={isSignin ? "current-password" : "new-password"}
+              placeholder="eg.12345678"
+              ref={passwordRef}
+            />
+          </div>
 
-        <div className="p-2">
-          <div>Password:</div>
-          <Input
-            className="focus:outline-none border-0"
-            id="password"
-            name="password"
-            type="password"
-            autoComplete={isSignin ? "current-password" : "new-password"}
-            placeholder="eg.12345678"
-            ref={passwordRef}
-          />
-        </div>
-
-        <div className="pt-4">
           <button
             type="submit"
-            className="w-full rounded-2xl p-2 bg-black text-white"
+            className="w-full rounded-2xl p-2 bg-blue-600 text-white font-bold shadow-md mt-2 hover:scale-105 transition-transform"
           >
             {isSignin ? "Sign In" : "Sign Up"}
           </button>
-        </div>
-      </form>
+          <div className="w-full text-center ">
+            {isSignin ? (
+              <span className="text-blue-600 cursor-pointer hover:underline" onClick={() => router.push('/signup')}>
+                New to ColabCanvas? 
+              </span>
+            ) : (
+              <span className="text-blue-600 cursor-pointer hover:underline" onClick={() => router.push('/signin')}>
+                Already have an account?
+              </span>
+            )}
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

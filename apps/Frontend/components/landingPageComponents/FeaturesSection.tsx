@@ -39,7 +39,7 @@ export default function FeaturesSection() {
         >
           Built for real-time collaboration
         </motion.h2>
-        <span className="block h-1 w-36 xs:w-56 md:w-80 rounded-full bg-gradient-to-r from-blue-400 via-fuchsia-400 to-yellow-300 animate-pulse mt-2 xs:mt-3" style={{animationDuration:'3s'}} />
+        <span className="block h-1 w-36 xs:w-56 md:w-120 rounded-full bg-gradient-to-r from-blue-400 via-fuchsia-400 to-yellow-300 animate-pulse mt-2 xs:mt-3" style={{animationDuration:'4s'}} />
       </div>
       {features.map((feature, idx) => (
         <motion.div

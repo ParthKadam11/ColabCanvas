@@ -12,7 +12,7 @@ const animatedGradient = {
 export default function AnimatedBadge({ children }: { children: React.ReactNode }) {
   return (
     <span
-      className="mb-6 inline-flex items-center gap-2 rounded-full px-6 py-2 text-base font-semibold text-zinc-900 dark:text-white shadow-lg border border-white/40 dark:border-zinc-700/40"
+      className=" inline-flex items-center gap-2 rounded-full px-6 py-2 text-base font-semibold text-zinc-900 dark:text-white shadow-lg border border-white/40 dark:border-zinc-700/40"
       style={animatedGradient}
     >
       {children}

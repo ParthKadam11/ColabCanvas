@@ -17,7 +17,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="mt-4 xs:mt-6 text-xs text-zinc-400 text-center px-1 xs:px-0">
-        \u00a9 {new Date().getFullYear()} ColabCanvas. All rights reserved.
+        {new Date().getFullYear()} ColabCanvas. All rights reserved.
       </div>
     </footer>
   );

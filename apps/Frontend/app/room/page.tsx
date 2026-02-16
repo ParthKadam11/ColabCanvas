@@ -41,7 +41,6 @@ export default function RoomDashboard() {
         <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8 mt-2">
           <div className="flex flex-col items-start">
             <h1 className="text-2xl md:text-3xl font-extrabold text-white drop-shadow-lg mb-2">Your Rooms</h1>
-            <span className="block h-1 w-44 md:w-64 rounded-full bg-gradient-to-r from-blue-400 via-fuchsia-400 to-yellow-300 animate-pulse mb-4" style={{animationDuration:'2.5s'}} />
             <p className="text-sm md:text-base text-zinc-200 max-w-md">Create, join, or manage your rooms. Collaborate in real-time with a beautiful, modern interface.</p>
           </div>
           <div className="flex justify-end md:justify-center items-center">
