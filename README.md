@@ -1,6 +1,140 @@
 # Turborepo starter
 
 This Turborepo starter is maintained by the Turborepo core team.
+# ColabCanvas
+
+ColabCanvas is a collaborative whiteboard application that allows multiple users to draw, write, and interact in real-time. The project is organized as a monorepo using pnpm workspaces and TurboRepo, and is built with a modern stack including Next.js, TypeScript, Tailwind CSS, Prisma, and both HTTP and WebSocket backends.
+
+---
+
+## Table of Contents
+- [Features](#features)
+- [Monorepo Structure](#monorepo-structure)
+- [Getting Started](#getting-started)
+- [Development](#development)
+- [Tech Stack](#tech-stack)
+- [Database & Migrations](#database--migrations)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Features
+- Real-time collaborative drawing and text
+- User authentication (sign in/up)
+- Room creation and joining
+- Zoom, pan, and eraser tools
+- User presence indicators
+- Responsive UI with modern design
+
+---
+
+## Monorepo Structure
+
+```
+ColabCanvas/
+├── apps/
+│   ├── Frontend/         # Next.js frontend app
+│   ├── http-backend/     # HTTP backend (API)
+│   └── ws-backend/       # WebSocket backend
+├── packages/
+│   ├── @types/           # Shared TypeScript types
+│   ├── common/           # Common utilities
+│   ├── db/               # Prisma schema & database client
+│   ├── eslint-config/    # Shared ESLint config
+│   └── typescript-config/# Shared TS config
+│   └── ui/               # Shared UI components
+├── package.json
+├── pnpm-workspace.yaml
+├── turbo.json
+└── README.md
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+- Node.js (v18+ recommended)
+- pnpm (v8+)
+- Docker (for local Postgres, optional but recommended)
+
+### Install dependencies
+```bash
+pnpm install
+```
+
+### Set up environment variables
+- Copy `.env.example` to `.env` and fill in required values for database, authentication, etc.
+
+### Database setup
+- Start Postgres (locally or via Docker)
+- Run migrations:
+```bash
+cd packages/db
+pnpm prisma migrate dev
+```
+
+### Run the apps
+- Start all apps in development mode:
+```bash
+pnpm run dev
+```
+
+---
+
+## Development
+- **Frontend**: Next.js app in `apps/Frontend`
+- **HTTP Backend**: Express/Node.js API in `apps/http-backend`
+- **WebSocket Backend**: Real-time server in `apps/ws-backend`
+- **Database**: Prisma schema and client in `packages/db`
+- **UI Library**: Shared React components in `packages/ui`
+
+Use TurboRepo for running and building multiple apps/packages efficiently.
+
+---
+
+## Tech Stack
+- **Frontend**: Next.js, React, TypeScript, Tailwind CSS
+- **Backend**: Node.js, Express, WebSocket
+- **Database**: PostgreSQL, Prisma ORM
+- **Monorepo**: pnpm, TurboRepo
+- **Linting/Formatting**: ESLint, Prettier
+
+---
+
+## Database & Migrations
+- Prisma schema is in `packages/db/prisma/schema.prisma`
+- Migrations are managed with Prisma CLI
+- Generated client is in `packages/db/src/generated/prisma/`
+
+---
+
+## Contributing
+1. Fork the repo and create your branch from `main`.
+2. Install dependencies with `pnpm install`.
+3. Make your changes and add tests if applicable.
+4. Run lint and tests before submitting a PR.
+5. Submit a pull request.
+
+---
+
+## License
+[MIT](LICENSE)
+
+---
+
+## Acknowledgements
+- [Next.js](https://nextjs.org/)
+- [Prisma](https://www.prisma.io/)
+- [TurboRepo](https://turbo.build/)
+- [pnpm](https://pnpm.io/)
+- [Tailwind CSS](https://tailwindcss.com/)
+
+---
+
+## Contact
+For questions or support, please open an issue or contact the maintainer.
 
 ## Using this example
 
