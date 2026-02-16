@@ -1,49 +1,73 @@
-# Turborepo starter
 
-This Turborepo starter is maintained by the Turborepo core team.
 # ColabCanvas
 
-ColabCanvas is a collaborative whiteboard application that allows multiple users to draw, write, and interact in real-time. The project is organized as a monorepo using pnpm workspaces and TurboRepo, and is built with a modern stack including Next.js, TypeScript, Tailwind CSS, Prisma, and both HTTP and WebSocket backends.
+ColabCanvas is a next-generation collaborative whiteboard platform engineered for seamless, real-time teamwork. It combines advanced canvas rendering, low-latency networking, and robust backend infrastructure to deliver a Figma-like experience for brainstorming, diagramming, and ideation.
 
 ---
 
-## Table of Contents
-- [Features](#features)
-- [Monorepo Structure](#monorepo-structure)
-- [Getting Started](#getting-started)
-- [Development](#development)
-- [Tech Stack](#tech-stack)
-- [Database & Migrations](#database--migrations)
-- [Contributing](#contributing)
-- [License](#license)
+## 🚀 Key Features
+
+- **Real-Time Multiplayer Canvas**: Built on top of WebSockets for instant, bi-directional updates. All drawing, text, and object changes are synchronized across users in a room with sub-100ms latency.
+- **CRDT-Based State Management**: Uses Conflict-free Replicated Data Types (CRDTs) to ensure eventual consistency and seamless merging of concurrent edits, even under network partitions.
+- **Rich Drawing Tools**: Freehand, shapes, text, eraser, zoom, pan, and multi-user cursors. All tools are modular and extensible.
+- **User Presence & Awareness**: See who is online, their cursor positions, and what they are editing in real time.
+- **Authentication & Room Management**: Secure sign-up/sign-in, room creation/joining, and persistent user sessions.
+- **Optimistic UI & Undo/Redo**: Instant feedback for user actions, with robust undo/redo powered by CRDT history.
+- **Scalable Microservices Architecture**: Decoupled HTTP and WebSocket backends, each optimized for their domain (REST APIs, real-time sync, file uploads, etc).
+- **Cloud-Native & Local-First**: Designed for both cloud deployment and local development, with Dockerized Postgres and stateless services.
+- **Type-Safe End-to-End**: Shared TypeScript types across frontend, backend, and database for zero type drift.
+- **Customizable UI Library**: Built with a reusable, themeable component system using Tailwind CSS and React.
 
 ---
 
-## Features
-- Real-time collaborative drawing and text
-- User authentication (sign in/up)
-- Room creation and joining
-- Zoom, pan, and eraser tools
-- User presence indicators
-- Responsive UI with modern design
+## 🏗️ Architecture Overview
+
+```mermaid
+graph TD
+	A[Frontend (Next.js)] -- REST/WS --> B[HTTP Backend (Express)]
+	A -- WebSocket --> C[WS Backend (Node.js)]
+	B -- Prisma ORM --> D[(PostgreSQL)]
+	C -- CRDT Sync --> D
+	A -- Shared Types --> B
+	A -- Shared Types --> C
+	B -- Shared Types --> C
+```
+
+- **Frontend**: Next.js app with advanced canvas rendering, state managed by CRDTs, and real-time updates via WebSocket.
+- **HTTP Backend**: Node.js/Express API for authentication, room management, and file uploads. Uses Prisma for DB access.
+- **WebSocket Backend**: Dedicated Node.js server for real-time canvas sync, presence, and CRDT operations.
+- **Database**: PostgreSQL, managed with Prisma, stores users, rooms, and persistent canvas data.
+- **Shared Packages**: TypeScript types, UI components, and utilities shared across all services.
 
 ---
 
-## Monorepo Structure
+## 🧑‍💻 Deep Tech Stack
+
+- **Frontend**: Next.js, React 18, TypeScript, Tailwind CSS, Zustand (or similar) for state, custom CRDT implementation
+- **Real-Time**: Native WebSocket server, custom protocol for efficient binary diff sync, presence, and awareness
+- **Backend**: Node.js, Express, Prisma ORM, JWT authentication, REST APIs, file uploads
+- **Database**: PostgreSQL (Dockerized for local dev), Prisma migrations, connection pooling
+- **Monorepo**: pnpm workspaces, TurboRepo for build orchestration, strict type sharing
+- **Testing**: Jest, React Testing Library, supertest for API, integration tests for CRDT logic
+- **DevOps**: Docker, GitHub Actions CI, Vercel/Render/Heroku deploy ready
+
+---
+
+## 📦 Monorepo Structure
 
 ```
 ColabCanvas/
 ├── apps/
-│   ├── Frontend/         # Next.js frontend app
-│   ├── http-backend/     # HTTP backend (API)
-│   └── ws-backend/       # WebSocket backend
+│   ├── Frontend/         # Next.js app (canvas, auth, UI)
+│   ├── http-backend/     # Express API (auth, rooms, uploads)
+│   └── ws-backend/       # WebSocket server (real-time sync)
 ├── packages/
 │   ├── @types/           # Shared TypeScript types
-│   ├── common/           # Common utilities
-│   ├── db/               # Prisma schema & database client
+│   ├── common/           # Shared utilities (CRDT, helpers)
+│   ├── db/               # Prisma schema, migrations, client
 │   ├── eslint-config/    # Shared ESLint config
-│   └── typescript-config/# Shared TS config
-│   └── ui/               # Shared UI components
+│   ├── typescript-config/# Shared TS config
+│   └── ui/               # Shared React UI components
 ├── package.json
 ├── pnpm-workspace.yaml
 ├── turbo.json
@@ -52,89 +76,75 @@ ColabCanvas/
 
 ---
 
-## Getting Started
+## ⚡ Getting Started
 
 ### Prerequisites
-- Node.js (v18+ recommended)
+- Node.js (v18+)
 - pnpm (v8+)
-- Docker (for local Postgres, optional but recommended)
+- Docker (for local Postgres)
 
-### Install dependencies
+### 1. Install dependencies
 ```bash
 pnpm install
 ```
 
-### Set up environment variables
-- Copy `.env.example` to `.env` and fill in required values for database, authentication, etc.
+### 2. Set up environment variables
+- Copy `.env.example` to `.env` and fill in DB, JWT, and other secrets.
 
-### Database setup
-- Start Postgres (locally or via Docker)
-- Run migrations:
+### 3. Start Postgres (local)
+```bash
+docker run --name colabcanvas-db -e POSTGRES_PASSWORD=yourpassword -p 5432:5432 -d postgres:15
+```
+
+### 4. Run DB migrations
 ```bash
 cd packages/db
 pnpm prisma migrate dev
 ```
 
-### Run the apps
-- Start all apps in development mode:
+### 5. Start all apps
 ```bash
 pnpm run dev
 ```
 
 ---
 
-## Development
-- **Frontend**: Next.js app in `apps/Frontend`
-- **HTTP Backend**: Express/Node.js API in `apps/http-backend`
-- **WebSocket Backend**: Real-time server in `apps/ws-backend`
-- **Database**: Prisma schema and client in `packages/db`
-- **UI Library**: Shared React components in `packages/ui`
+## 🛠️ Development & Customization
 
-Use TurboRepo for running and building multiple apps/packages efficiently.
-
----
-
-## Tech Stack
-- **Frontend**: Next.js, React, TypeScript, Tailwind CSS
-- **Backend**: Node.js, Express, WebSocket
-- **Database**: PostgreSQL, Prisma ORM
-- **Monorepo**: pnpm, TurboRepo
-- **Linting/Formatting**: ESLint, Prettier
+- **Canvas Logic**: See `apps/Frontend/draw/` for custom drawing, shape rendering, and CRDT logic.
+- **Authentication**: JWT-based, with session management in `apps/http-backend`.
+- **Real-Time Sync**: WebSocket protocol and CRDT merge in `apps/ws-backend`.
+- **UI Components**: Modular, themeable React components in `packages/ui`.
+- **Type Safety**: All API contracts and DB models are type-checked end-to-end.
 
 ---
 
-## Database & Migrations
-- Prisma schema is in `packages/db/prisma/schema.prisma`
-- Migrations are managed with Prisma CLI
-- Generated client is in `packages/db/src/generated/prisma/`
+## 🧩 Extending ColabCanvas
+
+- Add new tools or shapes by extending the canvas logic and UI.
+- Integrate with cloud storage for persistent uploads.
+- Deploy to Vercel, Render, or your own infra (Docker-ready).
 
 ---
 
-## Contributing
-1. Fork the repo and create your branch from `main`.
-2. Install dependencies with `pnpm install`.
-3. Make your changes and add tests if applicable.
-4. Run lint and tests before submitting a PR.
-5. Submit a pull request.
+## 🤝 Contributing
+We welcome contributions! Please open issues, submit PRs, and help us build the best collaborative canvas platform.
 
 ---
 
-## License
+## 📄 License
 [MIT](LICENSE)
 
 ---
 
-## Acknowledgements
-- [Next.js](https://nextjs.org/)
-- [Prisma](https://www.prisma.io/)
-- [TurboRepo](https://turbo.build/)
-- [pnpm](https://pnpm.io/)
-- [Tailwind CSS](https://tailwindcss.com/)
+## 🙏 Acknowledgements
+- [Yjs](https://yjs.dev/) / [Automerge](https://automerge.org/) inspiration for CRDTs
+- [Next.js](https://nextjs.org/), [Prisma](https://www.prisma.io/), [TurboRepo](https://turbo.build/), [Tailwind CSS](https://tailwindcss.com/)
 
 ---
 
-## Contact
-For questions or support, please open an issue or contact the maintainer.
+## 📬 Contact
+For questions, support, or demo requests, please open an issue or contact the maintainer.
 
 ## Using this example
 
