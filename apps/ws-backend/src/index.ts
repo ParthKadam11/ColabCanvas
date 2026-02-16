@@ -58,7 +58,6 @@ wss.on("connection", function connection(ws, request) {
     if (parsedData.type === "join_room") {
       const user = users.find((x) =>x.ws == ws);
       user?.rooms.push(parsedData.roomId);
-      console.log(`[WS] User ${userId} joined room ${parsedData.roomId}`);
     }
 
     if (parsedData.type === "leave_room") {
@@ -73,8 +72,6 @@ wss.on("connection", function connection(ws, request) {
       const roomId = parsedData.roomId;
       const message = parsedData.message;
 
-      console.log(`[WS] Chat message received - Room: ${roomId}, User: ${userId}`);
-      console.log(`[WS] Message content:`, message);
 
       users.forEach((user) => {
         if (user.rooms.includes(roomId)) {
@@ -106,7 +103,6 @@ wss.on("connection", function connection(ws, request) {
     const index = users.findIndex((user) => user.ws === ws);
     if (index > -1) {
       users.splice(index, 1);
-      console.log(`[WS] User ${userId} disconnected`);
     }
   });
 });
