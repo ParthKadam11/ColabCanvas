@@ -46,7 +46,7 @@ export function JoinRoom({ token }: JoinRoomProps) {
           onChange={(e) => setJoinName(e.target.value)}
         />
         <button
-          className="rounded-lg bg-black px-4 py-2 text-white w-full sm:w-auto"
+          className="rounded-lg bg-slate-900 px-4 py-2 text-white w-full sm:w-auto"
           onClick={handleJoin}
         >
           Join

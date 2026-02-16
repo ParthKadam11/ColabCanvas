@@ -36,23 +36,27 @@ export default function RoomDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-zinc-100 via-zinc-200 to-zinc-300 dark:from-black dark:via-zinc-900 dark:to-zinc-800">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 py-8 sm:py-10">
-        <div className="flex items-center justify-between pb-4">
-          <div className="m-2">
-            <h1 className="text-2xl font-semibold text-white">Rooms</h1>
-            <p className="text-sm text-white">
-              Create, join, or manage your rooms.
-            </p>
+    <div className="relative min-h-screen bg-gradient-to-br from-zinc-100 via-zinc-200 to-zinc-300 dark:from-black dark:via-zinc-900 dark:to-zinc-800 font-sans">
+      <div className="mx-auto max-w-4xl px-4 sm:px-6 py-8 flex flex-col items-center">
+        <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8 mt-2">
+          <div className="flex flex-col items-start">
+            <h1 className="text-2xl md:text-3xl font-extrabold text-white drop-shadow-lg mb-2">Your Rooms</h1>
+            <span className="block h-1 w-44 md:w-64 rounded-full bg-gradient-to-r from-blue-400 via-fuchsia-400 to-yellow-300 animate-pulse mb-4" style={{animationDuration:'2.5s'}} />
+            <p className="text-sm md:text-base text-zinc-200 max-w-md">Create, join, or manage your rooms. Collaborate in real-time with a beautiful, modern interface.</p>
           </div>
-          <ProfileInfo token={token} />
-        </div>
-        <div className="grid gap-6 md:grid-cols-2 text-black">
-          <CreateRoom token={token} onCreated={() => setRoomsRefreshKey((prev) => prev + 1)}/>
-          <JoinRoom token={token} />
+          <div className="flex justify-end md:justify-center items-center">
+            <ProfileInfo token={token} />
+          </div>
         </div>
 
-        <YourRoom token={token} refreshKey={roomsRefreshKey} />
+        <div className="grid gap-8 md:grid-cols-2 w-full text-black">
+            <CreateRoom token={token} onCreated={() => setRoomsRefreshKey((prev) => prev + 1)}/>
+
+            <JoinRoom token={token} />
+        </div>
+        <div className="w-full mt-12">
+          <YourRoom token={token} refreshKey={roomsRefreshKey} />
+        </div>
       </div>
     </div>
   );

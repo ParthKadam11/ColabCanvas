@@ -44,9 +44,8 @@ export function CreateRoom({ token, onCreated }: CreateRoomProps) {
             onChange={(e) => setCreateName(e.target.value)}
           />
           <button
-            className="rounded-lg bg-black px-4 py-2 text-white w-full sm:w-auto"
-            onClick={handleCreate}
-          >
+            className="rounded-lg bg-slate-900 px-4 py-2 text-white w-full sm:w-auto "
+            onClick={handleCreate}>
             Create
           </button>
         </div>

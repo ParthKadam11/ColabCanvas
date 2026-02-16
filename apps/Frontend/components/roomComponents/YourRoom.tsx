@@ -59,7 +59,7 @@ export function YourRoom({ token, refreshKey }: YourRoomProps) {
   return (
     <div className="mt-8 rounded-xl bg-white p-5 shadow-sm text-black">
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-medium">Your rooms</h2>
+        <h2 className="text-lg font-medium">Recent rooms</h2>
         {loading && <span className="text-sm text-zinc-500">Loading...</span>}
       </div>
 
@@ -80,10 +80,10 @@ export function YourRoom({ token, refreshKey }: YourRoomProps) {
               </div>
             </div>
             <div className="flex gap-2">
-              <button className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm" onClick={() =>
+              <button className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm text-white bg-blue-600" onClick={() =>
                   router.push(`/canvas/${room.id}?token=${token}`)
                 }>Open </button>
-              <button className="rounded-lg border border-red-200 px-3 py-1.5 text-sm text-red-600" onClick={() => handleDelete(room.id)}> Delete </button>
+              <button className="rounded-lg border border-red-200 px-3 py-1.5 text-sm text-white bg-red-600/80" onClick={() => handleDelete(room.id)}> Delete </button>
             </div>
           </div>
         ))}
