@@ -62,7 +62,7 @@ export function ProfileInfo({ token }: ProfileInfoProps) {
     : null;
 
   return (
-    <div className="w-45 h-auto bg-white m-2 rounded p-3">
+    <div className="w-45 h-auto bg-white m-2 rounded-xl p-3">
       {profileLoading && (
         <div className="text-xs text-zinc-600">Loading...</div>
       )}
@@ -74,14 +74,14 @@ export function ProfileInfo({ token }: ProfileInfoProps) {
           {photoUrl ? (
             <Image
               alt="Profile"
-              className="h-8 w-8 rounded-full object-cover"
+              className="h-8 w-8 rounded-xl object-cover"
               height={32}
               width={32}
               src={photoUrl}
               unoptimized
             />
           ) : (
-            <div className="h-8 w-8 rounded-full bg-zinc-200" />
+            <div className="h-8 w-8 rounded-xl bg-zinc-200" />
           )}
           <div className="min-w-0">
             <div className="text-xs font-semibold text-zinc-900 truncate">

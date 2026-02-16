@@ -3,9 +3,8 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-zinc-100 via-zinc-200 to-zinc-300 dark:from-black dark:via-zinc-900 dark:to-zinc-800 font-sans">
-      {/* Navbar */}
       <nav className="w-full flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 px-4 sm:px-8 py-4 sm:py-6 bg-white/60 dark:bg-zinc-900/60 backdrop-blur-lg border-b border-white/30 dark:border-zinc-700/40 fixed top-0 left-0 z-20">
-        <Link href="/" className="text-2xl font-bold text-zinc-900 dark:text-white drop-shadow-sm">Excelidraw</Link>
+        <Link href="/" className="text-2xl font-bold text-zinc-900 dark:text-white drop-shadow-sm">ColabCanvas</Link>
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-6 items-start sm:items-center">
           <a href="/features" className="text-zinc-700 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white font-medium transition-colors flex items-center">Features</a>
           <a href="/pricing" className="text-zinc-700 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white font-medium transition-colors flex items-center">Pricing</a>
@@ -15,7 +14,7 @@ export default function Home() {
 
       <div className="flex flex-col items-center justify-center min-h-screen pt-28 sm:pt-32 pb-16 px-4">
         <div className="relative z-10 flex flex-col items-center justify-center p-6 sm:p-8 rounded-2xl shadow-xl bg-white/60 dark:bg-zinc-900/60 backdrop-blur-lg border border-white/30 dark:border-zinc-700/40 max-w-2xl w-full mx-4">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-zinc-900 dark:text-white mb-4 drop-shadow-sm text-center">Excelidraw</h1>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-zinc-900 dark:text-white mb-4 drop-shadow-sm text-center">ColabCanvas</h1>
           <p className="text-xl text-zinc-700 dark:text-zinc-200 mb-8 text-center max-w-lg">
             A modern, collaborative whiteboard for teams and creators. Draw, brainstorm, and share ideas in real time—beautifully simple, endlessly powerful.
           </p>
