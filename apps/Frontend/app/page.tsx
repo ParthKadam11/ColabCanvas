@@ -14,7 +14,7 @@ export default function Home() {
       <Navbar />
       <HeroSection />
       <HowItWorks/>
-      <DemoVideoSection videoUrl="../public/ColabCanvas.mov"/>
+      <DemoVideoSection/>
       <FeaturesSection />
       <CTASection />
       <Footer />
