@@ -4,8 +4,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import Image from "next/image";
-
-const HTTP_BACKEND = process.env.HTTP_BACKEND
+import { HTTP_BACKEND } from "@/config";
 
 export function AuthPage({ isSignin }: { isSignin: boolean }) {
   const emailRef = useRef<HTMLInputElement>(null);
