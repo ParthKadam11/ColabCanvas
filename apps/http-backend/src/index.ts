@@ -14,7 +14,7 @@ import { fileURLToPath } from "url"
 const JWT_SECRET =process.env.JWT_SECRET
 const Frontend_URLS = (process.env.Frontend_URL || "https://localhost:3000")
     .split(",")
-    .map(url => url.trim());
+    .map(url => url.trim().replace(/\/$/, "")); // Remove trailing slash
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const UPLOADS_DIR = path.join(__dirname, "..", "uploads")
@@ -39,19 +39,30 @@ const upload = multer({
   }
 })
 
-const app=express()
-app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin) return callback(null, true);
-        if (Frontend_URLS.includes("*") || Frontend_URLS.includes(origin)) {
+
+const app = express();
+
+// CORS must be first middleware
+import { CorsOptions } from "cors";
+
+const corsOptions: CorsOptions = {
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+        const cleanOrigin = origin ? origin.replace(/\/$/, "") : origin;
+        console.log("CORS check: Frontend_URLS=", Frontend_URLS, "origin=", cleanOrigin);
+        if (!cleanOrigin) return callback(null, true);
+        if (Frontend_URLS.includes("*") || Frontend_URLS.includes(cleanOrigin)) {
             return callback(null, true);
         }
         return callback(new Error("Not allowed by CORS"));
     },
     credentials: true
-}));
-app.use(express.json())
-app.use("/uploads", express.static(UPLOADS_DIR))
+};
+app.use(cors(corsOptions));
+// Handle preflight for all routes
+app.options('*', cors(corsOptions));
+
+app.use(express.json());
+app.use("/uploads", express.static(UPLOADS_DIR));
 
 app.post("/signup", upload.single("photo"), async (req,res)=>{
     const photoFilename = req.file ? req.file.filename : undefined
