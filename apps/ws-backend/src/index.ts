@@ -1,14 +1,21 @@
 import "@repo/types"
-import { WebSocketServer,WebSocket } from 'ws';
+import { WebSocketServer, WebSocket } from 'ws';
 import jwt from 'jsonwebtoken';
 import {prismaClient} from "@repo/db/clients"
 import express from "express"
 import cors from "cors"
 
-const JWT_SECRET = process.env.JWT_SECRET
-const wss = new WebSocketServer({ port: 8080 });
-console.log("WebSocket server running on port 8080");
-const PRESENCE_PORT = Number(process.env.PRESENCE_PORT ?? 8081)
+const JWT_SECRET = process.env.JWT_SECRET;
+const PORT = Number(process.env.PORT ?? 8080);
+
+const app = express();
+app.use(cors());
+
+import http from 'http';
+const server = http.createServer(app);
+
+const wss = new WebSocketServer({ server });
+console.log(`WebSocket and HTTP server running on port ${PORT}`);
 
 interface User{
   ws:WebSocket,
@@ -119,10 +126,9 @@ process.on("SIGINT", () => {
   }, 10000);
 });
 
-const presenceApp = express()
-presenceApp.use(cors())
-
-presenceApp.get("/rooms/:roomId/active-users", async (req:express.Request, res:express.Response) => {
+app.get("/rooms/:roomId/active-users", async (req: express.Request, res: express.Response) => {
+  console.log(`[DEBUG] Received active-users request for room: ${req.params.roomId}`);
+  console.log(`[DEBUG] Current users array:`, users);
   const authHeader = req.headers["authorization"]
   const token = Array.isArray(authHeader) ? authHeader[0] : authHeader ?? ""
   const userId = checkUser(token)
@@ -154,6 +160,8 @@ presenceApp.get("/rooms/:roomId/active-users", async (req:express.Request, res:e
   res.json({ users: activeUsers })
 })
 
-presenceApp.listen(PRESENCE_PORT, () => {
-  console.log(`[HTTP] Presence server running on port ${PRESENCE_PORT}`)
-})
+// Start the unified HTTP+WebSocket server
+server.listen(PORT, () => {
+  console.log(`[HTTP/WS] Server running on port ${PORT}`);
+  console.log(`[DEBUG] Access REST API at: http://localhost:${PORT}/rooms/<roomId>/active-users`);
+});

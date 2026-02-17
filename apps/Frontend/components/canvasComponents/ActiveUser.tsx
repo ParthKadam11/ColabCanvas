@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { HTTP_BACKEND,PRESENCE_URL } from "@/config";
+import { HTTP_BACKEND,WS_URL} from "@/config";
 
 type ActiveUser = {
 	id: string;
@@ -26,8 +26,12 @@ export function ActiveUser({
 		let isMounted = true;
 		const fetchActiveUsers = async () => {
 			try {
+				if (!WS_URL) {
+					return;
+				}
+				const apiBase = WS_URL.replace(/^ws/, "http");
 				const response = await fetch(
-					`${PRESENCE_URL}/rooms/${roomId}/active-users`,
+					`${apiBase}/rooms/${roomId}/active-users`,
 					{
 						headers: { authorization: token },
 					}
