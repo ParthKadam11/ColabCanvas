@@ -1,8 +1,10 @@
 "use client";
-import { HTTP_BACKEND } from "@/config";
 import { Input } from "@repo/ui";
 import axios from "axios";
 import { useState } from "react";
+
+const HTTP_BACKEND =process.env.HTTP_BACKEND
+
 
 type CreateRoomProps = {
   token: string | null;

@@ -37,3 +37,5 @@ export const eraseShapes = (shapes: Shape[], x: number, y: number, size: number)
 
     return shapes.filter((shape) => !hitTest(shape));
 }
+
+export type { Shape };

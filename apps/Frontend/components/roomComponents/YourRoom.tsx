@@ -1,8 +1,9 @@
 "use client";
-import { HTTP_BACKEND } from "@/config";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+
+const HTTP_BACKEND =process.env.HTTP_BACKEND
 
 type RoomItem = {
   id: number;

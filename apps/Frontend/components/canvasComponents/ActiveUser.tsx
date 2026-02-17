@@ -1,7 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
-import { HTTP_BACKEND, PRESENCE_URL } from "@/config";
 import Image from "next/image";
+
+const HTTP_BACKEND =process.env.HTTP_BACKEND
+const PRESENCE_URL=process.env.PRESENCE_URL
 
 type ActiveUser = {
 	id: string;

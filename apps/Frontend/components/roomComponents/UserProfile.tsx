@@ -1,8 +1,9 @@
 "use client"
-import { HTTP_BACKEND } from "@/config";
 import Image from "next/image";
 import axios from "axios";
 import { useEffect, useState } from "react";
+
+const HTTP_BACKEND =process.env.HTTP_BACKEND
 
 type UserProfile = {
   id?: string;

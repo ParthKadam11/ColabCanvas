@@ -1,5 +1,4 @@
 "use client";
-import { HTTP_BACKEND } from "@/config";
 import { Input } from "@repo/ui";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -8,6 +7,8 @@ import { useState } from "react";
 type JoinRoomProps = {
   token: string | null;
 };
+
+const HTTP_BACKEND =process.env.HTTP_BACKEND
 
 export function JoinRoom({ token }: JoinRoomProps) {
   const [joinName, setJoinName] = useState("");
