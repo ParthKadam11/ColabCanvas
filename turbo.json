@@ -1,4 +1,9 @@
 {
+  "globalEnv": [
+    "HTTP_BACKEND",
+    "WS_URL",
+    "PRESENCE_URL"
+  ],
   "$schema": "https://v2-8-1.turborepo.dev/schema.json",
   "ui": "stream",
   "tasks": {
@@ -17,9 +22,5 @@
       "cache": false,
       "persistent": false
     }
-  },"globalEnv": [
-    "HTTP_BACKEND",
-    "WS_URL",
-    "PRESENCE_URL"
-  ]
+  }
 }
