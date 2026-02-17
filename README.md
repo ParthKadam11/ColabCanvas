@@ -3,7 +3,7 @@
 
 # ColabCanvas
 
-<video src="ColabCanvas.mov" controls width="600"></video>
+<img src="ColabCanvas.gif" alt="ColabCanvas Demo" width="600"/>
 
 </div>
 
