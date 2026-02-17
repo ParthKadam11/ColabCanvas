@@ -2,8 +2,7 @@
 import { Input } from "@repo/ui";
 import axios from "axios";
 import { useState } from "react";
-
-const HTTP_BACKEND =process.env.HTTP_BACKEND
+import { HTTP_BACKEND } from "@/config";
 
 
 type CreateRoomProps = {

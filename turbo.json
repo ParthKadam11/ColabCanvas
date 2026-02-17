@@ -17,5 +17,9 @@
       "cache": false,
       "persistent": false
     }
-  }
+  },"globalEnv": [
+    "HTTP_BACKEND",
+    "WS_URL",
+    "PRESENCE_URL"
+  ]
 }

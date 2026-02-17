@@ -2,8 +2,7 @@
 import Image from "next/image";
 import axios from "axios";
 import { useEffect, useState } from "react";
-
-const HTTP_BACKEND =process.env.HTTP_BACKEND
+import { HTTP_BACKEND } from "@/config";
 
 type UserProfile = {
   id?: string;

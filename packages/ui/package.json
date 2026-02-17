@@ -4,11 +4,12 @@
   "private": true,
   "exports": {
     ".": {
-      "import": "./dist/input.js",
-      "require": "./dist/input.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
     }
   },
   "scripts": {
+    "build": "tsc",
     "lint": "eslint . --max-warnings 0",
     "generate:component": "turbo gen react-component",
     "check-types": "tsc --noEmit",
