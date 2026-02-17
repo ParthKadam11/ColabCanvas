@@ -1,3 +1,16 @@
+export type Chat = {
+  id: number;
+  roomId: number;
+  message: string;
+  userId: string;
+};
+export type Room = {
+  id: number;
+  slug: string;
+  createdAt: Date;
+  adminId: string;
+};
+
 import { PrismaClient } from './generated/prisma/client.js'
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";

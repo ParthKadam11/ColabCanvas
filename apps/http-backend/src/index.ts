@@ -1,9 +1,10 @@
+import { Room } from "@repo/db/clients";
 import "@repo/types"
 import express from "express";
 import jwt from "jsonwebtoken"
 import { middleware } from "./middleware.js";
 import { CreateRoomSchema, CreateUserSchema, JoinRoomSchema, SigninSchema } from "@repo/common/types.ts";
-import {prismaClient} from "@repo/db/clients"
+import { prismaClient } from "@repo/db/clients"
 import cors from "cors"
 import bcrypt from "bcrypt"
 import multer from "multer"
@@ -168,7 +169,7 @@ app.get("/rooms", middleware, async (req, res) => {
     })
 
     const roomsWithCounts = await Promise.all(
-        rooms.map(async (room) => {
+        rooms.map(async (room: Room) => {
             const chats = await prismaClient.chat.findMany({
                 where: { roomId: room.id },
                 select: { userId: true }
