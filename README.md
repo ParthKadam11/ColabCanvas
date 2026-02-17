@@ -19,19 +19,6 @@ ColabCanvas is a next-generation collaborative whiteboard platform engineered fo
 
 ---
 
-## 🏗️ Architecture Overview
-
-```
-graph TD
-    A[Frontend (Next.js)] -- REST/WS --> B[HTTP Backend (Express)]
-    A -- WebSocket --> C[WS Backend (Node.js)]
-    B -- Prisma ORM --> D[(PostgreSQL)]
-    C -- CRDT Sync --> D
-    A -- Shared Types --> B
-    A -- Shared Types --> C
-    B -- Shared Types --> C
-```
-
 - **Frontend**: Next.js app with advanced canvas rendering, state managed by CRDTs, and real-time updates via WebSocket.
 - **HTTP Backend**: Node.js/Express API for authentication, room management, and file uploads. Uses Prisma for DB access.
 - **WebSocket Backend**: Dedicated Node.js server for real-time canvas sync, presence, and CRDT operations.
