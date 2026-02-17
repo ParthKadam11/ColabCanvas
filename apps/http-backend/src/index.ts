@@ -12,7 +12,7 @@ import path from "path"
 import { fileURLToPath } from "url"
 
 const JWT_SECRET =process.env.JWT_SECRET
-const Frontend_URLS = (process.env.Frontend_URL || "*")
+const Frontend_URLS = (process.env.Frontend_URL || "https://localhost:3000")
     .split(",")
     .map(url => url.trim());
 const __filename = fileURLToPath(import.meta.url)

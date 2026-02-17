@@ -8,8 +8,20 @@ import cors from "cors"
 const JWT_SECRET = process.env.JWT_SECRET;
 const PORT = Number(process.env.PORT ?? 8080);
 
+const Frontend_URLS = (process.env.Frontend_URL || "*")
+  .split(",")
+  .map(url => url.trim());
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (Frontend_URLS.includes("*") || Frontend_URLS.includes(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true
+}));
 
 import http from 'http';
 const server = http.createServer(app);
