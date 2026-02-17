@@ -21,7 +21,7 @@ ColabCanvas is a next-generation collaborative whiteboard platform engineered fo
 
 ## 🏗️ Architecture Overview
 
-```mermaid
+```
 graph TD
     A[Frontend (Next.js)] -- REST/WS --> B[HTTP Backend (Express)]
     A -- WebSocket --> C[WS Backend (Node.js)]
