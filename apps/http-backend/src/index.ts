@@ -12,7 +12,9 @@ import path from "path"
 import { fileURLToPath } from "url"
 
 const JWT_SECRET =process.env.JWT_SECRET
-const Frontend_URL = process.env.Frontend_URL || "*";
+const Frontend_URLS = (process.env.Frontend_URL || "*")
+    .split(",")
+    .map(url => url.trim());
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const UPLOADS_DIR = path.join(__dirname, "..", "uploads")
@@ -41,7 +43,7 @@ const app=express()
 app.use(cors({
     origin: (origin, callback) => {
         if (!origin) return callback(null, true);
-        if (Frontend_URL === "*" || origin === Frontend_URL) {
+        if (Frontend_URLS.includes("*") || Frontend_URLS.includes(origin)) {
             return callback(null, true);
         }
         return callback(new Error("Not allowed by CORS"));
