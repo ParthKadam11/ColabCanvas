@@ -1,4 +1,3 @@
-
 # ColabCanvas
 
 ColabCanvas is a next-generation collaborative whiteboard platform engineered for seamless, real-time teamwork. It combines advanced canvas rendering, low-latency networking, and robust backend infrastructure to deliver a Figma-like experience for brainstorming, diagramming, and ideation.
@@ -43,13 +42,12 @@ graph TD
 
 ## 🧑‍💻 Deep Tech Stack
 
-- **Frontend**: Next.js, React 18, TypeScript, Tailwind CSS, Zustand (or similar) for state, custom CRDT implementation
-- **Real-Time**: Native WebSocket server, custom protocol for efficient binary diff sync, presence, and awareness
+- **Frontend**: Next.js, React 18, TypeScript, Tailwind CSS, custom CRDT implementation
+- **Real-Time**: Native WebSocket server
 - **Backend**: Node.js, Express, Prisma ORM, JWT authentication, REST APIs, file uploads
 - **Database**: PostgreSQL (Dockerized for local dev), Prisma migrations, connection pooling
 - **Monorepo**: pnpm workspaces, TurboRepo for build orchestration, strict type sharing
-- **Testing**: Jest, React Testing Library, supertest for API, integration tests for CRDT logic
-- **DevOps**: Docker, GitHub Actions CI, Vercel/Render/Heroku deploy ready
+- **DevOps**: Docker, GitHub Actions CI, Vercel/Render deploy ready
 
 ---
 
@@ -134,12 +132,6 @@ We welcome contributions! Please open issues, submit PRs, and help us build the 
 
 ## 📄 License
 [MIT](LICENSE)
-
----
-
-## 🙏 Acknowledgements
-- [Yjs](https://yjs.dev/) / [Automerge](https://automerge.org/) inspiration for CRDTs
-- [Next.js](https://nextjs.org/), [Prisma](https://www.prisma.io/), [TurboRepo](https://turbo.build/), [Tailwind CSS](https://tailwindcss.com/)
 
 ---
 
@@ -235,7 +227,7 @@ pnpm exec turbo dev --filter=web
 ### Remote Caching
 
 > [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+> Vercel Remote Cache is free for all plans.	
 
 Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
 
@@ -277,4 +269,5 @@ Learn more about the power of Turborepo:
 - [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
 - [Configuration Options](https://turborepo.dev/docs/reference/configuration)
 - [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+
 # ColabCanvas
