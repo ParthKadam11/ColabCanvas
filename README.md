@@ -3,7 +3,7 @@
 
 # ColabCanvas
 
-![ColabCanvas Demo](./apps/Frontend/public/ColabCanvas.gif)
+<img src="./apps/Frontend/public/ColabCanvas.gif" alt="ColabCanvas Demo" width="600"/>
 
 </div>
 
