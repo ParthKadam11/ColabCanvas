@@ -12,6 +12,7 @@ import path from "path"
 import { fileURLToPath } from "url"
 
 const JWT_SECRET =process.env.JWT_SECRET
+const Frontend_URL=process.env.Frontend_URL
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const UPLOADS_DIR = path.join(__dirname, "..", "uploads")
@@ -37,7 +38,10 @@ const upload = multer({
 })
 
 const app=express()
-app.use(cors())
+app.use(cors({
+    origin:Frontend_URL,
+    credentials:false
+}))
 app.use(express.json())
 app.use("/uploads", express.static(UPLOADS_DIR))
 
