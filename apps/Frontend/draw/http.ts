@@ -1,6 +1,7 @@
 import axios from "axios"
 import { eraseShapes, type Shape } from "./eraser"
-import { HTTP_BACKEND } from "@/config"
+
+const HTTP_BACKEND=process.env.NEXT_PUBLIC_HTTP_BACKEND
 
 export async function getExistingShapes(roomId: string) {
     try {

@@ -1,9 +1,9 @@
 import "@repo/types"
 import { WebSocketServer, WebSocket } from 'ws';
-import jwt from 'jsonwebtoken';
+import jwt  from "jsonwebtoken";
 import {prismaClient} from "@repo/db/clients"
-import express from "express"
 import cors from "cors"
+import express from "express"
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const PORT = Number(process.env.PORT ?? 8080);

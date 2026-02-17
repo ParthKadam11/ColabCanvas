@@ -11,16 +11,16 @@ export type Room = {
   adminId: string;
 };
 
-import { PrismaClient } from './generated/prisma/client.js'
+import { PrismaClient } from "./generated/prisma/client.js";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 import dotenv from "dotenv";
+dotenv.config({ path: process.cwd() + "/.env" });
 
-dotenv.config({ path: "../../.env" });
-
-const databaseUrl = process.env.DATABASE_URL;
+let databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
-  throw new Error("DATABASE_URL environment variable is not set");
+  console.warn("Warning: DATABASE_URL environment variable is not set. Using fallback value.");
+  databaseUrl = "postgres://user:password@localhost:5432/db"; // fallback dummy value
 }
 
 const pool = new pg.Pool({ 

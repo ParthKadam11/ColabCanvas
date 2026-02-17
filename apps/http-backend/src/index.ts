@@ -12,12 +12,14 @@ import path from "path"
 import { fileURLToPath } from "url"
 
 const JWT_SECRET =process.env.JWT_SECRET
-const Frontend_URLS = (process.env.Frontend_URL || "https://localhost:3000")
-    .split(",")
-    .map(url => url.trim().replace(/\/$/, "")); // Remove trailing slash
+const Frontend_URL = process.env.Frontend_URL
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const UPLOADS_DIR = path.join(__dirname, "..", "uploads")
+
+if (!Frontend_URL) {
+  throw new Error("Frontend_URL is not set in environment variables");
+}
 
 const upload = multer({
   storage: multer.diskStorage({
@@ -42,15 +44,14 @@ const upload = multer({
 
 const app = express();
 
-// CORS must be first middleware
 import { CorsOptions } from "cors";
 
 const corsOptions: CorsOptions = {
     origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
         const cleanOrigin = origin ? origin.replace(/\/$/, "") : origin;
-        console.log("CORS check: Frontend_URLS=", Frontend_URLS, "origin=", cleanOrigin);
+        console.log("CORS check: Frontend_URLS=", Frontend_URL, "origin=", cleanOrigin);
         if (!cleanOrigin) return callback(null, true);
-        if (Frontend_URLS.includes("*") || Frontend_URLS.includes(cleanOrigin)) {
+        if (Frontend_URL.includes("*") || Frontend_URL.includes(cleanOrigin)) {
             return callback(null, true);
         }
         return callback(new Error("Not allowed by CORS"));
@@ -58,7 +59,6 @@ const corsOptions: CorsOptions = {
     credentials: true
 };
 app.use(cors(corsOptions));
-// Handle preflight for all routes
 app.options(/^\/.*$/, cors(corsOptions));
 
 app.use(express.json());

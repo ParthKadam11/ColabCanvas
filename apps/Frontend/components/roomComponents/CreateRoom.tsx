@@ -2,8 +2,8 @@
 import { Input } from "@repo/ui";
 import axios from "axios";
 import { useState } from "react";
-import { HTTP_BACKEND } from "@/config";
 
+const HTTP_BACKEND=process.env.NEXT_PUBLIC_HTTP_BACKEND
 
 type CreateRoomProps = {
   token: string | null;

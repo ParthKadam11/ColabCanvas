@@ -2,7 +2,9 @@
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { HTTP_BACKEND } from "@/config";
+
+const HTTP_BACKEND=process.env.NEXT_PUBLIC_HTTP_BACKEND
+
 
 type RoomItem = {
   id: number;

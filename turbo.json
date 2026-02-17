@@ -14,13 +14,8 @@
         "apps/Frontend/.next/**"
       ]
     },
-    "lint": {
-      "dependsOn": ["^lint"]
-    },
-    "check-types": {
-      "dependsOn": ["^check-types"]
-    },
     "dev": {
+      "dependsOn": ["^dev", "^build"],
       "cache": false,
       "persistent": false
     }

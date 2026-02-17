@@ -1,8 +1,9 @@
 "use client"
-import { WS_URL } from "@/config"
 import { useEffect, useState,useRef } from "react"
 import { Canvas } from "./Canvas"
 import { useSearchParams } from "next/navigation"
+
+const WS_URL=process.env.NEXT_PUBLIC_WS_URL
 
 export function RoomCanvas({roomId}:{roomId:string}){
     const [socket,setSocket] =useState<WebSocket|null>(null)
