@@ -1,4 +1,11 @@
+
+<div align="center">
+
 # ColabCanvas
+
+<video src="ColabCanvas.mov" controls width="600"></video>
+
+</div>
 
 ColabCanvas is a next-generation collaborative whiteboard platform engineered for seamless, real-time teamwork. It combines advanced canvas rendering, low-latency networking, and robust backend infrastructure to deliver a Figma-like experience for brainstorming, diagramming, and ideation.
 
@@ -11,7 +18,7 @@ ColabCanvas is a next-generation collaborative whiteboard platform engineered fo
 - **Rich Drawing Tools**: Freehand, shapes, text, eraser, zoom, pan, and multi-user cursors. All tools are modular and extensible.
 - **User Presence & Awareness**: See who is online, their cursor positions, and what they are editing in real time.
 - **Authentication & Room Management**: Secure sign-up/sign-in, room creation/joining, and persistent user sessions.
-- **Optimistic UI & Undo/Redo**: Instant feedback for user actions, with robust undo/redo powered by CRDT history.
+- **Optimistic UI**: Instant feedback for user actions
 - **Scalable Microservices Architecture**: Decoupled HTTP and WebSocket backends, each optimized for their domain (REST APIs, real-time sync, file uploads, etc).
 - **Cloud-Native & Local-First**: Designed for both cloud deployment and local development, with Dockerized Postgres and stateless services.
 - **Type-Safe End-to-End**: Shared TypeScript types across frontend, backend, and database for zero type drift.
@@ -29,12 +36,12 @@ ColabCanvas is a next-generation collaborative whiteboard platform engineered fo
 
 ## 🧑‍💻 Deep Tech Stack
 
-- **Frontend**: Next.js, React 18, TypeScript, Tailwind CSS, custom CRDT implementation
+- **Frontend**: Next.js, React 18, TypeScript, Tailwind CSS, Framer Motion, custom CRDT implementation
 - **Real-Time**: Native WebSocket server
 - **Backend**: Node.js, Express, Prisma ORM, JWT authentication, REST APIs, file uploads
 - **Database**: PostgreSQL (Dockerized for local dev), Prisma migrations, connection pooling
 - **Monorepo**: pnpm workspaces, TurboRepo for build orchestration, strict type sharing
-- **DevOps**: Docker, GitHub Actions CI, Vercel/Render deploy ready
+- **DevOps**: Docker, Vercel/Render deploy ready
 
 ---
 
