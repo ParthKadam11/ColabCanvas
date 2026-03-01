@@ -1,0 +1,16 @@
+name: Keep Render Services Awake
+
+on:
+  schedule:
+    - cron: '*/10 * * * *' # every 10 minutes
+
+jobs:
+  keep-awake:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping HTTP backend
+        run: |
+          curl -sSf https://colabcanvas-http.onrender.com/ || echo "HTTP backend ping failed"
+      - name: Ping WS backend
+        run: |
+          curl -sSf https://colabcanvas-6o60.onrender.com/ || echo "WS backend ping failed"
