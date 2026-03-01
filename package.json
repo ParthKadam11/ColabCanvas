@@ -20,6 +20,7 @@
     "node": ">=20.19.0"
   },
   "dependencies": {
-    "@prisma/client-runtime-utils": "^7.4.0"
+    "@prisma/client-runtime-utils": "^7.4.0",
+    "cloudinary": "^2.9.0"
   }
 }
