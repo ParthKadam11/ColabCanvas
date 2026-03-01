@@ -12,14 +12,14 @@ import path from "path"
 import { fileURLToPath } from "url"
 
 const JWT_SECRET =process.env.JWT_SECRET
-const Frontend_URL = process.env.Frontend_URL
+// Normalize and parse allowed frontend URLs (remove trailing slash, lowercase, trim)
+const Frontend_URLS = (process.env.Frontend_URL || "*")
+    .split(",")
+    .map(url => url.trim().replace(/\/$/, "").toLowerCase());
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const UPLOADS_DIR = path.join(__dirname, "..", "uploads")
 
-if (!Frontend_URL) {
-  throw new Error("Frontend_URL is not set in environment variables");
-}
 
 const upload = multer({
   storage: multer.diskStorage({
@@ -46,14 +46,14 @@ const app = express();
 
 import { CorsOptions } from "cors";
 
+
 const corsOptions: CorsOptions = {
     origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-        const cleanOrigin = origin ? origin.replace(/\/$/, "") : origin;
-        console.log("CORS check: Frontend_URLS=", Frontend_URL, "origin=", cleanOrigin);
-        if (!cleanOrigin) return callback(null, true);
-        if (Frontend_URL.includes("*") || Frontend_URL.includes(cleanOrigin)) {
-            return callback(null, true);
-        }
+        if (!origin) return callback(null, true);
+        const cleanOrigin = origin.replace(/\/$/, "").toLowerCase();
+        if (Frontend_URLS.includes("*")) return callback(null, true);
+        if (Frontend_URLS.includes(cleanOrigin)) return callback(null, true);
+        console.warn(`[CORS] Blocked origin: ${origin} (normalized: ${cleanOrigin}). Allowed:`, Frontend_URLS);
         return callback(new Error("Not allowed by CORS"));
     },
     credentials: true
