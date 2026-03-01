@@ -1,29 +1,10 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
 const VIDEO_WIDTH = 1000;
 
 export default function DemoVideoSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const section = sectionRef.current;
-    const video = videoRef.current;
-    if (!section || !video) return;
-
-    const observer = new window.IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          video.play();
-        } else {
-          video.pause();
-        }
-      },
-      { threshold: 0.3 }
-    );
-    observer.observe(section);
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <section ref={sectionRef} className="w-full py-12 flex flex-col items-center">
@@ -42,6 +23,9 @@ export default function DemoVideoSection() {
             className="w-full h-full object-cover bg-black"
             poster="/video-poster.png"
             loop
+            autoPlay
+            muted
+            playsInline
             style={{ width: '100%', height: '100%' }}
           >
             Sorry, your browser does not support embedded videos.
