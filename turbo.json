@@ -11,7 +11,8 @@
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": [
-        "apps/Frontend/.next/**"
+        "apps/Frontend/.next/**",
+        "packages/ui/dist/**"
       ]
     },
     "dev": {
