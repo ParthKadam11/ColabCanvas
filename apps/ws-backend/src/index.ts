@@ -4,26 +4,59 @@ import jwt  from "jsonwebtoken";
 import {prismaClient} from "@repo/db/clients"
 import cors from "cors"
 import express from "express"
+import http from 'http';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const PORT = Number(process.env.PORT ?? 8080);
 
+// Allow Cloudinary and frontend URLs for CORS
+const CLOUDINARY_DOMAINS = [
+  "https://res.cloudinary.com",
+  "https://api.cloudinary.com"
+];
+
 const Frontend_URLS = (process.env.Frontend_URL || "*")
   .split(",")
-  .map(url => url.trim());
+  .map(url => url.trim().replace(/\/$/, "").toLowerCase())
+  .concat(CLOUDINARY_DOMAINS);
+
 const app = express();
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    if (Frontend_URLS.includes("*") || Frontend_URLS.includes(origin)) {
+    const requestTime = new Date().toISOString();
+    if (!origin) {
+      console.log(`[CORS][${requestTime}] No origin header (non-browser or same-origin request) - allowed.`);
       return callback(null, true);
     }
+    const cleanOrigin = origin.replace(/\/$/, "").toLowerCase();
+    if (Frontend_URLS.includes("*")) {
+      console.log(`[CORS][${requestTime}] '*' in allowed origins. Allowing: ${origin}`);
+      return callback(null, true);
+    }
+    if (Frontend_URLS.includes(cleanOrigin)) {
+      console.log(`[CORS][${requestTime}] Allowed exact match: ${origin}`);
+      return callback(null, true);
+    }
+    // Allow all subdomains of vercel.app (for Vercel preview/branch deployments)
+    if (/\.vercel\.app$/.test(cleanOrigin.replace(/^https?:\/\//, ""))) {
+      console.log(`[CORS][${requestTime}] Allowed Vercel subdomain: ${origin}`);
+      return callback(null, true);
+    }
+    if (/\.cloudinary\.com$/.test(cleanOrigin.replace(/^https?:\/\//, ""))) {
+      console.log(`[CORS][${requestTime}] Allowed Cloudinary subdomain: ${origin}`);
+      return callback(null, true);
+    }
+    if (/^http:\/\/localhost(:\d+)?$/.test(cleanOrigin)) {
+      console.log(`[CORS][${requestTime}] Allowed localhost: ${origin}`);
+      return callback(null, true);
+    }
+    console.warn(`[CORS][${requestTime}] Blocked origin: ${origin} (normalized: ${cleanOrigin}). Allowed:`, Frontend_URLS);
     return callback(new Error("Not allowed by CORS"));
   },
   credentials: true
 }));
 
-import http from 'http';
+
 const server = http.createServer(app);
 
 const wss = new WebSocketServer({ server });
