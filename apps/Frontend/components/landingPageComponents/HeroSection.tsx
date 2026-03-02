@@ -9,13 +9,13 @@ export default function HeroSection() {
       </div>
       <div className="relative z-10 flex flex-col items-center text-center w-full max-w-4xl px-2 sm:px-0">
         <AnimatedBadge>
-          <span className="text-base md:text-lg">✨</span> <span className="text-xs xs:text-sm sm:text-base">Real-time collaborative canvas</span>
+          <span className="text-base md:text-lg ">✨</span> <span className="text-xs xs:text-sm sm:text-base text-shadow-md">Real-time collaborative canvas</span>
         </AnimatedBadge>
         <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-zinc-900 dark:text-white drop-shadow-lg mb-3 sm:mb-4 animate-fade-in-up leading-tight">
-          Draw together. Think visually.<br className="hidden sm:inline" /> Ship faster.
+          Draw together, Work Together.<br className="hidden sm:inline" />
         </h2>
-        <h3 className="text-base xs:text-lg sm:text-xl md:text-2xl font-medium text-zinc-700 dark:text-zinc-200 max-w-xs sm:max-w-xl md:max-w-2xl mb-4 sm:mb-6 animate-fade-in-up delay-100 leading-snug">
-          A simple real-time whiteboard for teams and creators.<br className="hidden sm:inline" /> No installs. Just share a room and start collaborating instantly.
+        <h3 className="text-base xs:text-lg sm:text-xl md:text-2xl font-medium text-white max-w-xs sm:max-w-xl md:max-w-2xl mb-4 sm:mb-6 animate-fade-in-up delay-100 leading-snug">
+           ColabCanvas is a real-time collaborative whiteboard for teams, classrooms, and creators.<br className="hidden sm:inline" /> Draw, annotate, and share ideas visually, Live in your browser. <br className="hidden sm:inline" /> 
         </h3>
         <div className="flex flex-row gap-3 sm:gap-4 mt-2 animate-fade-in-up delay-200 w-full xs:w-auto justify-center items-center flex-wrap">
           <Link

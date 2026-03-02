@@ -1,0 +1,42 @@
+.landingBackground {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  /* Radial gradient: dark theme with subtle color */
+  background: radial-gradient(ellipse 80% 60% at 50% 40%, #232946 0%, #393e5c 40%, #232946 70%, #16161a 100%);
+  /* Subtle blur */
+  filter: blur(8px) brightness(1.04) saturate(1.05);
+  /* Soft glow */
+  box-shadow: 0 0 120px 60px #23294655, 0 0 240px 120px #393e5c33;
+  /* Grain/noise overlay */
+  overflow: hidden;
+}
+
+.landingBackground::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  /* Grain texture using SVG data URI */
+  background: url('data:image/svg+xml;utf8,<svg width="100%25" height="100%25" xmlns="http://www.w3.org/2000/svg"><filter id="n" x="0" y="0"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23n)" opacity="0.08"/></svg>');
+  mix-blend-mode: soft-light;
+}
+
+.landingGlowBlob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px) brightness(1.1);
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 0;
+  animation: floatBlob 12s ease-in-out infinite alternate;
+}
+
+@keyframes floatBlob {
+  0% { transform: translateY(0) scale(1); }
+  100% { transform: translateY(-40px) scale(1.08); }
+}
