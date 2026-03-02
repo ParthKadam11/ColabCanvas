@@ -15,6 +15,7 @@ const CLOUDINARY_DOMAINS = [
   "https://res.cloudinary.com",
   "https://api.cloudinary.com"
 ];
+
 // Set this to your deployed frontend URL, e.g., https://colabcanvas.vercel.app
 const DEPLOYED_FRONTEND = process.env.Frontend_URL;
 const Frontend_URLS = [DEPLOYED_FRONTEND]
@@ -33,7 +34,37 @@ app.use(helmet());
 
 
 const corsOptions: CorsOptions = {
-  origin: DEPLOYED_FRONTEND,
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    const requestTime = new Date().toISOString();
+    if (!origin) {
+      console.log(`[CORS][${requestTime}] No origin header (non-browser or same-origin request) - allowed.`);
+      return callback(null, true);
+    }
+    const cleanOrigin = origin.replace(/\/$/, "").toLowerCase();
+    if (Frontend_URLS.includes("*")) {
+      console.log(`[CORS][${requestTime}] '*' in allowed origins. Allowing: ${origin}`);
+      return callback(null, true);
+    }
+    if (Frontend_URLS.includes(cleanOrigin)) {
+      console.log(`[CORS][${requestTime}] Allowed exact match: ${origin}`);
+      return callback(null, true);
+    }
+    
+    if (/\.vercel\.app$/.test(cleanOrigin.replace(/^https?:\/\//, ""))) {
+      console.log(`[CORS][${requestTime}] Allowed Vercel subdomain: ${origin}`);
+      return callback(null, true);
+    }
+    if (/\.cloudinary\.com$/.test(cleanOrigin.replace(/^https?:\/\//, ""))) {
+      console.log(`[CORS][${requestTime}] Allowed Cloudinary subdomain: ${origin}`);
+      return callback(null, true);
+    }
+    if (/^http:\/\/localhost(:\d+)?$/.test(cleanOrigin)) {
+      console.log(`[CORS][${requestTime}] Allowed localhost: ${origin}`);
+      return callback(null, true);
+    }
+    console.warn(`[CORS][${requestTime}] Blocked origin: ${origin} (normalized: ${cleanOrigin}). Allowed:`, Frontend_URLS);
+    return callback(new Error("Not allowed by CORS"));
+  },
   credentials: true
 };
 
