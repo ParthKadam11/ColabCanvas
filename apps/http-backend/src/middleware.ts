@@ -4,15 +4,15 @@ import jwt, { JwtPayload } from "jsonwebtoken"
 
 export function middleware(req: Request, res: Response, next: NextFunction) {
     let token = "";
-    if (req.headers["authorization"]) {
+    if (req.cookies && req.cookies.token) {
+        token = req.cookies.token;
+    } else if (req.headers["authorization"]) {
         const authHeader = req.headers["authorization"];
         if (typeof authHeader === "string" && authHeader.startsWith("Bearer ")) {
             token = authHeader.slice(7);
         } else if (typeof authHeader === "string") {
             token = authHeader;
         }
-    } else if (req.cookies && req.cookies.token) {
-        token = req.cookies.token;
     }
     const JWT_SECRET = process.env.JWT_SECRET as string;
     try {
