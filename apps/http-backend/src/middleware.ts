@@ -2,8 +2,18 @@ import "@repo/types"
 import { Request, Response, NextFunction } from "express"
 import jwt, { JwtPayload } from "jsonwebtoken"
 
-export function middleware(req:Request,res:Response,next:NextFunction){
-    const token = req.headers["authorization"] ?? "";
+export function middleware(req: Request, res: Response, next: NextFunction) {
+    let token = "";
+    if (req.headers["authorization"]) {
+        const authHeader = req.headers["authorization"];
+        if (typeof authHeader === "string" && authHeader.startsWith("Bearer ")) {
+            token = authHeader.slice(7);
+        } else if (typeof authHeader === "string") {
+            token = authHeader;
+        }
+    } else if (req.cookies && req.cookies.token) {
+        token = req.cookies.token;
+    }
     const JWT_SECRET = process.env.JWT_SECRET as string;
     try {
         const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
@@ -21,5 +31,4 @@ export function middleware(req:Request,res:Response,next:NextFunction){
             error: `${e}`
         });
     }
-
 }

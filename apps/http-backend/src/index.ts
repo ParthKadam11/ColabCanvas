@@ -1,5 +1,6 @@
 import "@repo/types";
 import express from "express";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import path from "path";
 import helmet from "helmet";
@@ -23,7 +24,9 @@ const __dirname = path.dirname(__filename)
 const UPLOADS_DIR = path.join(__dirname, "..", "uploads")
 
 
+
 const app = express();
+app.use(cookieParser());
 
 app.use(helmet());
 
