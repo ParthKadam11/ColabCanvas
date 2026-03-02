@@ -1,6 +1,7 @@
 "use client"
 import { useEffect, useState,useRef } from "react"
 import { Canvas } from "./Canvas"
+import LoadingSpinner from "@/components/LoadingSpinner"
 import { useSearchParams } from "next/navigation"
 
 const WS_URL=process.env.NEXT_PUBLIC_WS_URL
@@ -40,9 +41,10 @@ export function RoomCanvas({roomId}:{roomId:string}){
     },[token,roomId])
 
 
+
     if(!socket){
-        return <div className="flex justify-center items-center">
-            Connecting to the Server..
+        return <div className="flex justify-center items-center h-full w-full">
+            <LoadingSpinner message="Connecting to the server..." />
         </div>
     }
 

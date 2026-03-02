@@ -6,6 +6,7 @@ import { YourRoom } from "@/components/roomComponents/YourRoom";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToken } from "../utils";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function RoomDashboard() {
   const token = useToken();
@@ -15,7 +16,7 @@ export default function RoomDashboard() {
   if (token === null) {
     return (
       <div className="w-screen h-screen flex items-center justify-center bg-gradient-to-br from-zinc-100 via-zinc-200 to-zinc-300 dark:from-black dark:via-zinc-900 dark:to-zinc-800">
-        <div className="text-center text-black bg-white rounded-2xl p-6 shadow-md">Loading...</div>
+        <LoadingSpinner message="Loading profile..." />
       </div>
     );
   }
@@ -35,6 +36,7 @@ export default function RoomDashboard() {
     );
   }
 
+  // Optionally, you can add more loading states for room content if needed
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-zinc-100 via-zinc-200 to-zinc-300 dark:from-black dark:via-zinc-900 dark:to-zinc-800 font-sans">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 py-8 flex flex-col items-center">
