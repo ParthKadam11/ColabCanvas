@@ -4,7 +4,7 @@ import HeroSection from "../components/landingPageComponents/HeroSection";
 import FeaturesSection from "../components/landingPageComponents/FeaturesSection";
 import Footer from "../components/landingPageComponents/Footer";
 import CTASection from "../components/landingPageComponents/CTASection";
-import { HowItWorks } from "@/components/landingPageComponents/HowItWorks";
+import HowItWorks from "@/components/landingPageComponents/HowItWorks";
 import DemoVideoSection from "@/components/landingPageComponents/DemoVideoSection";
 import styles from "./LandingBackground.module.css";
 

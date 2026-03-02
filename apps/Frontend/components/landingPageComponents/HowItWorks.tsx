@@ -1,6 +1,7 @@
+"use client";
 import { motion } from "framer-motion";
 
-export function HowItWorks() {
+export default function HowItWorks() {
   const steps = [
     {
       title: "Create a room",
