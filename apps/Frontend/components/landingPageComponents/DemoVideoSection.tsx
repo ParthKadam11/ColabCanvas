@@ -1,3 +1,4 @@
+"use client"
 import { useRef } from "react";
 
 const VIDEO_WIDTH = 1000;
