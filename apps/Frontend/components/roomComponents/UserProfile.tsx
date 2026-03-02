@@ -58,9 +58,7 @@ export function ProfileInfo({ token }: ProfileInfoProps) {
     };
   }, [token]);
 
-  const photoUrl = profile?.photo
-    ? `${HTTP_BACKEND}/uploads/${profile.photo}`
-    : null;
+  const photoUrl = profile?.photo ? profile.photo : null;
 
   return (
     <div className="w-full max-w-xs sm:max-w-sm h-auto bg-white m-2 sm:m-3 rounded-xl p-3 sm:p-4 flex flex-col justify-center">

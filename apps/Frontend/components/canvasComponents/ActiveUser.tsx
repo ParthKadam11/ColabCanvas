@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 
 const WS_URL=process.env.NEXT_PUBLIC_WS_URL
-const HTTP_BACKEND=process.env.NEXT_PUBLIC_HTTP_BACKEND
 
 type ActiveUser = {
 	id: string;
@@ -75,9 +74,9 @@ export function ActiveUser({
 				<div className="flex flex-wrap items-center gap-2">
 					{visibleUsers.map((user) => (
 						<div key={user.id} title={user.name} className="h-9 w-9 rounded-full bg-slate-200 border border-slate-900 overflow-hidden flex items-center justify-center">
-						    {user.photo ? (
+							{user.photo ? (
 								<Image
-									src={`${HTTP_BACKEND}/uploads/${user.photo}`}
+									src={user.photo}
 									alt={user.name}
 									width={36}
 									height={36}
