@@ -6,7 +6,7 @@ import { YourRoom } from "@/components/roomComponents/YourRoom";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToken } from "../utils";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@/components/roomComponents/LoadingSpinner";
 
 export default function RoomDashboard() {
   const token = useToken();

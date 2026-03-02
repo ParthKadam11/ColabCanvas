@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState,useRef } from "react"
 import { Canvas } from "./Canvas"
-import LoadingSpinner from "@/components/LoadingSpinner"
+import LoadingSpinner from "@/components/roomComponents/LoadingSpinner"
 import { useSearchParams } from "next/navigation"
 
 const WS_URL=process.env.NEXT_PUBLIC_WS_URL

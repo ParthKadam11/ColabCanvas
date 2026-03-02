@@ -3,7 +3,7 @@ import { Input } from "@repo/ui";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
-import LoadingSpinner from "@/components/LoadingSpinner";
+import LoadingSpinner from "@/components/roomComponents/LoadingSpinner";
 import Image from "next/image";
 
 const HTTP_BACKEND=process.env.NEXT_PUBLIC_HTTP_BACKEND
