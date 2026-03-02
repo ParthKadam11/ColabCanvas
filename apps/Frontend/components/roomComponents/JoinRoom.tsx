@@ -1,5 +1,5 @@
 "use client";
-import { Input } from "@repo/ui";
+import { Input }  from "@repo/ui";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -9,7 +9,7 @@ const HTTP_BACKEND=process.env.NEXT_PUBLIC_HTTP_BACKEND
 
 type JoinRoomProps = Record<string, never>;
 
-export function JoinRoom({}: JoinRoomProps) {
+export default function JoinRoom({}: JoinRoomProps) {
   const [joinName, setJoinName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();

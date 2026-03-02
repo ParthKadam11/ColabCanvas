@@ -10,7 +10,7 @@ type CreateRoomProps = {
   onCreated?: () => void;
 };
 
-export function CreateRoom({ onCreated }: CreateRoomProps) {
+export default function CreateRoom({ onCreated }: CreateRoomProps) {
   const [createName, setCreateName] = useState("");
   const [error, setError] = useState<string | null>(null);
 

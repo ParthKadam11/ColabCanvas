@@ -13,7 +13,7 @@ type UserProfile = {
   photo?: string;
 };
 
-export function ProfileInfo() {
+export default function ProfileInfo() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);

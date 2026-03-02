@@ -19,7 +19,7 @@ type YourRoomProps = {
 };
 
 
-export function YourRoom({ refreshKey }: YourRoomProps) {
+export default function YourRoom({ refreshKey }: YourRoomProps) {
   const [rooms, setRooms] = useState<RoomItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

@@ -1,8 +1,8 @@
 "use client";
-import { CreateRoom } from "@/components/roomComponents/CreateRoom";
-import { JoinRoom } from "@/components/roomComponents/JoinRoom";
-import { ProfileInfo } from "@/components/roomComponents/UserProfile";
-import { YourRoom } from "@/components/roomComponents/YourRoom";
+import CreateRoom from "@/components/roomComponents/CreateRoom";
+import JoinRoom from "@/components/roomComponents/JoinRoom";
+import ProfileInfo from "@/components/roomComponents/UserProfile";
+import YourRoom from "@/components/roomComponents/YourRoom";
 import { useState } from "react";
 
 export default function RoomDashboardClient() {

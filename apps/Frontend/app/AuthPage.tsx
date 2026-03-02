@@ -179,3 +179,4 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
     </div>
   );
 }
+export default AuthPage;
