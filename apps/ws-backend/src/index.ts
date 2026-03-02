@@ -175,5 +175,6 @@ app.get("/rooms/:roomId/active-users", async (req: express.Request, res: express
 // Start the unified HTTP+WebSocket server
 server.listen(PORT, () => {
   console.log(`[HTTP/WS] Server running on port ${PORT}`);
-  console.log(`[DEBUG] Access REST API at: http://localhost:${PORT}/rooms/<roomId>/active-users`);
+  // console.log(`[DEBUG] Access REST API at: http://localhost:${PORT}/rooms/<roomId>/active-users`);
+  // Use deployed backend URL for debugging if needed
 });

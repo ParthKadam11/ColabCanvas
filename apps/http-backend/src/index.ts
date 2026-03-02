@@ -64,8 +64,9 @@ app.use(
   },
 );
 
-const server = app.listen(3001, () => {
-  console.log("HTTP backend running on port 3001");
+const PORT = Number(process.env.PORT ?? 3001);
+const server = app.listen(PORT, () => {
+  console.log(`HTTP backend running on port ${PORT}`);
 });
 
 process.on("SIGINT", () => {

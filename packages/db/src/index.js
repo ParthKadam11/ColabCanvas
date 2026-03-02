@@ -6,7 +6,6 @@ dotenv.config({ path: process.cwd() + "/.env" });
 let databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
     console.warn("Warning: DATABASE_URL environment variable is not set. Using fallback value.");
-    databaseUrl = "postgres://user:password@localhost:5432/db"; // fallback dummy value
 }
 const pool = new pg.Pool({
     connectionString: databaseUrl,
