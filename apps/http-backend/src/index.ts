@@ -42,6 +42,11 @@ const corsOptions: CorsOptions = {
       console.log(`[CORS][${requestTime}] Allowed exact match: ${origin}`);
       return callback(null, true);
     }
+    // Allow all subdomains of vercel.app (for Vercel preview/branch deployments)
+    if (/\.vercel\.app$/.test(cleanOrigin.replace(/^https?:\/\//, ""))) {
+      console.log(`[CORS][${requestTime}] Allowed Vercel subdomain: ${origin}`);
+      return callback(null, true);
+    }
     if (/\.cloudinary\.com$/.test(cleanOrigin.replace(/^https?:\/\//, ""))) {
       console.log(`[CORS][${requestTime}] Allowed Cloudinary subdomain: ${origin}`);
       return callback(null, true);
