@@ -15,9 +15,9 @@ const CLOUDINARY_DOMAINS = [
   "https://res.cloudinary.com",
   "https://api.cloudinary.com"
 ];
-const Frontend_URLS = (process.env.Frontend_URL || "*")
-  .split(",")
-  .map(url => url.trim().replace(/\/$/, "").toLowerCase())
+// Set this to your deployed frontend URL, e.g., https://colabcanvas.vercel.app
+const DEPLOYED_FRONTEND = "https://colabcanvas.vercel.app";
+const Frontend_URLS = [DEPLOYED_FRONTEND]
   .concat(CLOUDINARY_DOMAINS);
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
