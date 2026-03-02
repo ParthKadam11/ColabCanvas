@@ -6,5 +6,11 @@
   "exports": {
     ".": "./global.ts",
     "./config": "./global.ts"
+  },
+  "dependencies": {
+    "@types/cookie-parser": "^1.4.10",
+    "cookie-parser": "^1.4.7",
+    "express-rate-limit": "^8.2.1",
+    "helmet": "^8.1.0"
   }
 }

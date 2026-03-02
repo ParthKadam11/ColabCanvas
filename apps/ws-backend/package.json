@@ -11,17 +11,21 @@
     "dev": "node -r dotenv/config src/index.ts"
   },
   "dependencies": {
-    "@repo/db": "workspace:*",
     "@prisma/client": "^7.4.0",
+    "@repo/db": "workspace:*",
     "@repo/types": "workspace:*",
     "@repo/typescript-config": "workspace:*",
+    "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/ws": "^8.18.1",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.2.1",
+    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "ws": "^8.19.0"
   },
@@ -30,11 +34,11 @@
   "license": "ISC",
   "type": "module",
   "devDependencies": {
-    "tsx": "^4.19.0",
-    "@types/node": "^22.15.3",
-    "@types/express": "^5.0.6",
     "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/ws": "^8.18.1"
+    "@types/node": "^22.15.3",
+    "@types/ws": "^8.18.1",
+    "tsx": "^4.19.0"
   }
 }

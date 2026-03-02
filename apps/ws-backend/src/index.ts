@@ -3,13 +3,15 @@ import { WebSocketServer, WebSocket } from 'ws';
 import jwt  from "jsonwebtoken";
 import {prismaClient} from "@repo/db/clients"
 import cors from "cors"
+import cookieParser from "cookie-parser"
 import express from "express"
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import http from 'http';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const PORT = Number(process.env.PORT ?? 8080);
 
-// Allow Cloudinary and frontend URLs for CORS
 const CLOUDINARY_DOMAINS = [
   "https://res.cloudinary.com",
   "https://api.cloudinary.com"
@@ -21,6 +23,17 @@ const Frontend_URLS = (process.env.Frontend_URL || "*")
   .concat(CLOUDINARY_DOMAINS);
 
 const app = express();
+
+app.use(helmet());
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many requests, please try again later." }
+});
+app.use(apiLimiter);
 app.use(cors({
   origin: (origin, callback) => {
     const requestTime = new Date().toISOString();
@@ -37,7 +50,6 @@ app.use(cors({
       console.log(`[CORS][${requestTime}] Allowed exact match: ${origin}`);
       return callback(null, true);
     }
-    // Allow all subdomains of vercel.app (for Vercel preview/branch deployments)
     if (/\.vercel\.app$/.test(cleanOrigin.replace(/^https?:\/\//, ""))) {
       console.log(`[CORS][${requestTime}] Allowed Vercel subdomain: ${origin}`);
       return callback(null, true);
@@ -55,6 +67,7 @@ app.use(cors({
   },
   credentials: true
 }));
+app.use(cookieParser());
 
 
 const server = http.createServer(app);
@@ -86,8 +99,14 @@ function checkUser(token:string):string |null{
 wss.on("connection", function connection(ws, request) {
   const url = request.url;
   if (!url) return
-  const queryParams = new URLSearchParams(url.split("?")[1]);
-  const token = queryParams.get("token") ?? "";
+    let token = "";
+    if (request.headers.cookie) {
+      const cookies = Object.fromEntries(request.headers.cookie.split(';').map(c => {
+        const [k, ...v] = c.trim().split('=');
+        return [k, decodeURIComponent(v.join('='))];
+      }));
+      token = cookies["token"] || "";
+    }
   const userId = checkUser(token);
   if (userId == null) {
     ws.close();
@@ -172,42 +191,36 @@ process.on("SIGINT", () => {
 });
 
 app.get("/rooms/:roomId/active-users", async (req: express.Request, res: express.Response) => {
-  console.log(`[DEBUG] Received active-users request for room: ${req.params.roomId}`);
-  console.log(`[DEBUG] Current users array:`, users);
-  const authHeader = req.headers["authorization"]
-  const token = Array.isArray(authHeader) ? authHeader[0] : authHeader ?? ""
-  const userId = checkUser(token)
-  if (!userId) {
-    res.status(403).json({ message: "Unauthorized" })
-    return
+  try {
+    const token = req.cookies?.token || "";
+    const userId = checkUser(token);
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const roomIdParam = req.params.roomId;
+    const roomId = Array.isArray(roomIdParam) ? roomIdParam[0] : roomIdParam;
+    if (!roomId) {
+      return res.status(400).json({ message: "Invalid room" });
+    }
+    const activeUserIds = Array.from(
+      new Set(users.filter((u) => u.rooms.includes(roomId)).map((u) => u.userId))
+    );
+
+    if (activeUserIds.length === 0) {
+      return res.status(200).json({ users: [] });
+    }
+
+    const activeUsers = await prismaClient.user.findMany({
+      where: { id: { in: activeUserIds } },
+      select: { id: true, name: true, photo: true }
+    });
+    return res.status(200).json({ users: activeUsers });
+  } catch (e) {
+    return res.status(500).json({ message: "Internal server error" });
   }
-
-  const roomIdParam = req.params.roomId
-  const roomId = Array.isArray(roomIdParam) ? roomIdParam[0] : roomIdParam
-  if (!roomId) {
-    res.status(400).json({ message: "Invalid room" })
-    return
-  }
-  const activeUserIds = Array.from(
-    new Set(users.filter((u) => u.rooms.includes(roomId)).map((u) => u.userId))
-  )
-
-  if (activeUserIds.length === 0) {
-    res.json({ users: [] })
-    return
-  }
-
-  const activeUsers = await prismaClient.user.findMany({
-    where: { id: { in: activeUserIds } },
-    select: { id: true, name: true, photo: true }
-  })
-
-  res.json({ users: activeUsers })
 })
 
-// Start the unified HTTP+WebSocket server
 server.listen(PORT, () => {
   console.log(`[HTTP/WS] Server running on port ${PORT}`);
-  // console.log(`[DEBUG] Access REST API at: http://localhost:${PORT}/rooms/<roomId>/active-users`);
-  // Use deployed backend URL for debugging if needed
 });

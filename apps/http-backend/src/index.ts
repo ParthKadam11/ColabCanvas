@@ -2,6 +2,7 @@ import "@repo/types";
 import express from "express";
 import cors from "cors";
 import path from "path";
+import helmet from "helmet";
 import { fileURLToPath } from "url";
 import authRouter from "./routes/auth.js";
 import userRouter from "./routes/user.js";
@@ -9,7 +10,6 @@ import { CorsOptions } from "cors";
 import multer from "multer";
 import roomRouter from "./routes/room.js";
 
-// Allow Cloudinary and frontend URLs for CORS
 const CLOUDINARY_DOMAINS = [
   "https://res.cloudinary.com",
   "https://api.cloudinary.com"
@@ -24,6 +24,9 @@ const UPLOADS_DIR = path.join(__dirname, "..", "uploads")
 
 
 const app = express();
+
+app.use(helmet());
+
 
 
 const corsOptions: CorsOptions = {
@@ -42,7 +45,7 @@ const corsOptions: CorsOptions = {
       console.log(`[CORS][${requestTime}] Allowed exact match: ${origin}`);
       return callback(null, true);
     }
-    // Allow all subdomains of vercel.app (for Vercel preview/branch deployments)
+    
     if (/\.vercel\.app$/.test(cleanOrigin.replace(/^https?:\/\//, ""))) {
       console.log(`[CORS][${requestTime}] Allowed Vercel subdomain: ${origin}`);
       return callback(null, true);

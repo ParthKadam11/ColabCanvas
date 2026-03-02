@@ -22,7 +22,6 @@ router.get("/users/:userId/photo", middleware, async (req, res) => {
   if (user.photo.startsWith("http://") || user.photo.startsWith("https://")) {
     return res.redirect(user.photo);
   }
-  // Legacy: fallback to uploads folder (not recommended for production)
   res.status(410).json({ message: "Legacy local photo not supported. Please re-upload your profile photo." });
 });
 

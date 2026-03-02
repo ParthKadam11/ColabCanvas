@@ -24,8 +24,12 @@
     "@prisma/adapter-pg": "^7.4.0",
     "@prisma/client": "^7.4.0",
     "@prisma/extension-accelerate": "^3.0.1",
+    "@types/cookie-parser": "^1.4.10",
     "@types/pg": "^8.16.0",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^16.6.1",
+    "express-rate-limit": "^8.2.1",
+    "helmet": "^8.1.0",
     "pg": "^8.18.0"
   }
 }
