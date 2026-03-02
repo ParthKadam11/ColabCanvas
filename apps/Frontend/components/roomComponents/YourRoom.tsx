@@ -13,22 +13,23 @@ type RoomItem = {
   memberCount: number;
 };
 
+
 type YourRoomProps = {
-  token: string | null;
   refreshKey?: number;
 };
 
-export function YourRoom({ token, refreshKey }: YourRoomProps) {
+
+export function YourRoom({ refreshKey }: YourRoomProps) {
   const [rooms, setRooms] = useState<RoomItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const loadRooms = async (authToken: string) => {
+  const loadRooms = async () => {
     try {
       setLoading(true);
       const response = await axios.get(`${HTTP_BACKEND}/rooms`, {
-        headers: { authorization: authToken },
+        withCredentials: true,
       });
       setRooms(response.data?.rooms ?? []);
       setError(null);
@@ -41,15 +42,13 @@ export function YourRoom({ token, refreshKey }: YourRoomProps) {
   };
 
   useEffect(() => {
-    if (!token) return;
-    loadRooms(token);
-  }, [token, refreshKey]);
+    loadRooms();
+  }, [refreshKey]);
 
   const handleDelete = async (roomId: number) => {
-    if (!token) return;
     try {
       await axios.delete(`${HTTP_BACKEND}/room/${roomId}`, {
-        headers: { authorization: token },
+        withCredentials: true,
       });
       setRooms((prev) => prev.filter((room) => room.id !== roomId));
     } catch (e: unknown) {
@@ -97,7 +96,7 @@ export function YourRoom({ token, refreshKey }: YourRoomProps) {
             </div>
             <div className="flex gap-1 xs:gap-2 mt-1 xs:mt-0">
               <button className="rounded-lg border border-zinc-300 px-3 xs:px-4 py-1.5 xs:py-2 text-sm xs:text-base text-white bg-blue-600" onClick={() =>
-                  router.push(`/canvas/${room.id}?token=${token}`)
+                  router.push(`/canvas/${room.id}`)
                 }>Open </button>
               <button className="rounded-lg border border-red-200 px-3 xs:px-4 py-1.5 xs:py-2 text-sm xs:text-base text-white bg-red-600/80" onClick={() => handleDelete(room.id)}> Delete </button>
             </div>

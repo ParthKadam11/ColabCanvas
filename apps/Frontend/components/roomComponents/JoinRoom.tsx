@@ -6,26 +6,25 @@ import { useState } from "react";
 
 const HTTP_BACKEND=process.env.NEXT_PUBLIC_HTTP_BACKEND
 
-type JoinRoomProps = {
-  token: string | null;
-};
 
-export function JoinRoom({ token }: JoinRoomProps) {
+type JoinRoomProps = Record<string, never>;
+
+export function JoinRoom({}: JoinRoomProps) {
   const [joinName, setJoinName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleJoin = async () => {
-    if (!token || !joinName.trim()) return;
+    if (!joinName.trim()) return;
     try {
       const response = await axios.post(
         `${HTTP_BACKEND}/room/join`,
         { roomname: joinName.trim() },
-        { headers: { authorization: token } },
+        { withCredentials: true },
       );
       const roomId = response.data?.roomId;
       if (roomId) {
-        router.push(`/canvas/${roomId}?token=${token}`);
+        router.push(`/canvas/${roomId}`);
       }
       setError(null);
     } catch (e) {

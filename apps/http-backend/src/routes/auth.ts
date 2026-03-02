@@ -72,24 +72,23 @@ router.post("/signin", async (req, res) => {
 
   const user = await prismaClient.user.findFirst({ where: { email } });
   if (!user) {
-    res.json({
-      message: "Not Authorized",
-    });
-    return;
+    return res.status(401).json({ message: "Not Authorized" });
   }
 
   const isValid = await bcrypt.compare(password, user.password);
   if (!isValid) {
-    res.json({
-      message: "Not Authorized",
-    });
-    return;
+    return res.status(401).json({ message: "Not Authorized" });
   }
 
-  const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string);
-  res.json({
-    token,
+  const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string, { expiresIn: "7d" });
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    path: "/"
   });
+  res.json({ message: "Signed in successfully" });
 });
 
 router.get("/profile", middleware, async (req, res) => {

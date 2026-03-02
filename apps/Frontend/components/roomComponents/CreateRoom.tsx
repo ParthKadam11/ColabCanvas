@@ -5,22 +5,22 @@ import { useState } from "react";
 
 const HTTP_BACKEND=process.env.NEXT_PUBLIC_HTTP_BACKEND
 
+
 type CreateRoomProps = {
-  token: string | null;
   onCreated?: () => void;
 };
 
-export function CreateRoom({ token, onCreated }: CreateRoomProps) {
+export function CreateRoom({ onCreated }: CreateRoomProps) {
   const [createName, setCreateName] = useState("");
   const [error, setError] = useState<string | null>(null);
 
   const handleCreate = async () => {
-    if (!token || !createName.trim()) return;
+    if (!createName.trim()) return;
     try {
       await axios.post(
         `${HTTP_BACKEND}/room`,
         { roomname: createName.trim() },
-        { headers: { authorization: token } },
+        { withCredentials: true },
       );
       setCreateName("");
       setError(null);

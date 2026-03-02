@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 const HTTP_BACKEND=process.env.NEXT_PUBLIC_HTTP_BACKEND
 
+
 type UserProfile = {
   id?: string;
   name?: string;
@@ -12,25 +13,18 @@ type UserProfile = {
   photo?: string;
 };
 
-type ProfileInfoProps = {
-  token: string | null;
-};
-
-export function ProfileInfo({ token }: ProfileInfoProps) {
-
+export function ProfileInfo() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!token) return;
     let cancelled = false;
-
     const loadProfile = async () => {
       try {
         setProfileLoading(true);
         const response = await axios.get(`${HTTP_BACKEND}/profile`, {
-          headers: { authorization: token },
+          withCredentials: true,
         });
         if (cancelled) return;
         const data = response.data?.user ?? response.data;
@@ -46,17 +40,14 @@ export function ProfileInfo({ token }: ProfileInfoProps) {
         setProfileError("Failed to load profile");
         console.log(e);
       } finally {
-        if (!cancelled) {
-          setProfileLoading(false);
-        }
+        if (!cancelled) setProfileLoading(false);
       }
     };
-
     loadProfile();
     return () => {
       cancelled = true;
     };
-  }, [token]);
+  }, []);
 
   const photoUrl = profile?.photo ? profile.photo : null;
 
