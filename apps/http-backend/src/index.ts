@@ -16,22 +16,16 @@ const CLOUDINARY_DOMAINS = [
   "https://api.cloudinary.com"
 ];
 
-// Set this to your deployed frontend URL, e.g., https://colabcanvas.vercel.app
-const DEPLOYED_FRONTEND = process.env.Frontend_URL;
-const Frontend_URLS = [DEPLOYED_FRONTEND]
-  .concat(CLOUDINARY_DOMAINS);
+const DEPLOYED_FRONTEND = process.env.Frontend_URL?.split(",").map(url => url.trim()) ?? [];
+const Frontend_URLS = DEPLOYED_FRONTEND.concat(CLOUDINARY_DOMAINS);
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const UPLOADS_DIR = path.join(__dirname, "..", "uploads")
-
-
 
 const app = express();
 app.use(cookieParser());
 
 app.use(helmet());
-
-
 
 const corsOptions: CorsOptions = {
   origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
