@@ -1,3 +1,8 @@
+html, body {
+  color-scheme: dark;
+  background: #18181b !important;
+  color: #e5e7eb;
+}
 html {
   scroll-behavior: smooth;
 }

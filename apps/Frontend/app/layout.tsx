@@ -65,12 +65,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+        <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <meta name="google-site-verification" content="wK6o9NHbyALWjDTaXEkDSRHeyUP3gWFuGqioGXtCZ-w" />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <body className={"bg-black text-white " + `${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
       </body>
     </html>

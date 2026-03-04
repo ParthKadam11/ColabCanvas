@@ -1,5 +1,10 @@
 import RoomDashboardClient from "./RoomDashboardClient";
 
 export default function RoomDashboard() {
-  return <RoomDashboardClient />;
+  return (
+    <main className="bg-black text-white">
+      <RoomDashboardClient />
+    </main>
+  );
+}
 }

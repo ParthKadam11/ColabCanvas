@@ -1,5 +1,9 @@
 import { AuthPage } from "@/app/AuthPage";
 
 export default function SignUpPage() {
-  return <AuthPage isSignin={false} />
+  return (
+    <main className="bg-black text-white">
+      <AuthPage isSignin={false} />
+    </main>
+  );
 }
