@@ -9,7 +9,7 @@ export default function RoomDashboardClient() {
   const [roomsRefreshKey, setRoomsRefreshKey] = useState(0);
 
   return (
-    <div className="relative min-h-screen bg-black text-white font-sans">
+    <div className="relative min-h-screen bg-gradient-to-br from-zinc-100 via-zinc-200 to-zinc-300 dark:from-black dark:via-zinc-900 dark:to-zinc-800 font-sans">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 py-8 flex flex-col items-center">
         <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8 mt-2">
           <div className="flex flex-col items-start">
@@ -21,7 +21,7 @@ export default function RoomDashboardClient() {
           </div>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2 w-full text-white">
+        <div className="grid gap-8 md:grid-cols-2 w-full text-black">
             <CreateRoom onCreated={() => setRoomsRefreshKey((prev) => prev + 1)}/>
             <JoinRoom />
         </div>
