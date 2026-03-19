@@ -9,10 +9,7 @@ const WS_URL=process.env.NEXT_PUBLIC_WS_URL
 export function RoomCanvas({roomId}:{roomId:string}){
     const [socket,setSocket] =useState<WebSocket|null>(null)
     const wsRef = useRef<WebSocket | null>(null)
-
-    const url = useSearchParams();
-    const token = url.get("token");
-    console.log("RoomCanvas: roomId=", roomId, "token=", token);
+    console.log("RoomCanvas: roomId=", roomId);
 
     useEffect(()=>{
         const data = JSON.stringify({
@@ -24,12 +21,12 @@ export function RoomCanvas({roomId}:{roomId:string}){
             wsRef.current.send(data);
             return;
         }
-        if (!token || !roomId) {
-            console.warn("RoomCanvas: Missing token or roomId, skipping WebSocket connection.", { token, roomId });
+        if (!roomId) {
+            console.warn("RoomCanvas: Missing roomId, skipping WebSocket connection.", { roomId });
             return;
         }
-        console.log("RoomCanvas: Attempting WebSocket connection to", `${WS_URL}?token=${token}`);
-        const ws = new WebSocket(`${WS_URL}?token=${token}`);
+        console.log("RoomCanvas: Attempting WebSocket connection to", WS_URL);
+        const ws = new WebSocket(WS_URL);
         wsRef.current = ws;
 
         ws.onopen = () => {
@@ -52,8 +49,7 @@ export function RoomCanvas({roomId}:{roomId:string}){
         return () => {
             ws.close();
         };
-    }, [token, roomId]);
-
+    }, [roomId]);
 
 
     if(!socket){
@@ -62,7 +58,7 @@ export function RoomCanvas({roomId}:{roomId:string}){
         </div>
     }
 
-return <div className="w-screen h-screen overflow:hidden">
-        <Canvas roomId={roomId} socket={socket} token={token ?? ""} />
+    return <div className="w-screen h-screen overflow:hidden">
+        <Canvas roomId={roomId} socket={socket} token="" />
     </div>
 }
