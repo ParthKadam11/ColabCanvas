@@ -91,15 +91,8 @@ router.post("/signin", authLimiter, async (req, res) => {
     }
 
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string, { expiresIn: "7d" });
-    const isProduction = process.env.NODE_ENV === "production";
-    res.cookie("token", token, {
-      httpOnly: false, // allow frontend JS access for WebSocket
-      secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      path: "/"
-    });
-    return res.status(200).json({ message: "Signed in successfully" });
+    // Return token in response for localStorage
+    return res.status(200).json({ message: "Signed in successfully", token });
   } catch (e) {
     return res.status(500).json({ message: "Internal server error" });
   }

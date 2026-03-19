@@ -127,30 +127,12 @@ wss.on("connection", function connection(ws, request) {
     return;
   }
   let token = "";
-  // Try cookie first
-  if (request.headers.cookie) {
-    console.log("[WS] Cookies received:", request.headers.cookie);
-    const cookies = Object.fromEntries(
-      request.headers.cookie.split(";").map((c) => {
-        const [k, ...v] = c.trim().split("=");
-        return [k, decodeURIComponent(v.join("="))];
-      }),
-    );
-    token = cookies["token"] || "";
-    console.log("[WS] Parsed token from cookie:", token);
-  }
-  // Try custom header (Sec-WebSocket-Protocol or custom header)
-  if (!token && request.headers["sec-websocket-protocol"]) {
-    const header = request.headers["sec-websocket-protocol"];
-    token = Array.isArray(header) ? (header[0] ?? "") : (header ?? "");
-    console.log("[WS] Parsed token from sec-websocket-protocol:", token);
-  }
-  // Accept token from custom header (e.g. x-auth-token)
-  if (!token && request.headers["x-auth-token"]) {
-    const header = request.headers["x-auth-token"];
-    token = Array.isArray(header) ? (header[0] ?? "") : (header ?? "");
-    console.log("[WS] Parsed token from x-auth-token:", token);
-  }
+  // Extract token from URL query parameter
+  const host = request.headers.host || "localhost";
+  const urlString = request.url || "/";
+  const urlObj = new URL(urlString, `http://${host}`);
+  token = urlObj.searchParams.get("token") || "";
+  console.log("[WS] Parsed token from URL query:", token);
   // If still no token, wait for join_room message and check token there
   let userId: string | null = null;
   if (token) {

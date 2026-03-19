@@ -1,6 +1,6 @@
 "use client"
 import { useEffect, useState, useRef } from "react"
-import { getCookie } from "@/utils/cookie"
+// Removed cookie import, using localStorage
 import { Canvas } from "./Canvas"
 import LoadingSpinner from "@/components/roomComponents/LoadingSpinner"
 
@@ -30,15 +30,13 @@ export function RoomCanvas({roomId}:{roomId:string}){
             console.error("RoomCanvas: WS_URL is not defined. Cannot connect to WebSocket server.");
             return;
         }
-        console.log("RoomCanvas: Attempting WebSocket connection to", WS_URL);
-        const token = getCookie("token");
-        // Create WebSocket and set custom header
+        const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : "";
+        const wsUrlWithToken = token ? `${WS_URL}?token=${encodeURIComponent(token)}` : WS_URL;
         let ws: WebSocket;
         if (typeof window !== "undefined" && window.WebSocket) {
-            ws = new window.WebSocket(WS_URL, token || undefined);
+            ws = new window.WebSocket(wsUrlWithToken);
             wsRef.current = ws;
             ws.onopen = () => {
-                // Send token as custom header in first message
                 setSocket(ws);
                 ws.send(JSON.stringify({
                     type: "join_room",
@@ -68,6 +66,6 @@ export function RoomCanvas({roomId}:{roomId:string}){
     }
 
     return <div className="w-screen h-screen overflow:hidden">
-        <Canvas roomId={roomId} socket={socket} token={getCookie("token") || ""} />
+        <Canvas roomId={roomId} socket={socket} token={typeof window !== "undefined" ? window.localStorage.getItem("token") || "" : ""} />
     </div>
 }
