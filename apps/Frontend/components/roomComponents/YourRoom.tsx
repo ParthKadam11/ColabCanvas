@@ -29,13 +29,19 @@ export default function YourRoom({ refreshKey }: YourRoomProps) {
     try {
       setLoading(true);
       const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : "";
+      console.log("[YourRoom] Token from localStorage:", token);
+      if (!token) {
+        setError("No authentication token found. Please sign in.");
+        setLoading(false);
+        return;
+      }
       const response = await axios.get(`${HTTP_BACKEND}/rooms`, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        headers: { Authorization: `Bearer ${token}` },
       });
       setRooms(response.data?.rooms ?? []);
       setError(null);
     } catch (e) {
-      setError("Failed to load rooms");
+      setError("Failed to load rooms. Check authentication token and backend URL.");
       console.log(e);
     } finally {
       setLoading(false);
