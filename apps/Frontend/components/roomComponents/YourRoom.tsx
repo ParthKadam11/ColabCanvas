@@ -28,8 +28,9 @@ export default function YourRoom({ refreshKey }: YourRoomProps) {
   const loadRooms = async () => {
     try {
       setLoading(true);
+      const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : "";
       const response = await axios.get(`${HTTP_BACKEND}/rooms`, {
-        withCredentials: true,
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       setRooms(response.data?.rooms ?? []);
       setError(null);
@@ -47,8 +48,9 @@ export default function YourRoom({ refreshKey }: YourRoomProps) {
 
   const handleDelete = async (roomId: number) => {
     try {
+      const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : "";
       await axios.delete(`${HTTP_BACKEND}/room/${roomId}`, {
-        withCredentials: true,
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
       setRooms((prev) => prev.filter((room) => room.id !== roomId));
     } catch (e: unknown) {
@@ -58,12 +60,7 @@ export default function YourRoom({ refreshKey }: YourRoomProps) {
           console.error('Delete room error:', {
             status: e.response.status,
             data: e.response.data,
-            headers: e.response.headers,
           });
-        } else if (e.request) {
-          console.error('Delete room error: No response received', e.request);
-        } else {
-          console.error('Delete room error:', e.message);
         }
       } else {
         console.error('Delete room error:', e);
