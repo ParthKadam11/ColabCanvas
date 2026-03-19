@@ -265,7 +265,9 @@ app.get(
   "/rooms/:roomId/active-users",
   async (req: express.Request, res: express.Response) => {
     try {
-      const token = req.cookies?.token || "";
+      // Get token from Authorization header
+      const authHeader = req.headers.authorization || "";
+      const token = authHeader.startsWith("Bearer ") ? authHeader.slice(7) : authHeader;
       const userId = checkUser(token);
       if (!userId) {
         return res.status(401).json({ message: "Unauthorized" });
