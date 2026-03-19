@@ -112,6 +112,15 @@ wss.on("connection", function connection(ws, request) {
   const url = request.url;
   console.log("[WS] New connection request:", url);
   console.log("[WS] Request headers:", request.headers);
+  ws.on("open", () => {
+    console.log("[WS] Connection opened.");
+  });
+  ws.on("close", () => {
+    console.log("[WS] Connection closed.");
+  });
+  ws.on("error", (err) => {
+    console.error("[WS] Connection error:", err);
+  });
   if (!url) {
     console.warn("[WS] No URL in request, closing.");
     ws.close();
@@ -173,6 +182,7 @@ wss.on("connection", function connection(ws, request) {
       return;
     }
     console.log("[WS] Parsed message:", parsedData);
+    console.log(`[WS] userId: ${userId}, message type: ${parsedData.type}`);
     // If userId not set, check token in join_room message
     if (!userId && parsedData.type === "join_room" && parsedData.token) {
       userId = checkUser(parsedData.token);
@@ -191,7 +201,11 @@ wss.on("connection", function connection(ws, request) {
     if (parsedData.type === "join_room") {
       const user = users.find((x) => x.ws == ws);
       console.log("[WS] Adding user to room:", parsedData.roomId, user);
+      if (!user) {
+        console.warn("[WS] No user found for join_room.");
+      }
       user?.rooms.push(parsedData.roomId);
+      console.log(`[WS] User rooms after join: ${user?.rooms}`);
     }
 
     if (parsedData.type === "leave_room") {
@@ -207,10 +221,10 @@ wss.on("connection", function connection(ws, request) {
       const roomId = parsedData.roomId;
       const message = parsedData.message;
       console.log("[WS] Broadcasting chat message:", roomId, message);
-
+      let sentCount = 0;
       users.forEach((user) => {
         if (user.rooms.includes(roomId)) {
-          console.log("[WS] Sending chat to:", user.userId);
+          console.log(`Sending chat to userId: ${user.userId}, rooms: ${user.rooms}`);
           user.ws.send(
             JSON.stringify({
               type: "chat",
@@ -218,8 +232,10 @@ wss.on("connection", function connection(ws, request) {
               roomId,
             }),
           );
+          sentCount++;
         }
-      })
+      });
+      console.log(`[WS] Chat message sent to ${sentCount} users in room ${roomId}`);
 
       try {
         const userIdString = typeof userId === "string" ? userId : "";
