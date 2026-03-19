@@ -23,8 +23,14 @@ export default function JoinRoom({}: JoinRoomProps) {
         { withCredentials: true },
       );
       const roomId = response.data?.roomId;
+      // Try to get token from cookies
+      let token = "";
+      if (typeof window !== "undefined") {
+        const match = document.cookie.match(/token=([^;]+)/);
+        if (match) token = match[1];
+      }
       if (roomId) {
-        router.push(`/canvas/${roomId}`);
+        router.push(`/canvas/${roomId}?token=${token}`);
       }
       setError(null);
     } catch (e) {
