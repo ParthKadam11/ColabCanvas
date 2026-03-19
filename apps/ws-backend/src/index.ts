@@ -133,13 +133,13 @@ wss.on("connection", function connection(ws, request) {
   // Try custom header (Sec-WebSocket-Protocol or custom header)
   if (!token && request.headers["sec-websocket-protocol"]) {
     const header = request.headers["sec-websocket-protocol"];
-    token = Array.isArray(header) ? header[0] : header;
+    token = Array.isArray(header) ? (header[0] ?? "") : (header ?? "");
     console.log("[WS] Parsed token from sec-websocket-protocol:", token);
   }
   // Accept token from custom header (e.g. x-auth-token)
   if (!token && request.headers["x-auth-token"]) {
     const header = request.headers["x-auth-token"];
-    const token = Array.isArray(header) ? header[0] : header;
+    token = Array.isArray(header) ? (header[0] ?? "") : (header ?? "");
     console.log("[WS] Parsed token from x-auth-token:", token);
   }
   // If still no token, wait for join_room message and check token there
