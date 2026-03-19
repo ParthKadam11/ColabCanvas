@@ -17,11 +17,14 @@ export default function CreateRoom({ onCreated }: CreateRoomProps) {
   const handleCreate = async () => {
     if (!createName.trim()) return;
     try {
-      await axios.post(
-        `${HTTP_BACKEND}/room`,
-        { roomname: createName.trim() },
-        { withCredentials: true },
-      );
+        const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : "";
+        await axios.post(
+          `${HTTP_BACKEND}/room`,
+          { roomname: createName.trim() },
+          {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+          },
+        );
       setCreateName("");
       setError(null);
       onCreated?.();

@@ -23,9 +23,10 @@ export default function ProfileInfo() {
     const loadProfile = async () => {
       try {
         setProfileLoading(true);
-        const response = await axios.get(`${HTTP_BACKEND}/profile`, {
-          withCredentials: true,
-        });
+          const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : "";
+          const response = await axios.get(`${HTTP_BACKEND}/profile`, {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+          });
         if (cancelled) return;
         const data = response.data?.user ?? response.data;
         setProfile({
