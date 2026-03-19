@@ -98,20 +98,31 @@ function checkUser(token:string):string |null{
 
 wss.on("connection", function connection(ws, request) {
   const url = request.url;
-  if (!url) return
-    let token = "";
-    if (request.headers.cookie) {
-      const cookies = Object.fromEntries(request.headers.cookie.split(';').map(c => {
-        const [k, ...v] = c.trim().split('=');
-        return [k, decodeURIComponent(v.join('='))];
-      }));
-      token = cookies["token"] || "";
-    }
-  const userId = checkUser(token);
-  if (userId == null) {
+  console.log("[WS] New connection request:", url);
+  if (!url) {
+    console.warn("[WS] No URL in request, closing.");
     ws.close();
     return;
   }
+  let token = "";
+  if (request.headers.cookie) {
+    console.log("[WS] Cookies received:", request.headers.cookie);
+    const cookies = Object.fromEntries(request.headers.cookie.split(';').map(c => {
+      const [k, ...v] = c.trim().split('=');
+      return [k, decodeURIComponent(v.join('='))];
+    }));
+    token = cookies["token"] || "";
+    console.log("[WS] Parsed token:", token);
+  } else {
+    console.warn("[WS] No cookies in request.");
+  }
+  const userId = checkUser(token);
+  if (userId == null) {
+    console.warn("[WS] Invalid or missing token, closing connection.");
+    ws.close();
+    return;
+  }
+  console.log("[WS] Authenticated userId:", userId);
   users.push({
     userId,
     rooms: [],
@@ -175,6 +186,7 @@ wss.on("connection", function connection(ws, request) {
     if (index > -1) {
       users.splice(index, 1);
     }
+    console.log("[WS] Connection closed for user.", { index });
   });
 });
 
