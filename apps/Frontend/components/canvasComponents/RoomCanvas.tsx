@@ -2,7 +2,7 @@
 import { useEffect, useState,useRef } from "react"
 import { Canvas } from "./Canvas"
 import LoadingSpinner from "@/components/roomComponents/LoadingSpinner"
-import { useSearchParams } from "next/navigation"
+
 
 const WS_URL=process.env.NEXT_PUBLIC_WS_URL
 
@@ -48,6 +48,10 @@ export function RoomCanvas({roomId}:{roomId:string}){
 
         ws.onclose = (event) => {
             console.warn("WebSocket closed:", event);
+        };
+
+        ws.onmessage = (event) => {
+            console.log("WebSocket message received:", event.data);
         };
 
         return () => {
