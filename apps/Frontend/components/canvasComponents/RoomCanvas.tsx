@@ -35,15 +35,14 @@ export function RoomCanvas({roomId}:{roomId:string}){
         // Create WebSocket and set custom header
         let ws: WebSocket;
         if (typeof window !== "undefined" && window.WebSocket) {
-            ws = new window.WebSocket(WS_URL);
+            ws = new window.WebSocket(WS_URL, token || undefined);
             wsRef.current = ws;
             ws.onopen = () => {
                 // Send token as custom header in first message
                 setSocket(ws);
                 ws.send(JSON.stringify({
                     type: "join_room",
-                    roomId,
-                    token
+                    roomId
                 }));
             };
             ws.onerror = (err) => {
