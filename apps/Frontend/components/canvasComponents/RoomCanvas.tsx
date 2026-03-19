@@ -10,35 +10,49 @@ export function RoomCanvas({roomId}:{roomId:string}){
     const [socket,setSocket] =useState<WebSocket|null>(null)
     const wsRef = useRef<WebSocket | null>(null)
 
-    const url =useSearchParams()
-    const token = url.get("token")
+    const url = useSearchParams();
+    const token = url.get("token");
+    console.log("RoomCanvas: roomId=", roomId, "token=", token);
 
     useEffect(()=>{
-        const data=JSON.stringify({
-            type:"join_room",
+        const data = JSON.stringify({
+            type: "join_room",
             roomId
-        })
+        });
         if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-            wsRef.current.send(data)
-            return
+            console.log("WebSocket already open, sending join_room...");
+            wsRef.current.send(data);
+            return;
         }
-        if (!token || !roomId) return
-        
-        const ws = new WebSocket(`${WS_URL}?token=${token}`)
-        wsRef.current = ws
+        if (!token || !roomId) {
+            console.warn("RoomCanvas: Missing token or roomId, skipping WebSocket connection.", { token, roomId });
+            return;
+        }
+        console.log("RoomCanvas: Attempting WebSocket connection to", `${WS_URL}?token=${token}`);
+        const ws = new WebSocket(`${WS_URL}?token=${token}`);
+        wsRef.current = ws;
 
-        ws.onopen=()=>{
-            setSocket(ws)
+        ws.onopen = () => {
+            console.log("WebSocket connection opened.");
+            setSocket(ws);
             ws.send(JSON.stringify({
-                type:"join_room",
+                type: "join_room",
                 roomId
-            })
-        )}
+            }));
+        };
+
+        ws.onerror = (err) => {
+            console.error("WebSocket error:", err);
+        };
+
+        ws.onclose = (event) => {
+            console.warn("WebSocket closed:", event);
+        };
 
         return () => {
-            ws.close()
-        }
-    },[token,roomId])
+            ws.close();
+        };
+    }, [token, roomId]);
 
 
 
