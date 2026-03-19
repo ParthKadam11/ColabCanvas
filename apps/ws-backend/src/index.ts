@@ -23,6 +23,7 @@ const Frontend_URLS = (process.env.Frontend_URL || "*")
   .concat(CLOUDINARY_DOMAINS);
 
 const app = express();
+app.set("trust proxy", 1);
 
 app.use(helmet());
 
