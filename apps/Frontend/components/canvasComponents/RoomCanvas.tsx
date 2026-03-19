@@ -25,6 +25,10 @@ export function RoomCanvas({roomId}:{roomId:string}){
             console.warn("RoomCanvas: Missing roomId, skipping WebSocket connection.", { roomId });
             return;
         }
+        if (!WS_URL) {
+            console.error("RoomCanvas: WS_URL is not defined. Cannot connect to WebSocket server.");
+            return;
+        }
         console.log("RoomCanvas: Attempting WebSocket connection to", WS_URL);
         const ws = new WebSocket(WS_URL);
         wsRef.current = ws;
