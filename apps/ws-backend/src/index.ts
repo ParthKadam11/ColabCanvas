@@ -105,6 +105,7 @@ wss.on("connection", function connection(ws, request) {
     return;
   }
   let token = "";
+  // Try cookie first
   if (request.headers.cookie) {
     console.log("[WS] Cookies received:", request.headers.cookie);
     const cookies = Object.fromEntries(request.headers.cookie.split(';').map(c => {
@@ -112,31 +113,57 @@ wss.on("connection", function connection(ws, request) {
       return [k, decodeURIComponent(v.join('='))];
     }));
     token = cookies["token"] || "";
-    console.log("[WS] Parsed token:", token);
-  } else {
-    console.warn("[WS] No cookies in request.");
+    console.log("[WS] Parsed token from cookie:", token);
   }
-  const userId = checkUser(token);
-  if (userId == null) {
-    console.warn("[WS] Invalid or missing token, closing connection.");
-    ws.close();
-    return;
+  // Try custom header (Sec-WebSocket-Protocol or custom header)
+  if (!token && request.headers["sec-websocket-protocol"]) {
+    token = request.headers["sec-websocket-protocol"];
+    console.log("[WS] Parsed token from sec-websocket-protocol:", token);
   }
-  console.log("[WS] Authenticated userId:", userId);
-  users.push({
-    userId,
-    rooms: [],
-    ws,
-  });
+  // Accept token from custom header (e.g. x-auth-token)
+  if (!token && request.headers["x-auth-token"]) {
+    token = request.headers["x-auth-token"];
+    console.log("[WS] Parsed token from x-auth-token:", token);
+  }
+  // If still no token, wait for join_room message and check token there
+  let userId: string | null = null;
+  if (token) {
+    userId = checkUser(token);
+    if (userId == null) {
+      console.warn("[WS] Invalid or missing token, closing connection.");
+      ws.close();
+      return;
+    }
+    console.log("[WS] Authenticated userId:", userId);
+    users.push({
+      userId,
+      rooms: [],
+      ws,
+    });
+  }
 
   ws.on("message", async function message(data) {
-    let parsedData;    
+    let parsedData;
     if(typeof data != "string"){
       parsedData = JSON.parse(data.toString())
     }else{
       parsedData=JSON.parse(data)
     }
-
+    // If userId not set, check token in join_room message
+    if (!userId && parsedData.type === "join_room" && parsedData.token) {
+      userId = checkUser(parsedData.token);
+      if (!userId) {
+        console.warn("[WS] Invalid or missing token in join_room, closing connection.");
+        ws.close();
+        return;
+      }
+      users.push({
+        userId,
+        rooms: [],
+        ws,
+      });
+      console.log("[WS] Authenticated userId from join_room:", userId);
+    }
     if (parsedData.type === "join_room") {
       const user = users.find((x) =>x.ws == ws);
       user?.rooms.push(parsedData.roomId);

@@ -1,4 +1,4 @@
-import { AuthPage } from "@/app/AuthPage";
+import { AuthPage } from "@/utils/AuthPage";
 
 export default function SignUpPage() {
   return <AuthPage isSignin={false} />
