@@ -41,11 +41,14 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
 
     try {
       if (isSignin) {
-        await axios.post(
+        const response = await axios.post(
           `${HTTP_BACKEND}/signin`,
-          { email, password },
-          { withCredentials: true }
+          { email, password }
         );
+        const token = response.data?.token;
+        if (token) {
+          window.localStorage.setItem("token", token);
+        }
         router.push("/room");
       } else {
         const formData = new FormData();

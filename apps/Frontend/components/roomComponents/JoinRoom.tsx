@@ -17,10 +17,13 @@ export default function JoinRoom({}: JoinRoomProps) {
   const handleJoin = async () => {
     if (!joinName.trim()) return;
     try {
+      const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : "";
       const response = await axios.post(
         `${HTTP_BACKEND}/room/join`,
         { roomname: joinName.trim() },
-        { withCredentials: true },
+        {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        },
       );
       const roomId = response.data?.roomId;
       if (roomId) {
