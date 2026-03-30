@@ -29,7 +29,6 @@ export default function YourRoom({ refreshKey }: YourRoomProps) {
     try {
       setLoading(true);
       const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : "";
-      console.log("[YourRoom] Token from localStorage:", token);
       if (!token) {
         setError("No authentication token found. Please sign in.");
         setLoading(false);
