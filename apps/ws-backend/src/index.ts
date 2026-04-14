@@ -261,6 +261,10 @@ process.on("SIGINT", () => {
   }, 10000);
 });
 
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
+
 app.get(
   "/rooms/:roomId/active-users",
   async (req: express.Request, res: express.Response) => {
