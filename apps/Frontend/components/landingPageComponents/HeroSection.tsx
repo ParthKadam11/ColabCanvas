@@ -7,10 +7,10 @@ export default function HeroSection() {
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
         <div className="w-60 h-60 sm:w-96 sm:h-96 md:w-[420px] md:h-[420px] rounded-full bg-gradient-to-br from-yellow-200/40 via-pink-200/30 to-blue-200/40 blur-3xl opacity-60 dark:from-yellow-900/30 dark:via-pink-900/20 dark:to-blue-900/30"></div>
       </div>
+      <span>
+        <AnimatedBadge>Real-time Collaborative Canvas</AnimatedBadge>
+      </span>
       <div className="relative z-10 flex flex-col items-center text-center w-full max-w-4xl px-2 sm:px-0">
-        <AnimatedBadge>
-          <span className="text-base md:text-lg ">✨</span> <span className="text-xs xs:text-sm sm:text-base text-shadow-md">Real-time collaborative canvas</span>
-        </AnimatedBadge>
         <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-zinc-900 dark:text-white drop-shadow-lg mb-3 sm:mb-4 animate-fade-in-up leading-tight">
           Draw together, Work Together.<br className="hidden sm:inline" />
         </h2>
