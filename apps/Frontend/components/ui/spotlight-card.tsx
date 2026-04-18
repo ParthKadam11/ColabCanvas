@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, type CSSProperties, type ReactNode } from "react";
 
 interface GlowCardProps {
   children: ReactNode;
@@ -25,6 +25,8 @@ const sizeMap = {
   md: "w-64 h-80",
   lg: "w-80 h-96",
 };
+
+type GlowCardStyles = CSSProperties & Record<`--${string}`, string | number>;
 
 const beforeAfterStyles = `
   [data-glow]::before,
@@ -121,7 +123,7 @@ export function GlowCard({
   };
 
   const getInlineStyles = () => {
-    const baseStyles = {
+    const baseStyles: GlowCardStyles = {
       "--base": base,
       "--spread": spread,
       "--radius": 14,
