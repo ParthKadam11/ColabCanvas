@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import { Link2, Pencil, Users } from "lucide-react";
 import { GlowCard } from "@/components/ui/spotlight-card";
 
 export default function HowItWorks() {
@@ -20,23 +21,17 @@ export default function HowItWorks() {
     {
       title: "Create a room",
       desc: "Start a collaborative canvas in seconds with a unique room.",
-      icon: (
-        <span className="inline-block text-2xl">📝</span>
-      ),
+      icon: Pencil,
     },
     {
       title: "Share Room",
       desc: "Invite others instantly by sending the room name.",
-      icon: (
-        <span className="inline-block text-2xl">🔗</span>
-      ),
+      icon: Link2,
     },
     {
       title: "Draw together in real time",
       desc: "Everyone can sketch, edit, and see updates live.",
-      icon: (
-        <span className="inline-block text-2xl">🤝</span>
-      ),
+      icon: Users,
     },
   ];
 
@@ -90,7 +85,7 @@ export default function HowItWorks() {
           >
             <div className="relative z-10 flex h-full flex-col items-center justify-start rounded-2xl px-5 pt-14 pb-6 xs:px-6 sm:px-8">
               <div className="absolute -top-8 left-1/2 -translate-x-1/2 flex h-16 w-16 items-center justify-center rounded-full border-2 border-white/60 bg-zinc-900 shadow-lg leading-none">
-                <span className="flex items-center justify-center text-3xl">{step.icon}</span>
+                <step.icon className="h-8 w-8 text-white" strokeWidth={2.2} aria-hidden="true" />
               </div>
               <div className="mt-2 text-xs font-bold tracking-widest text-white/60 uppercase">Step {idx + 1}</div>
               <h3 className="mb-2 text-lg font-semibold text-white text-center leading-tight xs:text-xl">
