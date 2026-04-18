@@ -1,5 +1,5 @@
 "use client"
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 const VIDEO_WIDTH = 1000;
@@ -7,6 +7,29 @@ const VIDEO_WIDTH = 1000;
 export default function DemoVideoSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const [shouldLoadVideo, setShouldLoadVideo] = useState(false);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting) {
+          setShouldLoadVideo(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "300px" }
+    );
+
+    observer.observe(section);
+
+    return () => observer.disconnect();
+  }, []);
+
   const draw = {
     hidden: { pathLength: 0, opacity: 0 },
     visible: {
@@ -54,15 +77,16 @@ export default function DemoVideoSection() {
         >
           <video
             ref={videoRef}
-            src="/ColabCanvas.mov"
             className="w-full h-full object-cover bg-black"
-            poster="/video-poster.png"
+            poster="/WhiteBg.png"
+            preload={shouldLoadVideo ? "metadata" : "none"}
             loop
-            autoPlay
+            autoPlay={shouldLoadVideo}
             muted
             playsInline
             style={{ width: '100%', height: '100%' }}
           >
+            {shouldLoadVideo ? <source src="/ColabCanvas.mov" type="video/quicktime" /> : null}
             Sorry, your browser does not support embedded videos.
           </video>
         </div>
