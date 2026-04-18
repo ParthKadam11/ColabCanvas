@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 const VIDEO_WIDTH = 1000;
+const CLOUDINARY_DEMO_VIDEO_URL = "https://res.cloudinary.com/dakmriayv/video/upload/v1776503071/ColabCanvas_u3cp0b.mov";
 
 export default function DemoVideoSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -78,7 +79,6 @@ export default function DemoVideoSection() {
           <video
             ref={videoRef}
             className="w-full h-full object-cover bg-black"
-            poster="/WhiteBg.png"
             preload={shouldLoadVideo ? "metadata" : "none"}
             loop
             autoPlay={shouldLoadVideo}
@@ -86,7 +86,7 @@ export default function DemoVideoSection() {
             playsInline
             style={{ width: '100%', height: '100%' }}
           >
-            {shouldLoadVideo ? <source src="/ColabCanvas.mov" type="video/quicktime" /> : null}
+            {shouldLoadVideo ? <source src={CLOUDINARY_DEMO_VIDEO_URL} type="video/mp4" /> : null}
             Sorry, your browser does not support embedded videos.
           </video>
         </div>
