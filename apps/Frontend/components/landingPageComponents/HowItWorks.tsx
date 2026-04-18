@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import { GlowCard } from "@/components/ui/spotlight-card";
 
 export default function HowItWorks() {
   const draw = {
@@ -14,6 +15,7 @@ export default function HowItWorks() {
     },
   };
 
+  const glowColors = ["blue" as const, "purple" as const, "green" as const];
   const steps = [
     {
       title: "Create a room",
@@ -74,27 +76,32 @@ export default function HowItWorks() {
         </div>
       </div>
       {steps.map((step, idx) => (
-          <motion.div
-            key={step.title}
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 * idx }}
-            className="relative flex flex-col items-center justify-start bg-white dark:bg-zinc-800 rounded-xl shadow-lg px-6 pt-12 pb-8 min-h-[240px] overflow-visible border-0"
+        <motion.div
+          key={step.title}
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.2 * idx }}
+          className="h-full"
+        >
+          <GlowCard
+            customSize
+            glowColor={glowColors[idx % glowColors.length]}
+            className="h-full min-h-[210px] p-0 backdrop-blur-xl transition-transform duration-300 hover:scale-[1.02]"
           >
-            <div
-              className="absolute -top-8 left-1/2 -translate-x-1/2 bg-white dark:bg-zinc-900 rounded-full shadow-md p-4 border-4 border-blue-200 dark:border-zinc-700 flex items-center justify-center transition-transform duration-200 hover:scale-110 cursor-pointer"
-              style={{zIndex:2}}
-            >
-              <span className="text-3xl">{step.icon}</span>
+            <div className="relative z-10 flex h-full flex-col items-center justify-start rounded-2xl px-5 pt-14 pb-6 xs:px-6 sm:px-8">
+              <div className="absolute -top-8 left-1/2 -translate-x-1/2 flex h-16 w-16 items-center justify-center rounded-full border-2 border-white/60 bg-zinc-900 shadow-lg leading-none">
+                <span className="flex items-center justify-center text-3xl">{step.icon}</span>
+              </div>
+              <div className="mt-2 text-xs font-bold tracking-widest text-white/60 uppercase">Step {idx + 1}</div>
+              <h3 className="mb-2 text-lg font-semibold text-white text-center leading-tight xs:text-xl">
+                {step.title}
+              </h3>
+              <p className="text-sm leading-relaxed text-white/80 text-center xs:text-base">
+                {step.desc}
+              </p>
             </div>
-            <div className="mt-6 text-xs font-bold tracking-widest text-blue-400 dark:text-blue-300 uppercase">Step {idx + 1}</div>
-            <h3 className="text-lg font-extrabold mb-2 text-zinc-900 dark:text-white text-center leading-tight">
-              {step.title}
-            </h3>
-            <div className="text-zinc-600 dark:text-zinc-300 text-center text-base max-w-xs mx-auto">
-              {step.desc}
-            </div>
-          </motion.div>
+          </GlowCard>
+        </motion.div>
       ))}
     </section>
   );

@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { Presentation, RadioTower, Share } from "lucide-react";
+import { GlowCard } from "@/components/ui/spotlight-card";
 
 const draw = {
   hidden: { pathLength: 0, opacity: 0 },
@@ -14,8 +15,19 @@ const draw = {
   },
 };
 
-const iconClass = "mb-4 text-white";
+const iconClass = "block text-white";
 const iconSize = 32;
+const featureToneMap = [
+  {
+    glowColor: "blue" as const,
+  },
+  {
+    glowColor: "purple" as const,
+  },
+  {
+    glowColor: "green" as const,
+  },
+];
 const features = [
   {
     icon: (
@@ -76,23 +88,39 @@ export default function FeaturesSection() {
           </motion.svg>
         </div>
       </div>
-      {features.map((feature, idx) => (
+      {features.map((feature, idx) => {
+        const tone = featureToneMap[idx % featureToneMap.length];
+
+        return (
         <motion.div
           key={feature.title}
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2 * idx }}
-          className="bg-white/90 dark:bg-zinc-900/80 rounded-2xl shadow-xl p-5 xs:p-6 sm:p-8 border-2 border-white/60 dark:border-zinc-100/20 flex flex-col items-center justify-center hover:scale-105 hover:shadow-2xl transition-transform duration-300 min-h-[220px] xs:min-h-[240px]"
+          className="h-full"
         >
-          {feature.icon}
-          <h3 className="text-lg xs:text-xl font-semibold mb-1 xs:mb-2 text-white text-center drop-shadow-sm">
-            {feature.title}
-          </h3>
-          <p className="text-zinc-700 dark:text-zinc-200 text-center text-sm xs:text-base">
-            {feature.description}
-          </p>
+          <GlowCard
+            customSize
+            glowColor={tone.glowColor}
+            className="h-full min-h-[210px] p-0 backdrop-blur-xl transition-transform duration-300 hover:scale-[1.02]"
+          >
+            <div className="relative z-10 flex h-full flex-col items-center justify-between rounded-2xl px-5 pb-6 pt-10 xs:px-6 sm:px-8">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-white/60 bg-zinc-900 shadow-sm leading-none">
+                <span className="flex items-center justify-center text-3xl">{feature.icon}</span>
+              </div>
+              <div className="mt-4 text-center">
+                <h3 className="mb-2 text-lg font-semibold text-white xs:text-xl">
+                  {feature.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-white/80 xs:text-base">
+                  {feature.description}
+                </p>
+              </div>
+            </div>
+          </GlowCard>
         </motion.div>
-      ))}
+        );
+      })}
     </section>
   );
 }
