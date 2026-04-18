@@ -2,6 +2,18 @@
 import { motion } from "framer-motion";
 import { Presentation, RadioTower, Share } from "lucide-react";
 
+const draw = {
+  hidden: { pathLength: 0, opacity: 0 },
+  visible: {
+    pathLength: 1,
+    opacity: 1,
+    transition: {
+      pathLength: { duration: 2.2, ease: [0.43, 0.13, 0.23, 0.96] as const },
+      opacity: { duration: 0.4 },
+    },
+  },
+};
+
 const iconClass = "mb-4 text-white";
 const iconSize = 32;
 const features = [
@@ -40,7 +52,29 @@ export default function FeaturesSection() {
         >
           Built for real-time collaboration
         </motion.h2>
-        <span className="block h-1 w-36 xs:w-56 md:w-120 rounded-full bg-gradient-to-r from-blue-400 via-fuchsia-400 to-yellow-300 animate-pulse mt-2 xs:mt-3" style={{animationDuration:'4s'}} />
+        <div className="relative mt-2 xs:mt-3 h-7 w-52 xs:w-72 sm:w-80 md:w-[30rem]">
+          <motion.svg
+            width="100%"
+            height="100%"
+            viewBox="0 0 420 80"
+            preserveAspectRatio="none"
+            initial="hidden"
+            animate="visible"
+            className="w-full h-full"
+          >
+            <title>Signature underline</title>
+            <motion.path
+              d="M 20 52 C 92 52, 156 44, 214 40 C 278 34, 338 28, 400 22"
+              fill="none"
+              strokeWidth="11"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              variants={draw}
+              className="text-zinc-900 dark:text-white opacity-80"
+            />
+          </motion.svg>
+        </div>
       </div>
       {features.map((feature, idx) => (
         <motion.div
