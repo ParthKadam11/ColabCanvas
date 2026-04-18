@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 const VIDEO_WIDTH = 1000;
-const CLOUDINARY_DEMO_VIDEO_URL = "https://res.cloudinary.com/dakmriayv/video/upload/v1776503071/ColabCanvas_u3cp0b.mov";
+const CLOUDINARY_DEMO_VIDEO_URL = "https://res.cloudinary.com/dakmriayv/video/upload/v1776513248/ColabCanvas_ehmdpk.mp4";
 
 export default function DemoVideoSection() {
   const videoRef = useRef<HTMLVideoElement>(null);
