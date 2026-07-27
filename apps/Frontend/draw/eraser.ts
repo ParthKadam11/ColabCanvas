@@ -5,9 +5,9 @@ export const eraseShapes = (shapes: Shape[], x: number, y: number, size: number)
     const radiusSq = radius * radius;
 
     const isPointNear = (px: number, py: number) => {
-        const dx = px - x;
-        const dy = py - y;
-        return (dx * dx + dy * dy) <= radiusSq;
+        const dx = px - x
+        const dy = py - y
+        return (dx * dx + dy * dy) <= radiusSq
     };
 
     const hitTest = (shape: Shape) => {
@@ -30,10 +30,10 @@ export const eraseShapes = (shapes: Shape[], x: number, y: number, size: number)
             return shape.points.some((pt) => isPointNear(pt.x, pt.y));
         }
         if (shape.type === "text") {
-            return isPointNear(shape.x, shape.y);
+            return isPointNear(shape.x, shape.y)
         }
-        return false;
-    };
+        return false
+    }
 
     return shapes.filter((shape) => !hitTest(shape));
 }

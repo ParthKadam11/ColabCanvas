@@ -22,10 +22,10 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const UPLOADS_DIR = path.join(__dirname, "..", "uploads")
 
-const app = express();
-app.use(cookieParser());
+const app = express()
+app.use(cookieParser())
 
-app.use(helmet());
+app.use(helmet())
 
 const corsOptions: CorsOptions = {
   origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {

@@ -31,7 +31,7 @@ router.post("/signup", authLimiter, upload.single("photo"), async (req, res) => 
             if (error || !result)
               return reject(error || new Error("Cloudinary upload failed"));
             resolve(result.secure_url);
-          },
+          }, 
         );
         
         const bufferStream = new stream.PassThrough();
