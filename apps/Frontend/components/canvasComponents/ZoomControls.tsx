@@ -19,8 +19,10 @@ export function ZoomControls({
   canvasRef: React.RefObject<HTMLCanvasElement | null>;
 }) {
   return (
-    <div className="absolute bottom-4 left-4 z-20 flex gap-2 text-black">
+    <div className="absolute bottom-[max(1rem,env(safe-area-inset-bottom))] left-[max(1rem,env(safe-area-inset-left))] z-20 flex items-center gap-1 rounded-2xl border border-zinc-700 bg-zinc-900 p-1 text-zinc-100 shadow-lg">
       <button
+        type="button"
+        aria-label="Zoom out"
         onClick={() => {
           const val = Math.max(10, Math.round(zoom * 100) - 10);
           const newZoom = val / 100;
@@ -39,7 +41,7 @@ export function ZoomControls({
           setZoom(z);
           setPan(p);
         }}
-        className="px-2 py-1 bg-white rounded-full"
+        className="grid size-8 place-items-center rounded-xl text-sm hover:bg-zinc-800"
       >
         -
       </button>
@@ -47,6 +49,7 @@ export function ZoomControls({
         type="number"
         min={10}
         max={500}
+        aria-label="Zoom percent"
         value={zoomInput}
         onChange={(e) => {
           setZoomInput(e.target.value);
@@ -95,9 +98,11 @@ export function ZoomControls({
             setZoomInput(String(val));
           }
         }}
-        className="w-16 px-2 py-1 bg-white rounded-full text-center appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-inner-spin-button]:m-0 focus:outline-none"
+        className="w-14 bg-transparent px-2 py-1 text-center text-sm tabular-nums appearance-none focus:outline-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
       />
       <button
+        type="button"
+        aria-label="Zoom in"
         onClick={() => {
           const val = Math.min(500, Math.round(zoom * 100) + 10);
           const newZoom = val / 100;
@@ -116,7 +121,7 @@ export function ZoomControls({
           setZoom(z);
           setPan(p);
         }}  
-        className="px-2 py-1 bg-white rounded-full">
+        className="grid size-8 place-items-center rounded-xl text-sm hover:bg-zinc-800">
         +
       </button>
     </div>

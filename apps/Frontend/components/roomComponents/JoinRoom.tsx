@@ -1,15 +1,12 @@
 "use client";
-import { Input }  from "@repo/ui";
+import { Input } from "@repo/ui";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const HTTP_BACKEND=process.env.NEXT_PUBLIC_HTTP_BACKEND
+const HTTP_BACKEND = process.env.NEXT_PUBLIC_HTTP_BACKEND;
 
-
-type JoinRoomProps = Record<string, never>;
-
-export default function JoinRoom({}: JoinRoomProps) {
+export default function JoinRoom() {
   const [joinName, setJoinName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -31,31 +28,41 @@ export default function JoinRoom({}: JoinRoomProps) {
       }
       setError(null);
     } catch (e) {
-      setError("Failed to join room");
+      setError("Could not join that room. Check the name and try again.");
       console.log(e);
     }
   };
 
   return (
-    <div className="rounded-xl bg-white p-3 xs:p-4 sm:p-5 shadow-sm w-full max-w-md mx-auto">
-      <h2 className="mb-2 xs:mb-3 text-base xs:text-lg font-medium">Join room</h2>
-      <div className="flex flex-col xs:flex-row gap-2 xs:gap-3">
+    <section className="rounded-2xl border border-zinc-800 bg-zinc-900 p-5 shadow-sm">
+      <h2 className="text-base font-medium text-balance text-zinc-50">Join a room</h2>
+      <p className="mt-1 text-sm text-pretty text-zinc-400">
+        Enter the exact room name to open a shared board.
+      </p>
+      <form
+        className="mt-4 flex flex-col gap-3 sm:flex-row"
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleJoin();
+        }}
+      >
         <Input
-          className="focus:outline-none border-0 text-sm xs:text-base"
+          className="h-10 bg-zinc-950 text-zinc-100 placeholder:text-zinc-500"
           id="join-room"
           name="join-room"
-          placeholder="room name"
+          placeholder="Room name"
           value={joinName}
           onChange={(e) => setJoinName(e.target.value)}
         />
         <button
-          className="rounded-lg bg-slate-900 px-3 xs:px-4 py-2 text-white w-full xs:w-auto text-sm xs:text-base"
-          onClick={handleJoin}
+          type="submit"
+          className="h-10 shrink-0 rounded-xl border border-zinc-700 bg-zinc-950 px-4 text-sm font-semibold text-zinc-100 hover:bg-zinc-800 disabled:opacity-50"
+          disabled={!joinName.trim()}
         >
           Join
         </button>
-      </div>
-      {error && <div className="mt-2 xs:mt-3 text-xs xs:text-sm text-red-600">{error}</div>}
-    </div>
+      </form>
+      {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
+    </section>
   );
 }

@@ -1,12 +1,16 @@
 "use client";
 import { Input } from "@repo/ui";
 import axios from "axios";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import LoadingSpinner from "@/components/roomComponents/LoadingSpinner";
 import Image from "next/image";
 
-const HTTP_BACKEND=process.env.NEXT_PUBLIC_HTTP_BACKEND
+const HTTP_BACKEND = process.env.NEXT_PUBLIC_HTTP_BACKEND;
+
+const fieldClass =
+  "h-10 bg-zinc-950 text-zinc-100 placeholder:text-zinc-500";
 
 export function AuthPage({ isSignin }: { isSignin: boolean }) {
   const emailRef = useRef<HTMLInputElement>(null);
@@ -16,6 +20,7 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
   const router = useRouter();
   const [profilePreviewUrl, setProfilePreviewUrl] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -34,6 +39,7 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    setError(null);
     const email = emailRef.current?.value ?? "";
     const password = passwordRef.current?.value ?? "";
     const name = nameRef.current?.value ?? "";
@@ -41,10 +47,7 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
 
     try {
       if (isSignin) {
-        const response = await axios.post(
-          `${HTTP_BACKEND}/signin`,
-          { email, password }
-        );
+        const response = await axios.post(`${HTTP_BACKEND}/signin`, { email, password });
         const token = response.data?.token;
         if (token) {
           window.localStorage.setItem("token", token);
@@ -64,6 +67,11 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
         router.push("/signin");
       }
     } catch (e) {
+      setError(
+        isSignin
+          ? "Could not sign in. Check your email and password."
+          : "Could not create the account. Try a different email.",
+      );
       console.log(e);
     } finally {
       setLoading(false);
@@ -71,115 +79,129 @@ export function AuthPage({ isSignin }: { isSignin: boolean }) {
   };
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-zinc-100 via-zinc-200 to-zinc-300 dark:from-black dark:via-zinc-900 dark:to-zinc-800 font-sans flex items-center justify-center">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 flex flex-col items-center">
-        {loading ? (
-          <LoadingSpinner message={isSignin ? "Signing in..." : "Signing up..."} />
-        ) : (
-          <form
-            className="w-full min-w-md rounded-2xl text-black bg-white shadow-md p-6 flex flex-col gap-4"
-            onSubmit={handleSubmit}
-          >
-            <div className="w-full text-center mb-2">
-              <h2 className="text-2xl font-bold text-black dark:text-black">
-                {isSignin ? "Login To Account" : "Create Account"}
-              </h2>
-            </div>
-            {!isSignin && (
-              <label htmlFor="profileImage" className="flex flex-col items-center gap-2 cursor-pointer">
-                <div className="flex bg-slate-300 w-24 h-24 sm:w-28 sm:h-28 border-2 border-stone-300 rounded-4xl overflow-hidden items-center justify-center">
-                  {profilePreviewUrl ? (
-                    <Image
-                      src={profilePreviewUrl}
-                      alt="Selected profile"
-                      width={112}
-                      height={112}
-                      className="h-full w-full object-cover"
-                      unoptimized
-                    />
-                  ) : (
-                    <span className="flex h-24 w-24 sm:h-28 sm:w-28 flex-col items-center justify-start pt-3 sm:pt-4">
-                      <span className="h-10 w-10 sm:h-13 sm:w-12 rounded-full bg-slate-100 border border-slate-300" />
-                      <span className="h-10 w-16 sm:h-13 sm:w-20 rounded-t-full bg-slate-100 border border-slate-300" />
-                    </span>
-                  )}
-                </div>
-                <div className="flex justify-center text-xs text-zinc-500 pb-2">Select Profile Picture</div>
-                <input
-                  id="profileImage"
-                  name="photo"
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleProfileChange}
-                  ref={photoRef}
-                />
-              </label>
-            )}
+    <div className="flex min-h-dvh items-center justify-center bg-zinc-950 px-4 py-10 font-(family-name:--font-geist-sans) text-zinc-100">
+      {loading ? (
+        <LoadingSpinner message={isSignin ? "Signing in..." : "Creating your account..."} />
+      ) : (
+        <form
+          className="w-full max-w-md rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-sm"
+          onSubmit={handleSubmit}
+        >
+          <p className="text-sm font-medium text-zinc-400">ColabCanvas</p>
+          <h1 className="mt-1 text-2xl font-semibold text-balance text-zinc-50">
+            {isSignin ? "Sign in" : "Create an account"}
+          </h1>
+          <p className="mt-2 text-sm text-pretty text-zinc-400">
+            {isSignin
+              ? "Use the email and password for your account."
+              : "Set up a profile, then open a shared board."}
+          </p>
 
+          {!isSignin && (
+            <label htmlFor="profileImage" className="mt-6 flex cursor-pointer flex-col items-center gap-2">
+              <div className="grid size-24 place-items-center overflow-hidden rounded-full border border-zinc-700 bg-zinc-950">
+                {profilePreviewUrl ? (
+                  <Image
+                    src={profilePreviewUrl}
+                    alt=""
+                    width={96}
+                    height={96}
+                    className="size-full object-cover"
+                    unoptimized
+                  />
+                ) : (
+                  <span className="text-xs text-zinc-500">Photo</span>
+                )}
+              </div>
+              <span className="text-xs text-zinc-400">Add a profile photo</span>
+              <input
+                id="profileImage"
+                name="photo"
+                type="file"
+                accept="image/*"
+                className="sr-only"
+                onChange={handleProfileChange}
+                ref={photoRef}
+              />
+            </label>
+          )}
+
+          <div className="mt-6 flex flex-col gap-4">
             {!isSignin && (
-              <div className="mb-3 pl-2">
-                <div className="text-sm font-semibold">Name:</div>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="name" className="text-sm font-medium text-zinc-200">
+                  Name
+                </label>
                 <Input
                   id="name"
                   name="name"
                   type="text"
                   autoComplete="name"
-                  placeholder="john doe"
-                  className="focus:outline-none border-0"
+                  placeholder="Jane Doe"
+                  className={fieldClass}
                   ref={nameRef}
                 />
               </div>
             )}
 
-            <div className="mb-3 pl-2">
-              <div className="text-sm font-semibold">Email:</div>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="email" className="text-sm font-medium text-zinc-200">
+                Email
+              </label>
               <Input
                 id="email"
                 name="email"
                 type="email"
                 autoComplete="email"
                 placeholder="name@example.com"
-                className="focus:outline-none border-0"
+                className={fieldClass}
                 ref={emailRef}
+                required
               />
             </div>
 
-            <div className="mb-3 pl-2">
-              <div className="text-sm font-semibold mb-1">Password:</div>
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="password" className="text-sm font-medium text-zinc-200">
+                Password
+              </label>
               <Input
-                className="focus:outline-none border-0"
+                className={fieldClass}
                 id="password"
                 name="password"
                 type="password"
                 autoComplete={isSignin ? "current-password" : "new-password"}
-                placeholder="eg.12345678"
+                placeholder="At least 8 characters"
                 ref={passwordRef}
+                required
               />
             </div>
+          </div>
 
-            <button
-              type="submit"
-              className="w-full rounded-2xl p-2 bg-blue-600 text-white font-bold shadow-md mt-2 hover:scale-105 transition-transform"
-              disabled={loading}
-            >
-              {isSignin ? "Sign In" : "Sign Up"}
-            </button>
-            <div className="w-full text-center ">
-              {isSignin ? (
-                <span className="text-blue-600 cursor-pointer hover:underline" onClick={() => router.push('/signup')}>
-                  New to ColabCanvas? 
-                </span>
-              ) : (
-                <span className="text-blue-600 cursor-pointer hover:underline" onClick={() => router.push('/signin')}>
-                  Already have an account?
-                </span>
-              )}
-            </div>
-          </form>
-        )}
-      </div>
+          {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
+
+          <button
+            type="submit"
+            className="mt-5 h-10 w-full rounded-xl bg-blue-600 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+            disabled={loading}
+          >
+            {isSignin ? "Sign in" : "Create account"}
+          </button>
+
+          <p className="mt-4 text-center text-sm text-zinc-400">
+            {isSignin ? (
+              <Link href="/signup" className="font-medium text-zinc-200 underline underline-offset-4">
+                Create an account
+              </Link>
+            ) : (
+              <Link href="/signin" className="font-medium text-zinc-200 underline underline-offset-4">
+                Already have an account? Sign in
+              </Link>
+            )}
+          </p>
+        </form>
+      )}
     </div>
   );
 }
+
 export default AuthPage;

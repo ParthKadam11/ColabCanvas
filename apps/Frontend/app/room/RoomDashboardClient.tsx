@@ -9,23 +9,26 @@ export default function RoomDashboardClient() {
   const [roomsRefreshKey, setRoomsRefreshKey] = useState(0);
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-zinc-100 via-zinc-200 to-zinc-300 dark:from-black dark:via-zinc-900 dark:to-zinc-800 font-sans">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 py-8 flex flex-col items-center">
-        <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8 mt-2">
-          <div className="flex flex-col items-start">
-            <h1 className="text-2xl md:text-3xl font-extrabold text-white drop-shadow-lg mb-2">Your Rooms</h1>
-            <p className="text-sm md:text-base text-zinc-200 max-w-md">Create, join, or manage your rooms. Collaborate in real-time with a beautiful, modern interface.</p>
+    <div className="min-h-dvh bg-zinc-950 font-(family-name:--font-geist-sans) text-zinc-100">
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-8 px-4 py-8 sm:px-6 sm:py-10">
+        <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
+            <p className="text-sm font-medium text-zinc-400">ColabCanvas</p>
+            <h1 className="mt-1 text-2xl font-semibold text-balance text-zinc-50">
+              Your rooms
+            </h1>
+            <p className="mt-2 max-w-md text-sm text-pretty text-zinc-400">
+              Create a board, join one by name, or reopen a room you already belong to.
+            </p>
           </div>
-          <div className="flex justify-end md:justify-center items-center">
-            <ProfileInfo />
-          </div>
-        </div>
+          <ProfileInfo />
+        </header>
 
-        <div className="grid gap-8 md:grid-cols-2 w-full text-black">
-            <CreateRoom onCreated={() => setRoomsRefreshKey((prev) => prev + 1)}/>
-            <JoinRoom />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <CreateRoom onCreated={() => setRoomsRefreshKey((prev) => prev + 1)} />
+          <JoinRoom />
         </div>
-          <YourRoom refreshKey={roomsRefreshKey} />
+        <YourRoom refreshKey={roomsRefreshKey} />
       </div>
     </div>
   );

@@ -59,12 +59,12 @@ export function RoomCanvas({roomId}:{roomId:string}){
 
 
     if(!socket){
-        return <div className="flex justify-center items-center h-full w-full">
+        return <div className="flex h-dvh w-full items-center justify-center bg-zinc-950">
             <LoadingSpinner message="Connecting to the server..." />
         </div>
     }
 
-    return <div className="w-screen h-screen overflow:hidden">
+    return <div className="h-dvh w-full overflow-hidden">
         <Canvas roomId={roomId} socket={socket} token={typeof window !== "undefined" ? window.localStorage.getItem("token") || "" : ""} />
     </div>
 }

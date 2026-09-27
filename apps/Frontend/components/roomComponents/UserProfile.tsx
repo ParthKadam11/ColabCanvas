@@ -1,10 +1,9 @@
-"use client"
+"use client";
 import Image from "next/image";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const HTTP_BACKEND=process.env.NEXT_PUBLIC_HTTP_BACKEND
-
+const HTTP_BACKEND = process.env.NEXT_PUBLIC_HTTP_BACKEND;
 
 type UserProfile = {
   id?: string;
@@ -12,6 +11,15 @@ type UserProfile = {
   email?: string;
   photo?: string;
 };
+
+function initials(name?: string) {
+  const parts = name?.trim().split(/\s+/).filter(Boolean) ?? [];
+  if (parts.length === 0) return "?";
+  return parts
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? "")
+    .join("");
+}
 
 export default function ProfileInfo() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -23,10 +31,10 @@ export default function ProfileInfo() {
     const loadProfile = async () => {
       try {
         setProfileLoading(true);
-          const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : "";
-          const response = await axios.get(`${HTTP_BACKEND}/profile`, {
-            headers: token ? { Authorization: `Bearer ${token}` } : {},
-          });
+        const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : "";
+        const response = await axios.get(`${HTTP_BACKEND}/profile`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
         if (cancelled) return;
         const data = response.data?.user ?? response.data;
         setProfile({
@@ -38,7 +46,7 @@ export default function ProfileInfo() {
         setProfileError(null);
       } catch (e) {
         if (cancelled) return;
-        setProfileError("Failed to load profile");
+        setProfileError("Could not load profile");
         console.log(e);
       } finally {
         if (!cancelled) setProfileLoading(false);
@@ -53,36 +61,34 @@ export default function ProfileInfo() {
   const photoUrl = profile?.photo ? profile.photo : null;
 
   return (
-    <div className="w-full max-w-xs sm:max-w-sm h-auto bg-white m-2 sm:m-3 rounded-xl p-3 sm:p-4 flex flex-col justify-center">
-      {profileLoading && (
-        <div className="text-xs text-zinc-600">Loading...</div>
-      )}
+    <div className="flex w-full max-w-xs items-center gap-3 rounded-2xl border border-zinc-800 bg-zinc-900 px-3 py-2 sm:w-auto">
+      {profileLoading && <div className="h-10 flex-1 rounded-lg bg-zinc-800" />}
       {!profileLoading && profileError && (
-        <div className="text-xs text-red-600">{profileError}</div>
+        <p className="text-sm text-red-400">{profileError}</p>
       )}
       {!profileLoading && !profileError && (
-        <div className="flex items-center gap-2 sm:gap-3">
+        <>
           {photoUrl ? (
             <Image
-              alt="Profile"
-              className="h-8 w-8 sm:h-10 sm:w-10 rounded-xl object-cover"
+              alt=""
+              className="size-10 rounded-full object-cover"
               height={40}
               width={40}
               src={photoUrl}
               unoptimized
             />
           ) : (
-            <div className="h-8 w-8 sm:h-10 sm:w-10 rounded-xl bg-zinc-200" />
+            <div className="grid size-10 place-items-center rounded-full bg-zinc-800 text-xs font-medium text-zinc-200">
+              {initials(profile?.name)}
+            </div>
           )}
           <div className="min-w-0">
-            <div className="text-xs sm:text-sm font-semibold text-zinc-900 truncate">
+            <div className="truncate text-sm font-medium text-zinc-50">
               {profile?.name ?? "User"}
             </div>
-            <div className="text-[10px] sm:text-xs text-zinc-600 truncate">
-              {profile?.email ?? ""}
-            </div>
+            <div className="truncate text-xs text-zinc-400">{profile?.email ?? ""}</div>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

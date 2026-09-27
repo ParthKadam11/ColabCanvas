@@ -3,8 +3,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const HTTP_BACKEND=process.env.NEXT_PUBLIC_HTTP_BACKEND
-
+const HTTP_BACKEND = process.env.NEXT_PUBLIC_HTTP_BACKEND;
 
 type RoomItem = {
   id: number;
@@ -13,11 +12,9 @@ type RoomItem = {
   memberCount: number;
 };
 
-
 type YourRoomProps = {
   refreshKey?: number;
 };
-
 
 export default function YourRoom({ refreshKey }: YourRoomProps) {
   const [rooms, setRooms] = useState<RoomItem[]>([]);
@@ -30,7 +27,7 @@ export default function YourRoom({ refreshKey }: YourRoomProps) {
       setLoading(true);
       const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : "";
       if (!token) {
-        setError("No authentication token found. Please sign in.");
+        setError("Sign in again to see your rooms.");
         setLoading(false);
         return;
       }
@@ -40,7 +37,7 @@ export default function YourRoom({ refreshKey }: YourRoomProps) {
       setRooms(response.data?.rooms ?? []);
       setError(null);
     } catch (e) {
-      setError("Failed to load rooms. Check authentication token and backend URL.");
+      setError("Could not load rooms. Check that you are signed in.");
       console.log(e);
     } finally {
       setLoading(false);
@@ -52,6 +49,7 @@ export default function YourRoom({ refreshKey }: YourRoomProps) {
   }, [refreshKey]);
 
   const handleDelete = async (roomId: number) => {
+    if (!window.confirm("Delete this room? This cannot be undone.")) return;
     try {
       const token = typeof window !== "undefined" ? window.localStorage.getItem("token") : "";
       await axios.delete(`${HTTP_BACKEND}/room/${roomId}`, {
@@ -59,52 +57,82 @@ export default function YourRoom({ refreshKey }: YourRoomProps) {
       });
       setRooms((prev) => prev.filter((room) => room.id !== roomId));
     } catch (e: unknown) {
-      setError("Failed to delete room");
+      setError("Could not delete that room.");
       if (axios.isAxiosError(e)) {
         if (e.response) {
-          console.error('Delete room error:', {
+          console.error("Delete room error:", {
             status: e.response.status,
             data: e.response.data,
           });
         }
       } else {
-        console.error('Delete room error:', e);
+        console.error("Delete room error:", e);
       }
     }
   };
 
   return (
-    <div className="mt-6 xs:mt-8 rounded-xl bg-white p-6 xs:p-5 shadow-sm text-black w-full flex-shrink-0">
-      <div className="mb-3 xs:mb-4 flex flex-col xs:flex-row xs:items-center xs:justify-between gap-1 xs:gap-0">
-        <h2 className="text-base xs:text-lg font-medium">Recent rooms</h2>
-        {loading && <span className="text-xs xs:text-sm text-zinc-500">Loading...</span>}
+    <section>
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <h2 className="text-base font-medium text-balance text-zinc-50">Recent rooms</h2>
       </div>
 
-      {error && <div className="mb-2 xs:mb-3 text-xs xs:text-sm text-red-600">{error}</div>}
+      {error && <p className="mb-3 text-sm text-red-400">{error}</p>}
 
-      {!loading && rooms.length === 0 && (
-        <div className="text-xs xs:text-sm">No rooms yet.</div>
+      {loading && (
+        <div className="space-y-3">
+          {[0, 1, 2].map((item) => (
+            <div key={item} className="h-16 rounded-xl border border-zinc-800 bg-zinc-900" />
+          ))}
+        </div>
       )}
 
-      <div className="space-y-2 xs:space-y-3">
-        {rooms.map((room) => (
-          <div key={room.id} className="flex flex-col xs:flex-row xs:items-center justify-between shadow-sm rounded-lg border border-zinc-200 px-3 xs:px-4 py-2 xs:py-3 gap-2 xs:gap-0">
-            <div>
-              <div className="font-medium text-sm xs:text-base">{room.slug}</div>
-              <div className="text-xs text-zinc-500">
-                Created {new Date(room.createdAt).toLocaleString()} | {" "}
-                {room.memberCount} members 
+      {!loading && rooms.length === 0 && !error && (
+        <div className="rounded-2xl border border-dashed border-zinc-800 px-5 py-8 text-center">
+          <p className="text-sm font-medium text-zinc-200">No rooms yet</p>
+          <p className="mt-1 text-sm text-pretty text-zinc-400">
+            Create a room above to open your first board.
+          </p>
+        </div>
+      )}
+
+      {!loading && rooms.length > 0 && (
+        <div className="space-y-3">
+          {rooms.map((room) => (
+            <div
+              key={room.id}
+              className="flex flex-col gap-3 rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+            >
+              <div className="min-w-0">
+                <div className="truncate text-sm font-medium text-zinc-50">{room.slug}</div>
+                <div className="mt-1 text-xs text-zinc-500 tabular-nums">
+                  {new Date(room.createdAt).toLocaleDateString(undefined, {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                  {" · "}
+                  {room.memberCount} {room.memberCount === 1 ? "member" : "members"}
+                </div>
+              </div>
+              <div className="flex shrink-0 gap-2">
+                <button
+                  className="rounded-xl bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                  onClick={() => router.push(`/canvas/${room.id}`)}
+                >
+                  Open
+                </button>
+                <button
+                  className="rounded-xl border border-zinc-700 px-3 py-2 text-sm font-medium text-red-400 hover:bg-zinc-800"
+                  onClick={() => handleDelete(room.id)}
+                >
+                  Delete
+                </button>
               </div>
             </div>
-            <div className="flex gap-1 xs:gap-2 mt-1 xs:mt-0">
-              <button className="rounded-lg border border-zinc-300 px-3 xs:px-4 py-1.5 xs:py-2 text-sm xs:text-base text-white bg-blue-600" onClick={() =>
-                  router.push(`/canvas/${room.id}`)
-                }>Open </button>
-              <button className="rounded-lg border border-red-200 px-3 xs:px-4 py-1.5 xs:py-2 text-sm xs:text-base text-white bg-red-600/80" onClick={() => handleDelete(room.id)}> Delete </button>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+          ))}
+        </div>
+      )}
+    </section>
   );
 }

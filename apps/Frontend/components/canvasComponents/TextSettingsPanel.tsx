@@ -10,43 +10,31 @@ export function TextSettingsPanel({
   setTextSize: (size: number) => void;
 }) {
   return (
-    <div
-      className="text-black"
-      style={{
-        position: "absolute",
-        top: 16,
-        right: 16,
-        zIndex: 50,
-        background: "#fff",
-        borderRadius: 8,
-        boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-        padding: 16,
-        display: "flex",
-        flexDirection: "column",
-        gap: 12,
-        minWidth: 180,
-      }}
-    >
-      <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{ minWidth: 60 }}>Color:</span>
+    <div className="absolute top-40 right-[max(1rem,env(safe-area-inset-right))] z-30 flex min-w-44 flex-col gap-3 rounded-2xl border border-zinc-700 bg-zinc-900 p-4 text-sm text-zinc-100 shadow-lg md:top-[max(1rem,env(safe-area-inset-top))]">
+      <label className="flex items-center justify-between gap-3">
+        <span>Color</span>
         <input
           type="color"
+          aria-label="Text color"
           value={textColor}
-          onChange={e => setTextColor(e.target.value)}
-          style={{ width: 32, height: 32, border: "none", background: "none" }}
+          onChange={(e) => setTextColor(e.target.value)}
+          className="size-8 cursor-pointer border-0 bg-transparent p-0"
         />
       </label>
-      <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{ minWidth: 60 }}>Size:</span>
-        <input
-          type="number"
-          min={10}
-          max={72}
-          value={textSize}
-          onChange={e => setTextSize(Number(e.target.value))}
-          style={{ width: 60 }}
-        />
-        <span>px</span>
+      <label className="flex items-center justify-between gap-3">
+        <span>Size</span>
+        <span className="flex items-center gap-1">
+          <input
+            type="number"
+            min={10}
+            max={72}
+            aria-label="Text size"
+            value={textSize}
+            onChange={(e) => setTextSize(Number(e.target.value))}
+            className="w-16 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1 text-right text-sm tabular-nums text-zinc-100 focus:outline-none"
+          />
+          <span className="text-xs text-zinc-400">px</span>
+        </span>
       </label>
     </div>
   );

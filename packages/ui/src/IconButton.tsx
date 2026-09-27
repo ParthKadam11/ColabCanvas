@@ -1,20 +1,29 @@
 import { ReactNode } from "react";
 
-export function IconButton({icon,onClick,activated}:{
-    icon: ReactNode,
-    onClick: () => void,
-    activated:boolean
-})  {
-    const activeStyles = activated
-        ? { color: "#3b82f6", borderColor: "#3b82f6", backgroundColor: "#eff6ff" }
-        : {}
-
-    return <div
-        className={`rounded-3xl border-2 p-2 cursor-pointer transition-colors ${activated ? "" : "text-black border-black hover:text-blue-400"}`}
-        style={activeStyles}
-        onClick={onClick}
-        aria-pressed={activated}
+export function IconButton({
+  icon,
+  onClick,
+  activated,
+  "aria-label": ariaLabel,
+}: {
+  icon: ReactNode;
+  onClick: () => void;
+  activated: boolean;
+  "aria-label": string;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={ariaLabel}
+      aria-pressed={activated}
+      onClick={onClick}
+      className={`grid size-10 place-items-center rounded-xl border ${
+        activated
+          ? "border-blue-600 bg-blue-600 text-white"
+          : "border-zinc-700 bg-transparent text-zinc-200 hover:bg-zinc-800"
+      }`}
     >
-    {icon}
-    </div>
+      {icon}
+    </button>
+  );
 }
