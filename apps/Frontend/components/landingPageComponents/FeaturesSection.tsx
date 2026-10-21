@@ -33,22 +33,22 @@ const features = [
     icon: (
       <RadioTower size={iconSize} className={iconClass} />
     ),
-    title: "Live Presence",
-    description: "See who's in the room and drawing instantly."
+    title: "Room presence",
+    description: "See who is currently connected to the room."
   },
   {
     icon: (
       <Share size={iconSize} className={iconClass} />
     ),
     title: "Shareable Rooms",
-    description: "Create a link and collaborate immediately."
+    description: "Share the room name so others can join the same board."
   },
   {
     icon: (
       <Presentation size={iconSize} className={iconClass} />
     ),
-    title: "Fast Canvas",
-    description: "Lightweight drawing with smooth realtime sync."
+    title: "Shared strokes",
+    description: "Finished shapes are sent to everyone in the room."
   }
 ];
 

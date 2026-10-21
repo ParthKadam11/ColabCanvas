@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     default: "ColabCanvas – Real-time Collaborative Whiteboard",
     template: "%s | ColabCanvas"
   },
-  description: "ColabCanvas is a real-time collaborative whiteboard for teams, classrooms, and creators. Draw, brainstorm, and share ideas instantly.",
+  description: "ColabCanvas is a shared whiteboard that runs in the browser. Draw in a room and others see each finished stroke.",
   keywords: [
     "collaborative whiteboard",
     "real-time drawing",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   creator: "ColabCanvas Team",
   openGraph: {
     title: "ColabCanvas – Real-time Collaborative Whiteboard",
-    description: "Draw, brainstorm, and collaborate in real-time with ColabCanvas.",
+    description: "A shared whiteboard in the browser. Others see each finished stroke.",
     url: "https://colabcanvas.com/",
     siteName: "ColabCanvas",
     images: [
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "ColabCanvas – Real-time Collaborative Whiteboard",
-    description: "Draw, brainstorm, and collaborate in real-time with ColabCanvas.",
+    description: "A shared whiteboard in the browser. Others see each finished stroke.",
     images: ["/og-image.png"],
     creator: "@ColabCanvas"
   },

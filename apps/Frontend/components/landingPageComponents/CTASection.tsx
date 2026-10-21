@@ -8,7 +8,7 @@ export default function CTASection() {
           Ready to collaborate visually?
         </h2>
         <p className="text-base xs:text-lg md:text-xl text-white/80 mb-6 sm:mb-8 leading-snug">
-          Sign up now and start drawing together in real time. No installs, no hassle just instant collaboration.
+          Sign up and draw in the same room from the browser.
         </p>
         <div className="flex flex-row gap-3 sm:gap-4 w-full xs:w-auto justify-center items-center flex-wrap">
           <Link

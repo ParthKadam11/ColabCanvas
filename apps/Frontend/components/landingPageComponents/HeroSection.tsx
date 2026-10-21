@@ -14,9 +14,9 @@ export default function HeroSection() {
         </span>
         <HandWrittenTitle title="Draw together, Work Together." />
         <h3 className="text-base xs:text-lg sm:text-xl md:text-2xl font-medium text-white max-w-xs sm:max-w-xl md:max-w-2xl mb-4 sm:mb-6 animate-fade-in-up delay-100 leading-snug">
-          ColabCanvas is a real-time collaborative whiteboard for teams, classrooms,
-          and creators.<br className="hidden sm:inline" /> Draw, annotate, and share
-          ideas visually, Live in your browser. <br className="hidden sm:inline" />
+          ColabCanvas is a shared whiteboard that runs in the browser.
+          <br className="hidden sm:inline" /> Draw shapes, freehand, and text in a room,
+          and others see each finished stroke.
         </h3>
         <div className="flex flex-row gap-3 sm:gap-4 mt-2 animate-fade-in-up delay-200 w-full xs:w-auto justify-center items-center flex-wrap">
           <Link

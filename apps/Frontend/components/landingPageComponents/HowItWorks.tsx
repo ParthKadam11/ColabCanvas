@@ -25,12 +25,12 @@ export default function HowItWorks() {
     },
     {
       title: "Share Room",
-      desc: "Invite others instantly by sending the room name.",
+      desc: "Share the room name so others can join.",
       icon: Link2,
     },
     {
-      title: "Draw together in real time",
-      desc: "Everyone can sketch, edit, and see updates live.",
+      title: "Draw on the same board",
+      desc: "Everyone can draw, erase, and see finished strokes.",
       icon: Users,
     },
   ];
