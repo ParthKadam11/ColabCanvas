@@ -30,6 +30,9 @@ importers:
 
   apps/Frontend:
     dependencies:
+      '@repo/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       axios:
         specifier: ^1.13.4
         version: 1.13.5
@@ -58,9 +61,6 @@ importers:
         specifier: ^13.0.0
         version: 13.0.0
     devDependencies:
-      '@repo/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.1.18

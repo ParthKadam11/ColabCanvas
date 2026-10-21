@@ -2,12 +2,13 @@
   "name": "@repo/ui",
   "version": "0.0.0",
   "private": true,
-  "types": "./dist/index.d.ts",
+  "types": "./src/index.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "require": "./src/index.ts",
+      "default": "./src/index.ts"
     }
   },
   "scripts": {
