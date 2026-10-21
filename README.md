@@ -14,7 +14,7 @@ ColabCanvas is a next-generation collaborative whiteboard platform engineered fo
 ## 🚀 Key Features
 
 - **Real-Time Multiplayer Canvas**: Built on top of WebSockets for instant, bi-directional updates. All drawing, text, and object changes are synchronized across users in a room with sub-100ms latency.
-- **CRDT-Based State Management**: Uses Conflict-free Replicated Data Types (CRDTs) to ensure eventual consistency and seamless merging of concurrent edits, even under network partitions.
+- **Conflict-Resilient State Management**: Handles concurrent edits with deterministic synchronization so collaborators stay in sync during active sessions.
 - **Rich Drawing Tools**: Freehand, shapes, text, eraser, zoom, pan, and multi-user cursors. All tools are modular and extensible.
 - **User Presence & Awareness**: See who is online, their cursor positions, and what they are editing in real time.
 - **Authentication & Room Management**: Secure sign-up/sign-in, room creation/joining, and persistent user sessions.
@@ -26,9 +26,9 @@ ColabCanvas is a next-generation collaborative whiteboard platform engineered fo
 
 ---
 
-- **Frontend**: Next.js app with advanced canvas rendering, state managed by CRDTs, and real-time updates via WebSocket.
+- **Frontend**: Next.js app with advanced canvas rendering, synchronized shared state, and real-time updates via WebSocket.
 - **HTTP Backend**: Node.js/Express API for authentication, room management, and file uploads. Uses Prisma for DB access.
-- **WebSocket Backend**: Dedicated Node.js server for real-time canvas sync, presence, and CRDT operations.
+- **WebSocket Backend**: Dedicated Node.js server for real-time canvas sync, presence, and synchronization operations.
 - **Database**: PostgreSQL, managed with Prisma, stores users, rooms, and persistent canvas data.
 - **Shared Packages**: TypeScript types, UI components, and utilities shared across all services.
 
@@ -36,7 +36,7 @@ ColabCanvas is a next-generation collaborative whiteboard platform engineered fo
 
 ## 🧑‍💻 Deep Tech Stack
 
-- **Frontend**: Next.js, React 18, TypeScript, Tailwind CSS, Framer Motion, custom CRDT implementation
+- **Frontend**: Next.js, React 18, TypeScript, Tailwind CSS, Framer Motion
 - **Real-Time**: Native WebSocket server
 - **Backend**: Node.js, Express, Prisma ORM, JWT authentication, REST APIs, file uploads
 - **Database**: PostgreSQL (Dockerized for local dev), Prisma migrations, connection pooling
@@ -55,7 +55,7 @@ ColabCanvas/
 │   └── ws-backend/       # WebSocket server (real-time sync)
 ├── packages/
 │   ├── @types/           # Shared TypeScript types
-│   ├── common/           # Shared utilities (CRDT, helpers)
+│   ├── common/           # Shared utilities (sync helpers, general helpers)
 │   ├── db/               # Prisma schema, migrations, client
 │   ├── eslint-config/    # Shared ESLint config
 │   ├── typescript-config/# Shared TS config
@@ -103,9 +103,9 @@ pnpm run dev
 
 ## 🛠️ Development & Customization
 
-- **Canvas Logic**: See `apps/Frontend/draw/` for custom drawing, shape rendering, and CRDT logic.
+- **Canvas Logic**: See `apps/Frontend/draw/` for custom drawing, shape rendering, and synchronization logic.
 - **Authentication**: JWT-based, with session management in `apps/http-backend`.
-- **Real-Time Sync**: WebSocket protocol and CRDT merge in `apps/ws-backend`.
+- **Real-Time Sync**: WebSocket protocol and state merge flow in `apps/ws-backend`.
 - **UI Components**: Modular, themeable React components in `packages/ui`.
 - **Type Safety**: All API contracts and DB models are type-checked end-to-end.
 
@@ -252,4 +252,3 @@ npx turbo link
 yarn exec turbo link
 pnpm exec turbo link
 ```
-
