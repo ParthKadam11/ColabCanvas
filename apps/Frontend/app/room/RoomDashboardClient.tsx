@@ -18,7 +18,7 @@ export default function RoomDashboardClient() {
               Your rooms
             </h1>
             <p className="mt-2 max-w-md text-sm text-pretty text-zinc-400">
-              Create a board, join one by name, or reopen a room you already belong to.
+              Create a board, join one by name, or reopen a room you created.
             </p>
           </div>
           <ProfileInfo />

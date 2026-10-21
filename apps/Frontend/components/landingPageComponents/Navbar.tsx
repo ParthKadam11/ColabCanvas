@@ -18,7 +18,7 @@ export default function Navbar() {
           <a href="https://github.com/ParthKadam11/ColabCanvas" target="_blank" rel="noopener noreferrer" className="text-zinc-700 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white transition-colors font-medium">GitHub</a>
         </div>
         <div className="hidden md:flex">
-          <a href="/signup" className="px-4 sm:px-6 py-2 rounded-xl bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 transition-colors border border-blue-700 text-base">Try Demo</a>
+          <a href="/signup" className="px-4 sm:px-6 py-2 rounded-xl bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 transition-colors border border-blue-700 text-base">Sign up</a>
         </div>
       </div>
       {menuOpen && (
@@ -26,7 +26,7 @@ export default function Navbar() {
           <a href="#features" className="w-full text-center py-2 text-zinc-700 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white transition-colors font-medium">Features</a>
           <a href="#demo" className="w-full text-center py-2 text-zinc-700 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white transition-colors font-medium">Demo</a>
           <a href="https://github.com/ParthKadam11/ColabCanvas" target="_blank" rel="noopener noreferrer" className="w-full text-center py-2 text-zinc-700 dark:text-zinc-200 hover:text-zinc-900 dark:hover:text-white transition-colors font-medium">GitHub</a>
-          <a href="/signup" className="w-full text-center px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 transition-colors border border-blue-700 text-base mt-2">Try Demo</a>
+          <a href="/signup" className="w-full text-center px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 transition-colors border border-blue-700 text-base mt-2">Sign up</a>
         </div>
       )}
     </nav>

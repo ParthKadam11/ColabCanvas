@@ -7,41 +7,40 @@
 
 </div>
 
-ColabCanvas is a next-generation collaborative whiteboard platform engineered for seamless, real-time teamwork. It combines advanced canvas rendering, low-latency networking, and robust backend infrastructure to deliver a Figma-like experience for brainstorming, diagramming, and ideation.
+ColabCanvas is a shared whiteboard. People in the same room see each finished shape, freehand stroke, text item, or erase. The board is rebuilt by replaying stored events.
 
 ---
 
-## 🚀 Key Features
+## Key features
 
-- **Real-Time Multiplayer Canvas**: Built on top of WebSockets for instant, bi-directional updates. All drawing, text, and object changes are synchronized across users in a room with sub-100ms latency.
-- **CRDT-Based State Management**: Uses Conflict-free Replicated Data Types (CRDTs) to ensure eventual consistency and seamless merging of concurrent edits, even under network partitions.
-- **Rich Drawing Tools**: Freehand, shapes, text, eraser, zoom, pan, and multi-user cursors. All tools are modular and extensible.
-- **User Presence & Awareness**: See who is online, their cursor positions, and what they are editing in real time.
-- **Authentication & Room Management**: Secure sign-up/sign-in, room creation/joining, and persistent user sessions.
-- **Optimistic UI**: Instant feedback for user actions
-- **Scalable Microservices Architecture**: Decoupled HTTP and WebSocket backends, each optimized for their domain (REST APIs, real-time sync, file uploads, etc).
-- **Cloud-Native & Local-First**: Designed for both cloud deployment and local development, with Dockerized Postgres and stateless services.
-- **Type-Safe End-to-End**: Shared TypeScript types across frontend, backend, and database for zero type drift.
-- **Customizable UI Library**: Built with a reusable, themeable component system using Tailwind CSS and React.
+- **Shared canvas**: A finished stroke is sent over a WebSocket to other people in the room. Mouse movement while drawing stays in the browser.
+- **Stroke event log**: Each finished shape or erase is stored as its own record. Opening a room replays the latest 50 events. Concurrent edits are applied in arrival order. There is no CRDT merge.
+- **Drawing tools**: Rectangle, circle, line, freehand, text, eraser, and zoom.
+- **Who is connected**: The WebSocket server keeps an in-memory list of connected users. The client polls that list. There are no live cursors.
+- **Accounts and rooms**: Sign-up and sign-in return a JWT that the browser stores in localStorage. You can create a room, join by room name, and list rooms you created.
+- **Two backends**: An Express API handles accounts, rooms, and profile photos. A separate process broadcasts strokes and then writes them to PostgreSQL. Connected users live in memory on that one process.
+- **Where it runs**: Local Postgres can run in Docker. The frontend and the two backends can be deployed separately.
+- **Validation**: Signup, sign-in, and room requests are checked with Zod. WebSocket drawing messages are plain JSON and are not schema-checked.
+- **Shared UI**: Small React components in `packages/ui`, styled with Tailwind CSS.
 
 ---
 
-- **Frontend**: Next.js app with advanced canvas rendering, state managed by CRDTs, and real-time updates via WebSocket.
+- **Frontend**: Next.js app with a custom canvas engine. Drawing state is an in-memory shape list, updated over WebSocket and rebuilt by replaying stored events.
 - **HTTP Backend**: Node.js/Express API for authentication, room management, and file uploads. Uses Prisma for DB access.
-- **WebSocket Backend**: Dedicated Node.js server for real-time canvas sync, presence, and CRDT operations.
-- **Database**: PostgreSQL, managed with Prisma, stores users, rooms, and persistent canvas data.
+- **WebSocket Backend**: Dedicated Node.js server that broadcasts finished drawing events, then saves them to PostgreSQL. Presence is an in-memory list of connected users.
+- **Database**: PostgreSQL, managed with Prisma, stores users, rooms, and drawing events. Opening a room loads the latest 50 events.
 - **Shared Packages**: TypeScript types, UI components, and utilities shared across all services.
 
 ---
 
 ## 🧑‍💻 Deep Tech Stack
 
-- **Frontend**: Next.js, React 18, TypeScript, Tailwind CSS, Framer Motion, custom CRDT implementation
+- **Frontend**: Next.js, React, TypeScript, Tailwind CSS, Framer Motion, custom HTML5 Canvas drawing engine
 - **Real-Time**: Native WebSocket server
 - **Backend**: Node.js, Express, Prisma ORM, JWT authentication, REST APIs, file uploads
 - **Database**: PostgreSQL (Dockerized for local dev), Prisma migrations, connection pooling
-- **Monorepo**: pnpm workspaces, TurboRepo for build orchestration, strict type sharing
-- **DevOps**: Docker, Vercel/Render deploy ready
+- **Monorepo**: pnpm workspaces and Turborepo for build orchestration
+- **DevOps**: Docker for local Postgres. CORS allows a separately hosted frontend.
 
 ---
 
@@ -52,10 +51,10 @@ ColabCanvas/
 ├── apps/
 │   ├── Frontend/         # Next.js app (canvas, auth, UI)
 │   ├── http-backend/     # Express API (auth, rooms, uploads)
-│   └── ws-backend/       # WebSocket server (real-time sync)
+│   └── ws-backend/       # WebSocket stroke broadcast and presence
 ├── packages/
 │   ├── @types/           # Shared TypeScript types
-│   ├── common/           # Shared utilities (CRDT, helpers)
+│   ├── common/           # Shared Zod validation schemas
 │   ├── db/               # Prisma schema, migrations, client
 │   ├── eslint-config/    # Shared ESLint config
 │   ├── typescript-config/# Shared TS config
@@ -71,8 +70,8 @@ ColabCanvas/
 ## ⚡ Getting Started
 
 ### Prerequisites
-- Node.js (v18+)
-- pnpm (v8+)
+- Node.js 20.19 or newer
+- pnpm 9
 - Docker (for local Postgres)
 
 ### 1. Install dependencies
@@ -103,11 +102,11 @@ pnpm run dev
 
 ## 🛠️ Development & Customization
 
-- **Canvas Logic**: See `apps/Frontend/draw/` for custom drawing, shape rendering, and CRDT logic.
-- **Authentication**: JWT-based, with session management in `apps/http-backend`.
-- **Real-Time Sync**: WebSocket protocol and CRDT merge in `apps/ws-backend`.
-- **UI Components**: Modular, themeable React components in `packages/ui`.
-- **Type Safety**: All API contracts and DB models are type-checked end-to-end.
+- **Canvas Logic**: See `apps/Frontend/draw/` for drawing, shape rendering, and replaying stored stroke events.
+- **Authentication**: JWT checks in `apps/http-backend`. The token is stored in the browser, not in an httpOnly cookie.
+- **Real-Time Sync**: WebSocket broadcast of finished strokes in `apps/ws-backend`, followed by a database write.
+- **UI Components**: Shared React components in `packages/ui`.
+- **Type Safety**: Prisma models and Zod schemas cover accounts and rooms. WebSocket drawing messages are untyped JSON strings.
 
 ---
 
@@ -120,12 +119,12 @@ pnpm run dev
 ---
 
 ## 🤝 Contributing
-We welcome contributions! Please open issues, submit PRs, and help us build the best collaborative canvas platform.
+Open an issue or a pull request if you want to change the project.
 
 ---
 
-## 📄 License
-[MIT](LICENSE)
+## License
+This repository does not include a LICENSE file.
 
 ---
 

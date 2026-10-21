@@ -20,7 +20,7 @@ export default function HowItWorks() {
   const steps = [
     {
       title: "Create a room",
-      desc: "Start a collaborative canvas in seconds with a unique room.",
+      desc: "Create a room with a unique name.",
       icon: Pencil,
     },
     {

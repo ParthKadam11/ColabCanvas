@@ -14,22 +14,20 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "ColabCanvas – Real-time Collaborative Whiteboard",
+    default: "ColabCanvas – Shared whiteboard",
     template: "%s | ColabCanvas"
   },
   description: "ColabCanvas is a shared whiteboard that runs in the browser. Draw in a room and others see each finished stroke.",
   keywords: [
     "collaborative whiteboard",
-    "real-time drawing",
-    "online canvas",
-    "team brainstorming",
-    "remote collaboration",
+    "shared canvas",
+    "online whiteboard",
     "ColabCanvas"
   ],
   authors: [{ name: "ColabCanvas Team", url: "https://github.com/ParthKadam11/ColabCanvas" }],
   creator: "ColabCanvas Team",
   openGraph: {
-    title: "ColabCanvas – Real-time Collaborative Whiteboard",
+    title: "ColabCanvas – Shared whiteboard",
     description: "A shared whiteboard in the browser. Others see each finished stroke.",
     url: "https://colabcanvas.com/",
     siteName: "ColabCanvas",
@@ -38,7 +36,7 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "ColabCanvas – Real-time Collaborative Whiteboard"
+        alt: "ColabCanvas – Shared whiteboard"
       }
     ],
     locale: "en_US",
@@ -46,7 +44,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "ColabCanvas – Real-time Collaborative Whiteboard",
+    title: "ColabCanvas – Shared whiteboard",
     description: "A shared whiteboard in the browser. Others see each finished stroke.",
     images: ["/og-image.png"],
     creator: "@ColabCanvas"
